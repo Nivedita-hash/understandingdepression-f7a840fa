@@ -1,5 +1,10 @@
 import { TimelineEvent } from '@/components/Timeline';
 
+import case1Image from '@/assets/case-1-maya.jpg';
+import case2Image from '@/assets/case-2-james.jpg';
+import case3Image from '@/assets/case-3-sarah.jpg';
+import case4Image from '@/assets/case-4-david.jpg';
+
 export interface CaseStudy {
   id: number;
   title: string;
@@ -15,6 +20,8 @@ export interface CaseStudy {
   timeline: TimelineEvent[];
   source: string;
   sourceUrl: string;
+  image: string;
+  imageAlt: string;
 }
 
 export const caseStudies: CaseStudy[] = [
@@ -40,7 +47,9 @@ export const caseStudies: CaseStudy[] = [
       { id: '1-7', title: 'Recovery & Advocacy', description: 'Full recovery achieved; becomes a mental health advocate for new mothers.', phase: 'outcome' }
     ],
     source: "BMC Psychiatry Case Reports",
-    sourceUrl: "https://bmcpsychiatry.biomedcentral.com/"
+    sourceUrl: "https://bmcpsychiatry.biomedcentral.com/",
+    image: case3Image,
+    imageAlt: "Soft morning light on blooming flowers, symbolizing new beginnings and maternal healing"
   },
   {
     id: 2,
@@ -64,7 +73,9 @@ export const caseStudies: CaseStudy[] = [
       { id: '2-7', title: 'New Purpose', description: 'Becomes a group facilitator; finds meaning in helping others through grief.', phase: 'outcome' }
     ],
     source: "Journal of Affective Disorders",
-    sourceUrl: "https://www.sciencedirect.com/journal/journal-of-affective-disorders"
+    sourceUrl: "https://www.sciencedirect.com/journal/journal-of-affective-disorders",
+    image: case4Image,
+    imageAlt: "A winding coastal path at sunset, representing the journey through grief toward peace"
   },
   {
     id: 3,
@@ -88,7 +99,9 @@ export const caseStudies: CaseStudy[] = [
       { id: '3-7', title: 'Finding Balance', description: 'Achieves stable management; works part-time in mental health advocacy.', phase: 'outcome' }
     ],
     source: "Lancet Psychiatry",
-    sourceUrl: "https://www.thelancet.com/journals/lanpsy/"
+    sourceUrl: "https://www.thelancet.com/journals/lanpsy/",
+    image: case2Image,
+    imageAlt: "A peaceful forest path with dappled sunlight, symbolizing finding calm and renewal"
   },
   {
     id: 4,
@@ -112,6 +125,8 @@ export const caseStudies: CaseStudy[] = [
       { id: '4-7', title: 'Graduation & Growth', description: 'Completes degree; launches career while leading peer support initiatives.', phase: 'outcome' }
     ],
     source: "American Journal of Psychiatry",
-    sourceUrl: "https://ajp.psychiatryonline.org/"
+    sourceUrl: "https://ajp.psychiatryonline.org/",
+    image: case1Image,
+    imageAlt: "Soft morning sunlight streaming through a window onto an open book, representing academic recovery and hope"
   }
 ];
