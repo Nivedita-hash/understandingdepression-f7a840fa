@@ -67,6 +67,20 @@ const CaseDetail = () => {
           </div>
         </motion.header>
 
+        {/* Featured Image */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="mb-12 rounded-2xl overflow-hidden shadow-lg"
+        >
+          <img 
+            src={caseStudy.image} 
+            alt={caseStudy.imageAlt}
+            className="w-full h-64 md:h-80 object-cover"
+          />
+        </motion.div>
+
         {/* Story Sections */}
         <div className="space-y-8 mb-16">
           {sections.map((section, index) => (
