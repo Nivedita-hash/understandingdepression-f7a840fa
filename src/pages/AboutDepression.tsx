@@ -1,11 +1,11 @@
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import PageWrapper from '@/components/PageWrapper';
 import ScrollIndicator from '@/components/ScrollIndicator';
-import { TrendingDown, Heart, RefreshCw, Sun, ChevronDown, X } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { CloudRain, Eye, Stethoscope, Sunrise, ChevronDown } from 'lucide-react';
+import { useRef, useState, useCallback } from 'react';
 
 interface JourneyPhase {
-  number: number;
+  icon: React.ElementType;
   title: string;
   subtitle: string;
   color: string;
@@ -18,7 +18,7 @@ interface JourneyPhase {
 
 const journeyPhases: JourneyPhase[] = [
   {
-    number: 1,
+    icon: CloudRain,
     title: "Onset",
     subtitle: "Triggers and early symptoms emerge",
     color: "text-clay",
@@ -35,7 +35,7 @@ const journeyPhases: JourneyPhase[] = [
     }
   },
   {
-    number: 2,
+    icon: Eye,
     title: "Recognition",
     subtitle: "Acknowledging the need for help",
     color: "text-medical",
@@ -52,7 +52,7 @@ const journeyPhases: JourneyPhase[] = [
     }
   },
   {
-    number: 3,
+    icon: Stethoscope,
     title: "Treatment",
     subtitle: "Finding what works for you",
     color: "text-sage",
@@ -69,7 +69,7 @@ const journeyPhases: JourneyPhase[] = [
     }
   },
   {
-    number: 4,
+    icon: Sunrise,
     title: "Living With",
     subtitle: "Recovery, management, or thriving",
     color: "text-primary",
@@ -94,6 +94,7 @@ interface StackingPhaseCardProps {
   scrollYProgress: any;
   isExpanded: boolean;
   onToggle: () => void;
+  cardRef: (el: HTMLDivElement | null) => void;
 }
 
 const StackingPhaseCard = ({ 
@@ -102,7 +103,8 @@ const StackingPhaseCard = ({
   totalCards, 
   scrollYProgress,
   isExpanded,
-  onToggle
+  onToggle,
+  cardRef
 }: StackingPhaseCardProps) => {
   const cardStart = index / totalCards;
   const cardEnd = (index + 1) / totalCards;
@@ -125,8 +127,11 @@ const StackingPhaseCard = ({
     [0, 1, 1]
   );
 
+  const IconComponent = phase.icon;
+
   return (
     <motion.div
+      ref={cardRef}
       style={{ y, scale, opacity, zIndex: index + 1 }}
       className="sticky top-32 mb-8"
     >
@@ -139,7 +144,7 @@ const StackingPhaseCard = ({
       >
         <div className="flex items-center gap-6">
           <div className={`flex-shrink-0 w-16 h-16 rounded-full ${phase.bgColor} flex items-center justify-center`}>
-            <span className={`text-2xl font-serif ${phase.color}`}>{phase.number}</span>
+            <IconComponent className={`w-7 h-7 ${phase.color}`} />
           </div>
           <div className="flex-1">
             <h3 className="heading-section mb-1">{phase.title}</h3>
@@ -191,38 +196,22 @@ const StackingPhaseCard = ({
 const AboutDepression = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
   });
 
-  const sections = [
-    {
-      icon: TrendingDown,
-      title: "It's Not Just Sadness",
-      content: "Depression is more than feeling sad. It's a complex condition that affects how you think, feel, and handle daily activities. It can manifest as persistent emptiness, loss of interest in things you once enjoyed, or a sense of hopelessness that colors everything.",
-      color: "text-clay"
-    },
-    {
-      icon: RefreshCw,
-      title: "A Non-Linear Journey",
-      content: "Recovery from depression rarely follows a straight path. There are setbacks and breakthroughs, plateaus and progress. Understanding this non-linearity is crucial—both for those experiencing depression and those supporting them.",
-      color: "text-medical"
-    },
-    {
-      icon: Heart,
-      title: "Treatment Takes Many Forms",
-      content: "From therapy and medication to lifestyle changes and support groups, treatment approaches are as varied as the individuals seeking help. What works for one person may not work for another—and that's okay.",
-      color: "text-primary"
-    },
-    {
-      icon: Sun,
-      title: "Recovery Is Possible",
-      content: "While depression can feel permanent, recovery is possible. For many, it means learning to manage symptoms effectively. For others, it means complete remission. Each journey is valid and valuable.",
-      color: "text-sage"
+  const scrollToCard = useCallback((index: number) => {
+    const cardRef = cardRefs.current[index];
+    if (cardRef) {
+      cardRef.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => {
+        setExpandedIndex(index);
+      }, 500);
     }
-  ];
+  }, []);
 
   const handleToggle = (index: number) => {
     setExpandedIndex(expandedIndex === index ? null : index);
@@ -249,11 +238,32 @@ const AboutDepression = () => {
           </p>
         </motion.header>
 
+        {/* Quick Navigation */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="flex justify-center gap-4 mb-8"
+        >
+          {journeyPhases.map((phase, index) => {
+            const IconComponent = phase.icon;
+            return (
+              <button
+                key={phase.title}
+                onClick={() => scrollToCard(index)}
+                className={`w-12 h-12 rounded-full ${phase.bgColor} flex items-center justify-center transition-all hover:scale-110 hover:shadow-md`}
+              >
+                <IconComponent className={`w-5 h-5 ${phase.color}`} />
+              </button>
+            );
+          })}
+        </motion.div>
+
         {/* Journey Infographic - Stacking Cards */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
           className="mb-16"
         >
           <h2 className="heading-section text-center mb-4">Depression as a Journey</h2>
@@ -265,40 +275,19 @@ const AboutDepression = () => {
             <div className="sticky top-24 pt-8">
               {journeyPhases.map((phase, index) => (
                 <StackingPhaseCard
-                  key={phase.number}
+                  key={phase.title}
                   phase={phase}
                   index={index}
                   totalCards={journeyPhases.length}
                   scrollYProgress={scrollYProgress}
                   isExpanded={expandedIndex === index}
                   onToggle={() => handleToggle(index)}
+                  cardRef={(el: HTMLDivElement | null) => { cardRefs.current[index] = el; }}
                 />
               ))}
             </div>
           </div>
         </motion.div>
-
-        {/* Content Sections */}
-        <div className="space-y-8">
-          {sections.map((section, index) => (
-            <motion.div
-              key={section.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="section-card flex gap-6"
-            >
-              <div className={`flex-shrink-0 w-12 h-12 rounded-xl bg-muted flex items-center justify-center ${section.color}`}>
-                <section.icon className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="heading-section mb-3">{section.title}</h3>
-                <p className="narrative-text text-muted-foreground">{section.content}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
 
         {/* Bottom note */}
         <motion.div 
