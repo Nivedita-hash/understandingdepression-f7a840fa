@@ -1,10 +1,37 @@
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { ArrowRight, BookOpen } from 'lucide-react';
+import { useEffect } from 'react';
 import homepageBackground from '@/assets/homepage-background.jpg';
 
 const Index = () => {
   const navigate = useNavigate();
+  
+  // Mouse position tracking
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  
+  // Smooth spring physics for natural movement
+  const springConfig = { damping: 50, stiffness: 100 };
+  const smoothX = useSpring(mouseX, springConfig);
+  const smoothY = useSpring(mouseY, springConfig);
+  
+  // Transform mouse position to subtle parallax offset
+  const bgX = useTransform(smoothX, [0, 1], [-15, 15]);
+  const bgY = useTransform(smoothY, [0, 1], [-10, 10]);
+  const bgScale = useTransform(smoothY, [0, 1], [1.05, 1.1]);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const { clientX, clientY } = e;
+      const { innerWidth, innerHeight } = window;
+      mouseX.set(clientX / innerWidth);
+      mouseY.set(clientY / innerHeight);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [mouseX, mouseY]);
 
   const handleNavigate = (path: string) => {
     navigate(path);
@@ -13,14 +40,17 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12 relative overflow-hidden">
-      {/* Background image */}
-      <div 
-        className="absolute inset-0 pointer-events-none"
+      {/* Animated background image with parallax */}
+      <motion.div 
+        className="absolute inset-[-20px] pointer-events-none"
         style={{
           backgroundImage: `url(${homepageBackground})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           opacity: 0.6,
+          x: bgX,
+          y: bgY,
+          scale: bgScale,
         }}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-background/40 pointer-events-none" />
