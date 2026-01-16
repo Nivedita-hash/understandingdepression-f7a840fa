@@ -1,9 +1,9 @@
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import PageWrapper from '@/components/PageWrapper';
 import ScrollIndicator from '@/components/ScrollIndicator';
 import { CloudRain, Eye, Stethoscope, Sunrise, ChevronDown } from 'lucide-react';
-import { useRef, useState, useCallback } from 'react';
-
+import { useRef, useState, useCallback, useEffect } from 'react';
+import homepageBackground from '@/assets/homepage-background.jpg';
 interface JourneyPhase {
   icon: React.ElementType;
   title: string;
@@ -198,6 +198,32 @@ const AboutDepression = () => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   
+  // Mouse position tracking for parallax
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  
+  // Smooth spring physics for natural movement
+  const springConfig = { damping: 50, stiffness: 100 };
+  const smoothX = useSpring(mouseX, springConfig);
+  const smoothY = useSpring(mouseY, springConfig);
+  
+  // Transform mouse position to subtle parallax offset
+  const bgX = useTransform(smoothX, [0, 1], [-15, 15]);
+  const bgY = useTransform(smoothY, [0, 1], [-10, 10]);
+  const bgScale = useTransform(smoothY, [0, 1], [1.05, 1.1]);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const { clientX, clientY } = e;
+      const { innerWidth, innerHeight } = window;
+      mouseX.set(clientX / innerWidth);
+      mouseY.set(clientY / innerHeight);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [mouseX, mouseY]);
+  
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
@@ -224,7 +250,36 @@ const AboutDepression = () => {
       nextPath="/cases"
       nextLabel="Case Stories"
     >
-      <div className="page-container max-w-4xl mx-auto">
+      {/* Animated background image with parallax */}
+      <motion.div 
+        className="fixed inset-[-20px] pointer-events-none z-0"
+        style={{
+          backgroundImage: `url(${homepageBackground})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          opacity: 0.4,
+          x: bgX,
+          y: bgY,
+          scale: bgScale,
+        }}
+      />
+      <div className="fixed inset-0 bg-gradient-to-t from-background/90 via-background/60 to-background/40 pointer-events-none z-0" />
+      
+      {/* Decorative circles */}
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 0.1, scale: 1 }}
+        transition={{ duration: 1.5 }}
+        className="fixed top-20 right-20 w-96 h-96 rounded-full bg-primary/20 blur-3xl pointer-events-none z-0"
+      />
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 0.08, scale: 1 }}
+        transition={{ duration: 1.5, delay: 0.3 }}
+        className="fixed bottom-20 left-20 w-80 h-80 rounded-full bg-medical/20 blur-3xl pointer-events-none z-0"
+      />
+
+      <div className="page-container max-w-4xl mx-auto relative z-10">
         <motion.header 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
