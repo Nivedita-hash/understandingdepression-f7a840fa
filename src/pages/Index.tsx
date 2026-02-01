@@ -75,19 +75,11 @@ const Index = () => {
         transition={{ duration: 0.8 }}
         className="text-center relative z-10 max-w-4xl"
       >
-        <motion.p 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-muted-foreground mb-4 tracking-widest uppercase text-sm"
-        >
-          A Narrative Visualization
-        </motion.p>
 
         <motion.h1 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
           className="heading-display mb-6"
         >
           Understanding Depression
@@ -98,17 +90,18 @@ const Index = () => {
         <motion.p 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
           className="narrative-text mx-auto mb-12 text-muted-foreground"
         >
-          An interactive journey exploring how depression unfolds over time, 
-          told through the experiences of real individuals.
+          Depression affects millions, yet each person's experience is unique. 
+          Follow four real stories to understand how this condition unfolds—from 
+          first symptoms through treatment and beyond.
         </motion.p>
 
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.7 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <button

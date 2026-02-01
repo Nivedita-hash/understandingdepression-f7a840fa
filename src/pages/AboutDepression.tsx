@@ -4,86 +4,114 @@ import ScrollIndicator from '@/components/ScrollIndicator';
 import { CloudRain, Eye, Stethoscope, Sunrise, ChevronDown } from 'lucide-react';
 import { useRef, useState, useCallback, useEffect } from 'react';
 import homepageBackground from '@/assets/homepage-background.jpg';
+interface PhasePoint {
+  title: string;
+  explanation: string;
+}
+
 interface JourneyPhase {
   icon: React.ElementType;
   title: string;
-  subtitle: string;
+  summary: string;
   color: string;
   bgColor: string;
-  details: {
-    heading: string;
-    points: string[];
-  };
+  whyItMatters: string;
+  dataRepresented: string;
+  points: PhasePoint[];
 }
 
 const journeyPhases: JourneyPhase[] = [
   {
     icon: CloudRain,
     title: "Onset",
-    subtitle: "Triggers and early symptoms emerge",
+    summary: "Early changes in mood and behavior begin to appear, often triggered by life events or gradual shifts.",
     color: "text-clay",
     bgColor: "bg-clay-light",
-    details: {
-      heading: "Triggers & Early Symptoms",
-      points: [
-        "Life changes like loss, trauma, or major transitions",
-        "Gradual withdrawal from activities once enjoyed",
-        "Sleep disturbances and changes in appetite",
-        "Persistent fatigue that doesn't improve with rest",
-        "Difficulty concentrating or making decisions"
-      ]
-    }
+    whyItMatters: "Recognizing early signs can lead to earlier intervention and better outcomes. Many people don't realize they're experiencing depression until symptoms worsen.",
+    dataRepresented: "Initial symptom patterns, triggering events, early behavioral changes, and self-reported mood shifts.",
+    points: [
+      {
+        title: "Emotional symptoms",
+        explanation: "Persistent feelings of sadness, emptiness, or hopelessness that last most of the day, nearly every day. These feelings differ from normal sadness because they don't lift even when circumstances improve."
+      },
+      {
+        title: "Behavioral changes",
+        explanation: "Withdrawing from friends, losing interest in hobbies, or avoiding activities that once brought joy. This isn't laziness—it's a symptom of the brain's altered reward system."
+      },
+      {
+        title: "Physical signals",
+        explanation: "Changes in sleep (too much or too little), appetite shifts, unexplained fatigue, or difficulty concentrating. The body often shows signs before we consciously recognize the problem."
+      }
+    ]
   },
   {
     icon: Eye,
     title: "Recognition",
-    subtitle: "Acknowledging the need for help",
+    summary: "The moment when a person or those around them realize something has changed and help may be needed.",
     color: "text-medical",
     bgColor: "bg-medical-light",
-    details: {
-      heading: "Signs of Recognition",
-      points: [
-        "Realizing symptoms have persisted for weeks",
-        "Friends or family expressing concern",
-        "Daily functioning becoming noticeably impaired",
-        "Moments of clarity about the severity of feelings",
-        "Beginning to research or seek information"
-      ]
-    }
+    whyItMatters: "Recognition is often the hardest step. Many people minimize symptoms or attribute them to other causes. External observations from loved ones frequently prompt this realization.",
+    dataRepresented: "Duration of symptoms, impact on daily functioning, observations from others, and moments of self-awareness.",
+    points: [
+      {
+        title: "Duration awareness",
+        explanation: "Realizing symptoms have persisted for weeks rather than days. Depression is typically diagnosed when symptoms last at least two weeks and represent a change from previous functioning."
+      },
+      {
+        title: "External feedback",
+        explanation: "Friends, family, or colleagues noticing changes—'You seem different lately' or 'I'm worried about you.' These observations often provide the push toward seeking help."
+      },
+      {
+        title: "Functional impact",
+        explanation: "Work performance declining, relationships straining, or basic self-care becoming difficult. When depression starts affecting daily life, recognition often follows."
+      }
+    ]
   },
   {
     icon: Stethoscope,
     title: "Treatment",
-    subtitle: "Finding what works for you",
+    summary: "Exploring and finding approaches that help—a process that often involves trial, adjustment, and patience.",
     color: "text-sage",
     bgColor: "bg-sage-light",
-    details: {
-      heading: "Treatment Approaches",
-      points: [
-        "Psychotherapy (CBT, DBT, interpersonal therapy)",
-        "Medication options and finding the right fit",
-        "Lifestyle changes: exercise, sleep hygiene, nutrition",
-        "Support groups and peer connections",
-        "Combination approaches tailored to individual needs"
-      ]
-    }
+    whyItMatters: "Treatment isn't one-size-fits-all. What works varies greatly between individuals. Finding the right approach often requires trying multiple options and giving each adequate time.",
+    dataRepresented: "Treatment types tried, response patterns, medication adjustments, therapy modalities, and timeline of changes.",
+    points: [
+      {
+        title: "Talk therapy",
+        explanation: "Various forms of psychotherapy (like CBT or interpersonal therapy) help identify thought patterns and develop coping strategies. Therapy provides tools that last beyond the treatment period."
+      },
+      {
+        title: "Medication",
+        explanation: "Antidepressants can help correct chemical imbalances. Finding the right medication and dosage often takes time—typically 4-6 weeks to see full effects, and adjustments may be needed."
+      },
+      {
+        title: "Lifestyle and support",
+        explanation: "Exercise, sleep hygiene, nutrition, and social support complement formal treatment. Support groups provide connection with others who understand the experience firsthand."
+      }
+    ]
   },
   {
     icon: Sunrise,
     title: "Living With",
-    subtitle: "Recovery, management, or thriving",
+    summary: "Finding a sustainable path forward—whether that means full recovery, ongoing management, or learning to thrive alongside the condition.",
     color: "text-primary",
     bgColor: "bg-primary/20",
-    details: {
-      heading: "The Path Forward",
-      points: [
-        "Developing personal coping strategies",
-        "Building a sustainable support network",
-        "Recognizing early warning signs of relapse",
-        "Celebrating progress, no matter how small",
-        "Embracing a new understanding of mental wellness"
-      ]
-    }
+    whyItMatters: "Recovery looks different for everyone. Some people fully recover, others manage ongoing symptoms, and many develop resilience that serves them throughout life. All of these are valid outcomes.",
+    dataRepresented: "Long-term outcomes, relapse patterns, maintenance strategies, quality of life measures, and personal growth indicators.",
+    points: [
+      {
+        title: "Personal strategies",
+        explanation: "Developing individualized coping tools—routines, stress management, early warning signs to watch for. These become second nature over time and help maintain stability."
+      },
+      {
+        title: "Support systems",
+        explanation: "Building and maintaining relationships that provide emotional support. This includes professional support (ongoing therapy or check-ins) and personal connections who understand."
+      },
+      {
+        title: "Redefining wellness",
+        explanation: "Embracing a new understanding of what 'feeling good' means. Many people find that their experience with depression leads to greater self-awareness and empathy."
+      }
+    ]
   }
 ];
 
@@ -148,7 +176,7 @@ const StackingPhaseCard = ({
           </div>
           <div className="flex-1">
             <h3 className="heading-section mb-1">{phase.title}</h3>
-            <p className="text-muted-foreground">{phase.subtitle}</p>
+            <p className="text-muted-foreground">{phase.summary}</p>
           </div>
           <motion.div
             animate={{ rotate: isExpanded ? 180 : 0 }}
@@ -168,22 +196,52 @@ const StackingPhaseCard = ({
               transition={{ duration: 0.3 }}
               className="overflow-hidden"
             >
-              <div className="pt-6 mt-6 border-t border-border">
-                <h4 className={`font-medium mb-4 ${phase.color}`}>{phase.details.heading}</h4>
-                <ul className="space-y-3">
-                  {phase.details.points.map((point, i) => (
-                    <motion.li
-                      key={i}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.1 }}
-                      className="flex items-start gap-3 text-muted-foreground"
-                    >
-                      <span className={`w-1.5 h-1.5 rounded-full ${phase.bgColor} mt-2 flex-shrink-0`} />
-                      {point}
-                    </motion.li>
-                  ))}
-                </ul>
+              <div className="pt-6 mt-6 border-t border-border space-y-6">
+                {/* What happens in this phase */}
+                <div>
+                  <h4 className={`font-medium mb-3 ${phase.color} text-sm uppercase tracking-wide`}>What Happens</h4>
+                  <ul className="space-y-4">
+                    {phase.points.map((point, i) => (
+                      <motion.li
+                        key={i}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.1 }}
+                        className="space-y-1"
+                      >
+                        <div className="flex items-start gap-3">
+                          <span className={`w-2 h-2 rounded-full ${phase.bgColor} mt-1.5 flex-shrink-0`} />
+                          <div>
+                            <span className="font-medium text-foreground">{point.title}</span>
+                            <p className="text-muted-foreground text-sm mt-1 leading-relaxed">{point.explanation}</p>
+                          </div>
+                        </div>
+                      </motion.li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Why this phase matters */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className={`p-4 rounded-lg ${phase.bgColor}`}
+                >
+                  <h4 className={`font-medium mb-2 ${phase.color} text-sm uppercase tracking-wide`}>Why This Matters</h4>
+                  <p className="text-sm text-foreground/80 leading-relaxed">{phase.whyItMatters}</p>
+                </motion.div>
+
+                {/* What data is represented */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                  className="text-xs text-muted-foreground border-t border-border pt-4"
+                >
+                  <span className="font-medium">Data represented: </span>
+                  {phase.dataRepresented}
+                </motion.div>
               </div>
             </motion.div>
           )}
