@@ -1,80 +1,66 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import PageWrapper from '@/components/PageWrapper';
 import { caseStudies } from '@/data/caseStudies';
 import { useNavigate } from 'react-router-dom';
-import { Clock, Sparkles, AlertCircle } from 'lucide-react';
+import { Clock, Sparkles, AlertCircle, ChevronLeft, ChevronRight, User, X } from 'lucide-react';
 import homepageBackground from '@/assets/homepage-background.jpg';
 
-const StackingCard = ({ 
+// Case labels for quick reference
+const caseLabels = [
+  { ageRange: '32 years old', treatmentType: 'Therapy + Medication', duration: '18 months' },
+  { ageRange: '45 years old', treatmentType: 'Grief Counseling', duration: '3 years' },
+  { ageRange: '38 years old', treatmentType: 'TMS + Intensive Therapy', duration: '7 years' },
+  { ageRange: '24 years old', treatmentType: 'Therapy + Lifestyle', duration: '5 years' },
+];
+
+const CaseCard = ({ 
   study,
   index, 
-  totalCards,
-  scrollYProgress 
+  isActive,
+  onClick
 }: { 
   study: typeof caseStudies[0]; 
-  index: number; 
-  totalCards: number;
-  scrollYProgress: any;
+  index: number;
+  isActive: boolean;
+  onClick: () => void;
 }) => {
   const navigate = useNavigate();
-  
-  // Each card has its own scroll range
-  const cardStart = index / totalCards;
-  const cardEnd = (index + 1) / totalCards;
-  
-  // Transform values for stacking effect
-  const y = useTransform(
-    scrollYProgress,
-    [cardStart, cardEnd],
-    [index === 0 ? 0 : 100, 0]
-  );
-  
-  const scale = useTransform(
-    scrollYProgress,
-    [cardStart, cardEnd, cardEnd + 0.1],
-    [index === 0 ? 1 : 0.95, 1, 0.98]
-  );
-  
-  const opacity = useTransform(
-    scrollYProgress,
-    [cardStart - 0.05, cardStart, cardEnd],
-    [index === 0 ? 1 : 0, 1, 1]
-  );
+  const label = caseLabels[index];
 
-  const handleClick = () => {
+  const handleExplore = (e: React.MouseEvent) => {
+    e.stopPropagation();
     navigate(`/case/${study.id}`);
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   return (
     <motion.article
-      style={{ 
-        y, 
-        scale, 
-        opacity,
-        zIndex: index + 1,
-      }}
-      onClick={handleClick}
-      className="sticky top-32 w-full max-w-2xl mx-auto cursor-pointer"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.4 }}
+      className="w-full max-w-2xl mx-auto"
     >
       <motion.div
         whileHover={{ y: -4, boxShadow: '0 20px 40px -15px rgba(0,0,0,0.15)' }}
-        className="bg-card rounded-2xl p-8 shadow-lg border border-border/50 transition-all duration-300"
-        style={{
-          boxShadow: `0 ${4 + index * 2}px ${20 + index * 5}px -${5 + index}px rgba(0,0,0,0.1)`,
-        }}
+        className={`bg-card rounded-2xl p-8 shadow-lg border transition-all duration-300 ${
+          isActive ? 'border-primary/50 ring-2 ring-primary/20' : 'border-border/50'
+        }`}
       >
+        {/* Case header with position indicator */}
         <div className="flex items-start justify-between mb-4">
-          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            Case Study {study.id}
-          </span>
-          <span className="text-xs font-medium text-primary">
-            Click to explore →
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              Case {study.id} of {caseStudies.length}
+            </span>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+              {label.ageRange}
+            </span>
+          </div>
         </div>
         
-        <h3 className="font-serif text-2xl font-medium mb-4 group-hover:text-primary transition-colors">
+        <h3 className="font-serif text-2xl font-medium mb-4">
           {study.title}
         </h3>
         
@@ -82,7 +68,8 @@ const StackingCard = ({
           {study.hook}
         </p>
 
-        <div className="flex flex-wrap gap-3">
+        {/* Quick info labels */}
+        <div className="flex flex-wrap gap-3 mb-6">
           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sage-light text-sage text-sm font-medium">
             <Sparkles className="w-3.5 h-3.5" />
             {study.outcome}
@@ -96,17 +83,92 @@ const StackingCard = ({
             {study.trigger}
           </span>
         </div>
+
+        {/* Explore button */}
+        <button
+          onClick={handleExplore}
+          className="w-full py-3 px-4 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
+        >
+          Explore This Journey
+          <ChevronRight className="w-4 h-4" />
+        </button>
       </motion.div>
     </motion.article>
   );
 };
 
+// Case Overview Panel
+const CaseOverviewPanel = ({ 
+  currentIndex, 
+  onSelectCase, 
+  isOpen, 
+  onClose 
+}: { 
+  currentIndex: number; 
+  onSelectCase: (index: number) => void; 
+  isOpen: boolean;
+  onClose: () => void;
+}) => {
+  if (!isOpen) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 300 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 300 }}
+      className="fixed right-6 top-1/2 -translate-y-1/2 z-50 bg-card rounded-2xl shadow-2xl border border-border p-6 w-80"
+    >
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-medium text-lg">All Case Studies</h3>
+        <button onClick={onClose} className="p-1 hover:bg-muted rounded-full transition-colors">
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+      <p className="text-sm text-muted-foreground mb-4">
+        Each case is an independent story. Explore any that interest you—you don't need to view them all.
+      </p>
+      <div className="space-y-3">
+        {caseStudies.map((study, index) => {
+          const label = caseLabels[index];
+          const isActive = index === currentIndex;
+          return (
+            <button
+              key={study.id}
+              onClick={() => {
+                onSelectCase(index);
+                onClose();
+              }}
+              className={`w-full text-left p-3 rounded-lg border transition-all ${
+                isActive 
+                  ? 'border-primary bg-primary/5' 
+                  : 'border-border hover:border-primary/50 hover:bg-muted/50'
+              }`}
+            >
+              <div className="flex items-start gap-3">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                  isActive ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
+                }`}>
+                  {study.id}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm truncate">{study.title.split(' ').slice(0, 3).join(' ')}...</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {label.ageRange} • {label.treatmentType}
+                  </p>
+                </div>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+};
+
 const CaseSelection = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [showOverview, setShowOverview] = useState(false);
+  const navigate = useNavigate();
 
   // Mouse position tracking for parallax
   const mouseX = useMotionValue(0);
@@ -129,12 +191,22 @@ const CaseSelection = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [mouseX, mouseY]);
 
+  const goToPrevious = () => {
+    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : caseStudies.length - 1));
+  };
+
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev < caseStudies.length - 1 ? prev + 1 : 0));
+  };
+
+  const currentCase = caseStudies[currentIndex];
+
   return (
     <PageWrapper 
-      backPath="/"
-      backLabel="Home"
+      backPath="/about-depression"
+      backLabel="About Depression"
       nextPath="/case/1"
-      nextLabel="First Case"
+      nextLabel="Start Exploring"
     >
       {/* Animated background image with parallax */}
       <motion.div 
@@ -158,57 +230,107 @@ const CaseSelection = () => {
         className="fixed top-20 right-20 w-96 h-96 rounded-full bg-primary/20 blur-3xl pointer-events-none z-0"
       />
 
-      <div ref={containerRef} className="min-h-[400vh] relative z-10">
+      <div className="min-h-screen relative z-10 flex flex-col">
+        {/* Header */}
         <motion.header
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center pt-24 pb-12 px-6 sticky top-16 z-0 bg-background"
+          className="text-center pt-24 pb-8 px-6"
         >
-          <h1 className="heading-display mb-6">Four Real Journeys</h1>
-          <p className="narrative-text mx-auto text-muted-foreground">
-            Scroll down to discover each story. Click a card to explore in depth.
+          <h1 className="heading-display mb-4">Four Real Journeys</h1>
+          <p className="narrative-text mx-auto text-muted-foreground max-w-xl">
+            These are independent stories, each illustrating a different path through depression. 
+            Explore any that resonate with you—comparison and selective exploration are encouraged.
           </p>
-          
-          <motion.div 
-            className="mt-8 flex justify-center"
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <div className="flex flex-col items-center text-muted-foreground">
-              <span className="text-xs mb-2">Scroll to reveal stories</span>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M12 5v14M5 12l7 7 7-7"/>
-              </svg>
-            </div>
-          </motion.div>
         </motion.header>
 
-        <div className="px-6 pb-32">
-          {caseStudies.map((study, index) => (
-            <div 
-              key={study.id} 
-              className="h-[80vh] flex items-start pt-8"
-            >
-              <StackingCard
-                study={study}
-                index={index}
-                totalCards={caseStudies.length}
-                scrollYProgress={scrollYProgress}
-              />
-            </div>
+        {/* Case position indicator + Overview toggle */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="flex items-center justify-center gap-4 mb-8"
+        >
+          <div className="flex items-center gap-2 px-4 py-2 bg-card rounded-full border border-border shadow-sm">
+            <span className="text-sm text-muted-foreground">Viewing</span>
+            <span className="font-medium">Case {currentIndex + 1}</span>
+            <span className="text-sm text-muted-foreground">of {caseStudies.length}</span>
+          </div>
+          <button
+            onClick={() => setShowOverview(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-card rounded-full border border-border shadow-sm hover:border-primary/50 transition-colors"
+          >
+            <User className="w-4 h-4" />
+            <span className="text-sm">View All Cases</span>
+          </button>
+        </motion.div>
+
+        {/* Progress dots */}
+        <div className="flex justify-center gap-2 mb-8">
+          {caseStudies.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              className={`w-2.5 h-2.5 rounded-full transition-all ${
+                index === currentIndex 
+                  ? 'bg-primary w-8' 
+                  : 'bg-muted-foreground/30 hover:bg-muted-foreground/50'
+              }`}
+            />
           ))}
         </div>
 
+        {/* Main case card area */}
+        <div className="flex-1 flex items-start justify-center px-6 pb-12">
+          <div className="flex items-center gap-6 w-full max-w-3xl">
+            {/* Previous button */}
+            <button
+              onClick={goToPrevious}
+              className="flex-shrink-0 w-12 h-12 rounded-full bg-card border border-border shadow-sm flex items-center justify-center hover:border-primary/50 hover:bg-muted/50 transition-all"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+
+            {/* Case card */}
+            <div className="flex-1">
+              <CaseCard
+                key={currentCase.id}
+                study={currentCase}
+                index={currentIndex}
+                isActive={true}
+                onClick={() => {}}
+              />
+            </div>
+
+            {/* Next button */}
+            <button
+              onClick={goToNext}
+              className="flex-shrink-0 w-12 h-12 rounded-full bg-card border border-border shadow-sm flex items-center justify-center hover:border-primary/50 hover:bg-muted/50 transition-all"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Footer note */}
         <motion.p 
           initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          className="text-center text-sm text-muted-foreground pb-24 px-6"
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="text-center text-sm text-muted-foreground pb-8 px-6"
         >
           All cases are based on real, peer-reviewed clinical studies. Names and identifying details have been changed.
         </motion.p>
       </div>
+
+      {/* Overview Panel */}
+      <CaseOverviewPanel
+        currentIndex={currentIndex}
+        onSelectCase={setCurrentIndex}
+        isOpen={showOverview}
+        onClose={() => setShowOverview(false)}
+      />
     </PageWrapper>
   );
 };
