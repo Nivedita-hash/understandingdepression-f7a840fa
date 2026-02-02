@@ -1,22 +1,22 @@
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import PageWrapper from '@/components/PageWrapper';
-import ScrollIndicator from '@/components/ScrollIndicator';
-import GhostJourneyMap from '@/components/GhostJourneyMap';
-import { useEffect, useRef } from 'react';
-import homepageBackground from '@/assets/homepage-background.jpg';
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import PageWrapper from "@/components/PageWrapper";
+import ScrollIndicator from "@/components/ScrollIndicator";
+import GhostJourneyMap from "@/components/GhostJourneyMap";
+import { useEffect, useRef } from "react";
+import homepageBackground from "@/assets/homepage-background.jpg";
 
 const AboutDepression = () => {
   const heroRef = useRef<HTMLDivElement>(null);
-  
+
   // Mouse position tracking for parallax
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  
+
   // Smooth spring physics for natural movement
   const springConfig = { damping: 50, stiffness: 100 };
   const smoothX = useSpring(mouseX, springConfig);
   const smoothY = useSpring(mouseY, springConfig);
-  
+
   // Transform mouse position to subtle parallax offset
   const bgX = useTransform(smoothX, [0, 1], [-15, 15]);
   const bgY = useTransform(smoothY, [0, 1], [-10, 10]);
@@ -30,29 +30,24 @@ const AboutDepression = () => {
       mouseY.set(clientY / innerHeight);
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [mouseX, mouseY]);
 
   const scrollToMap = () => {
-    const mapSection = document.getElementById('journey-map');
-    mapSection?.scrollIntoView({ behavior: 'smooth' });
+    const mapSection = document.getElementById("journey-map");
+    mapSection?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <PageWrapper 
-      backPath="/"
-      backLabel="Home"
-      nextPath="/cases"
-      nextLabel="Case Stories"
-    >
+    <PageWrapper backPath="/" backLabel="Home" nextPath="/cases" nextLabel="Case Stories">
       {/* Animated background image with parallax */}
-      <motion.div 
+      <motion.div
         className="fixed inset-[-20px] pointer-events-none z-0"
         style={{
           backgroundImage: `url(${homepageBackground})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
           opacity: 0.35,
           x: bgX,
           y: bgY,
@@ -60,15 +55,15 @@ const AboutDepression = () => {
         }}
       />
       <div className="fixed inset-0 bg-gradient-to-t from-background via-background/70 to-background/50 pointer-events-none z-0" />
-      
+
       {/* Decorative elements */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 0.08, scale: 1 }}
         transition={{ duration: 1.5 }}
         className="fixed top-20 right-20 w-96 h-96 rounded-full bg-primary/30 blur-3xl pointer-events-none z-0"
       />
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 0.06, scale: 1 }}
         transition={{ duration: 1.5, delay: 0.3 }}
@@ -77,20 +72,15 @@ const AboutDepression = () => {
 
       <div className="relative z-10">
         {/* Hero Section */}
-        <section 
-          ref={heroRef}
-          className="min-h-[80vh] flex flex-col items-center justify-center px-6 text-center"
-        >
+        <section ref={heroRef} className="min-h-[80vh] flex flex-col items-center justify-center px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="max-w-3xl"
           >
-            <h1 className="heading-display mb-8">
-              Understanding Depression
-            </h1>
-            
+            <h1 className="heading-display mb-8">Understanding Depression</h1>
+
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -143,10 +133,7 @@ const AboutDepression = () => {
         </section>
 
         {/* Journey Map Section */}
-        <section 
-          id="journey-map"
-          className="min-h-screen py-16 px-6"
-        >
+        <section id="journey-map" className="min-h-screen py-16 px-6">
           <div className="max-w-6xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 40 }}
@@ -170,8 +157,8 @@ const AboutDepression = () => {
           >
             <div className="w-16 h-px bg-border mx-auto mb-8" />
             <p className="text-lg text-muted-foreground italic leading-relaxed font-serif">
-              "The same life phase can unfold in radically different ways. 
-              Understanding this is the first step toward compassion—for others, and for ourselves."
+              "The same life phase can unfold in radically different ways. Understanding this is the first step toward
+              compassion: for others, and for ourselves."
             </p>
             <div className="w-16 h-px bg-border mx-auto mt-8" />
           </motion.div>
