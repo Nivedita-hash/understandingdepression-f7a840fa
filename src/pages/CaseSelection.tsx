@@ -109,59 +109,77 @@ const CaseOverviewPanel = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
+  const navigate = useNavigate();
+
   if (!isOpen) return null;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 300 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 300 }}
-      className="fixed right-6 top-1/2 -translate-y-1/2 z-50 bg-card rounded-2xl shadow-2xl border border-border p-6 w-80"
-    >
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-medium text-lg">All Case Studies</h3>
-        <button onClick={onClose} className="p-1 hover:bg-muted rounded-full transition-colors">
-          <X className="w-5 h-5" />
-        </button>
-      </div>
-      <p className="text-sm text-muted-foreground mb-4">
-        Each case is an independent story. Explore any that interest you—you don't need to view them all.
-      </p>
-      <div className="space-y-3">
-        {caseStudies.map((study, index) => {
-          const label = caseLabels[index];
-          const isActive = index === currentIndex;
-          return (
-            <button
-              key={study.id}
-              onClick={() => {
-                onSelectCase(index);
-                onClose();
-              }}
-              className={`w-full text-left p-3 rounded-lg border transition-all ${
-                isActive 
-                  ? 'border-primary bg-primary/5' 
-                  : 'border-border hover:border-primary/50 hover:bg-muted/50'
-              }`}
-            >
-              <div className="flex items-start gap-3">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                  isActive ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
-                }`}>
-                  {study.id}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm truncate">{study.title.split(' ').slice(0, 3).join(' ')}...</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {label.ageRange} • {label.treatmentType}
-                  </p>
-                </div>
-              </div>
+    <>
+      {/* Backdrop */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="fixed inset-0 z-50 bg-black/60"
+      />
+      {/* Modal */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      >
+        <div className="bg-card rounded-2xl shadow-2xl border border-border w-full max-w-2xl max-h-[85vh] flex flex-col">
+          {/* Header with close button */}
+          <div className="flex items-center justify-end p-4 pb-0 flex-shrink-0">
+            <button onClick={onClose} className="p-1.5 hover:bg-muted rounded-full transition-colors">
+              <X className="w-5 h-5" />
             </button>
-          );
-        })}
-      </div>
-    </motion.div>
+          </div>
+          {/* Scrollable body */}
+          <div className="overflow-y-auto p-4 pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {caseStudies.map((study, index) => {
+                const label = caseLabels[index];
+                const isActive = index === currentIndex;
+                return (
+                  <button
+                    key={study.id}
+                    onClick={() => {
+                      onSelectCase(index);
+                      onClose();
+                    }}
+                    className={`w-full text-left p-4 rounded-xl border transition-all ${
+                      isActive 
+                        ? 'border-primary bg-primary/5' 
+                        : 'border-border hover:border-primary/50 hover:bg-muted/50'
+                    }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-medium ${
+                        isActive ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
+                      }`}>
+                        {study.id}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm">{study.title.split(' ').slice(0, 4).join(' ')}...</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {label.ageRange} • {label.treatmentType}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {label.duration}
+                        </p>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </>
   );
 };
 
