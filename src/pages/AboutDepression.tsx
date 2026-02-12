@@ -1,78 +1,67 @@
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
 import ScrollIndicator from "@/components/ScrollIndicator";
-import GhostJourneyMap from "@/components/GhostJourneyMap";
-import { useEffect, useRef } from "react";
-import homepageBackground from "@/assets/homepage-background.jpg";
+import { useState } from "react";
+
+interface PhaseData {
+  id: string;
+  title: string;
+  bullets: string[];
+}
+
+const phases: PhaseData[] = [
+  {
+    id: "onset",
+    title: "Onset",
+    bullets: [
+      "Early changes in mood, energy, or motivation may appear.",
+      "Sleep, appetite, and focus can start to shift.",
+      "Social withdrawal or reduced interest in usual activities may begin.",
+      "Symptoms can build gradually or appear after stress/life changes.",
+    ],
+  },
+  {
+    id: "recognition",
+    title: "Recognition",
+    bullets: [
+      "Patterns become clearer and harder to ignore.",
+      "Daily responsibilities may feel harder to manage.",
+      "Naming what's happening can reduce confusion or self-blame.",
+      "Reaching out to someone trusted can help with next steps.",
+    ],
+  },
+  {
+    id: "treatment",
+    title: "Treatment",
+    bullets: [
+      "Support may include therapy, lifestyle changes, and medical guidance.",
+      "Finding the right approach can take time and adjustments.",
+      "Simple routines (sleep, movement, meals) can support recovery.",
+      "Tracking symptoms can help identify what helps.",
+    ],
+  },
+  {
+    id: "living",
+    title: "Living With",
+    bullets: [
+      "Ongoing coping tools and support can help maintain stability.",
+      "Setbacks can happen; planning for them makes them easier to handle.",
+      "Small consistent habits often matter more than occasional big efforts.",
+      "Staying connected to support systems can make things easier.",
+    ],
+  },
+];
 
 const AboutDepression = () => {
-  const heroRef = useRef<HTMLDivElement>(null);
+  const [activePhase, setActivePhase] = useState<string | null>(null);
 
-  // Mouse position tracking for parallax
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  // Smooth spring physics for natural movement
-  const springConfig = { damping: 50, stiffness: 100 };
-  const smoothX = useSpring(mouseX, springConfig);
-  const smoothY = useSpring(mouseY, springConfig);
-
-  // Transform mouse position to subtle parallax offset
-  const bgX = useTransform(smoothX, [0, 1], [-15, 15]);
-  const bgY = useTransform(smoothY, [0, 1], [-10, 10]);
-  const bgScale = useTransform(smoothY, [0, 1], [1.05, 1.1]);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const { clientX, clientY } = e;
-      const { innerWidth, innerHeight } = window;
-      mouseX.set(clientX / innerWidth);
-      mouseY.set(clientY / innerHeight);
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY]);
-
-  const scrollToMap = () => {
-    const mapSection = document.getElementById("journey-map");
-    mapSection?.scrollIntoView({ behavior: "smooth" });
-  };
+  const activeData = phases.find((p) => p.id === activePhase);
 
   return (
     <PageWrapper backPath="/" backLabel="Home" nextPath="/cases" nextLabel="Case Stories">
-      {/* Animated background image with parallax */}
-      <motion.div
-        className="fixed inset-[-20px] pointer-events-none z-0"
-        style={{
-          backgroundImage: `url(${homepageBackground})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          opacity: 0.35,
-          x: bgX,
-          y: bgY,
-          scale: bgScale,
-        }}
-      />
-      <div className="fixed inset-0 bg-gradient-to-t from-background via-background/70 to-background/50 pointer-events-none z-0" />
-
-      {/* Decorative elements */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 0.08, scale: 1 }}
-        transition={{ duration: 1.5 }}
-        className="fixed top-20 right-20 w-96 h-96 rounded-full bg-primary/30 blur-3xl pointer-events-none z-0"
-      />
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 0.06, scale: 1 }}
-        transition={{ duration: 1.5, delay: 0.3 }}
-        className="fixed bottom-20 left-20 w-80 h-80 rounded-full bg-medical/30 blur-3xl pointer-events-none z-0"
-      />
-
       <div className="relative z-10">
         {/* Hero Section */}
-        <section ref={heroRef} className="min-h-[80vh] flex flex-col items-center justify-center px-6 text-center">
+        <section className="min-h-[60vh] flex flex-col items-center justify-center px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -81,68 +70,76 @@ const AboutDepression = () => {
           >
             <h1 className="heading-display mb-8">Understanding Depression</h1>
 
-            <motion.div
+            <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="space-y-4 mb-12"
+              className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-12"
             >
-              <p className="text-xl md:text-2xl text-foreground/90 font-serif leading-relaxed">
-                Depression does not follow a single path.
-              </p>
-              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-                What looks like the same phase can feel completely different.
-              </p>
-            </motion.div>
-
-            <motion.button
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              onClick={scrollToMap}
-              className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-card/80 backdrop-blur-sm text-foreground font-medium border border-border hover:bg-card hover:shadow-lg transition-all duration-300"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <span>Explore the Journey Map</span>
-              <motion.span
-                animate={{ y: [0, 4, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-                className="text-primary"
-              >
-                ↓
-              </motion.span>
-            </motion.button>
-          </motion.div>
-
-          {/* Subtle scroll hint */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.5 }}
-            transition={{ delay: 2 }}
-            className="absolute bottom-8"
-          >
-            <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex items-start justify-center pt-2"
-            >
-              <div className="w-1 h-2 rounded-full bg-muted-foreground/50" />
-            </motion.div>
+              Depression moves through phases — each one shaped by personal context and experience.
+            </motion.p>
           </motion.div>
         </section>
 
-        {/* Journey Map Section */}
-        <section id="journey-map" className="min-h-screen py-16 px-6">
-          <div className="max-w-6xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8 }}
-            >
-              <GhostJourneyMap />
-            </motion.div>
+        {/* Phase Buttons + Content */}
+        <section className="px-6 pb-16">
+          <div className="max-w-3xl mx-auto">
+            {/* Phase buttons */}
+            <div className="flex flex-wrap justify-center gap-3 mb-8">
+              {phases.map((phase, index) => (
+                <motion.button
+                  key={phase.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+                  onClick={() => setActivePhase(activePhase === phase.id ? null : phase.id)}
+                  className={`px-6 py-3 rounded-full font-medium text-sm md:text-base backdrop-blur-sm border transition-all duration-300 ${
+                    activePhase === phase.id
+                      ? "bg-primary/20 text-primary border-primary/40 shadow-md"
+                      : "bg-card/80 text-foreground border-border hover:bg-card hover:shadow-lg"
+                  }`}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  {phase.title}
+                </motion.button>
+              ))}
+            </div>
+
+            {/* Phase content */}
+            <AnimatePresence mode="wait">
+              {activeData && (
+                <motion.div
+                  key={activeData.id}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.35 }}
+                  className="bg-card/60 backdrop-blur-sm rounded-2xl border border-border p-6 md:p-8"
+                >
+                  <ul className="space-y-4">
+                    {activeData.bullets.map((bullet, i) => (
+                      <motion.li
+                        key={i}
+                        initial={{ opacity: 0, x: -12 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.08 }}
+                        className="flex items-start gap-3 text-foreground/90 leading-relaxed"
+                      >
+                        <span className="mt-2 w-1.5 h-1.5 rounded-full bg-primary/60 flex-shrink-0" />
+                        <span>{bullet}</span>
+                      </motion.li>
+                    ))}
+                  </ul>
+                  <button
+                    onClick={() => setActivePhase(null)}
+                    className="mt-6 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Hide details
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </section>
 
@@ -157,8 +154,8 @@ const AboutDepression = () => {
           >
             <div className="w-16 h-px bg-border mx-auto mb-8" />
             <p className="text-lg text-muted-foreground italic leading-relaxed font-serif">
-              "The same life phase can unfold in radically different ways. Understanding this is the first step toward
-              compassion: for others, and for ourselves."
+              "Each phase carries its own weight. Understanding them is the first step toward
+              compassion — for others, and for ourselves."
             </p>
             <div className="w-16 h-px bg-border mx-auto mt-8" />
           </motion.div>
