@@ -76,7 +76,7 @@ const AboutDepression = () => {
               transition={{ duration: 0.8, delay: 0.3 }}
               className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-12"
             >
-              Depression moves through phases — each one shaped by personal context and experience.
+              Depression moves through phases - each one shaped by personal context and experience.
             </motion.p>
           </motion.div>
         </section>
@@ -154,8 +154,8 @@ const AboutDepression = () => {
           >
             <div className="w-16 h-px bg-border mx-auto mb-8" />
             <p className="text-lg text-muted-foreground italic leading-relaxed font-serif">
-              "Each phase carries its own weight. Understanding them is the first step toward
-              compassion — for others, and for ourselves."
+              "Each phase carries its own weight. Understanding them is the first step toward compassion - for others,
+              and for ourselves."
             </p>
             <div className="w-16 h-px bg-border mx-auto mt-8" />
           </motion.div>
