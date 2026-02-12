@@ -32,7 +32,7 @@ const PageWrapper = ({
   const bgScale = useTransform(smoothY, [0, 1], [1.05, 1.1]);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    window.scrollTo({ top: 0, behavior: 'auto' });
   }, []);
 
   useEffect(() => {
