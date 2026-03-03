@@ -37,7 +37,7 @@ const CaseDetail = () => {
 
   if (!caseStudy) {
     return (
-      <PageWrapper backPath="/cases">
+      <PageWrapper>
         <div className="page-container text-center">
           <h1 className="heading-display">Case not found</h1>
         </div>
@@ -59,12 +59,7 @@ const CaseDetail = () => {
   ];
 
   return (
-    <PageWrapper 
-      backPath={prevCase}
-      backLabel={prevLabel}
-      nextPath={nextCase}
-      nextLabel={nextLabel}
-    >
+    <PageWrapper>
       {/* Animated background image with parallax */}
       <motion.div 
         className="fixed inset-[-20px] pointer-events-none z-0"

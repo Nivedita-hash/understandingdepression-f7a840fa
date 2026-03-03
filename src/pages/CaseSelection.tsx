@@ -75,12 +75,7 @@ const CaseCard = ({ study, index }: { study: typeof caseStudies[0]; index: numbe
 
 const CaseSelection = () => {
   return (
-    <PageWrapper
-      backPath="/about-depression"
-      backLabel="About Depression"
-      nextPath="/case/1"
-      nextLabel="Start Exploring"
-    >
+    <PageWrapper>
       <div className="min-h-screen relative z-10 flex flex-col">
         {/* Header */}
         <motion.header

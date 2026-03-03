@@ -26,12 +26,7 @@ const Transition = () => {
   }, [mouseX, mouseY]);
 
   return (
-    <PageWrapper 
-      backPath="/case/4"
-      backLabel="Case 4"
-      nextPath="/compare"
-      nextLabel="Compare Journeys"
-    >
+    <PageWrapper>
       {/* Animated background image with parallax */}
       <motion.div 
         className="fixed inset-[-20px] pointer-events-none z-0"

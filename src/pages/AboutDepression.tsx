@@ -58,7 +58,7 @@ const AboutDepression = () => {
   const activeData = phases.find((p) => p.id === activePhase);
 
   return (
-    <PageWrapper backPath="/" backLabel="Home" nextPath="/cases" nextLabel="Case Stories">
+    <PageWrapper>
       <div className="relative z-10">
         {/* Hero Section */}
         <section className="min-h-[60vh] flex flex-col items-center justify-center px-6 text-center">

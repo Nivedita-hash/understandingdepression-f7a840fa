@@ -85,12 +85,7 @@ const ComparativeView = () => {
   };
 
   return (
-    <PageWrapper 
-      backPath="/transition"
-      backLabel="Back"
-      nextPath="/learned"
-      nextLabel="What We Learned"
-    >
+    <PageWrapper>
       {/* Animated background image with parallax */}
       <motion.div 
         className="fixed inset-[-20px] pointer-events-none z-0"
