@@ -61,20 +61,20 @@ const AboutDepression = () => {
     <PageWrapper>
       <div className="relative z-10">
         {/* Hero Section */}
-        <section className="min-h-[60vh] flex flex-col items-center justify-center px-6 text-center">
+        <section className="pt-12 md:pt-20 flex flex-col items-center px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="max-w-3xl"
           >
-            <h1 className="heading-display mb-8">Understanding Depression</h1>
+            <h1 className="heading-display mb-4">Understanding Depression</h1>
 
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-12"
+              className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-6"
             >
               Depression moves through phases - each one shaped by personal context and experience.
             </motion.p>
@@ -82,7 +82,7 @@ const AboutDepression = () => {
         </section>
 
         {/* Phase Buttons + Content */}
-        <section className="px-6 pb-16">
+        <section className="px-6 pb-8">
           <div className="max-w-3xl mx-auto">
             {/* Phase buttons */}
             <div className="flex flex-wrap justify-center gap-3 mb-8">
@@ -131,12 +131,6 @@ const AboutDepression = () => {
                       </motion.li>
                     ))}
                   </ul>
-                  <button
-                    onClick={() => setActivePhase(null)}
-                    className="mt-6 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    Hide details
-                  </button>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -144,7 +138,7 @@ const AboutDepression = () => {
         </section>
 
         {/* Reflective closing */}
-        <section className="py-16 px-6">
+        <section className="py-8 px-6">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
