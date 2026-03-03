@@ -1,13 +1,16 @@
 import { motion, AnimatePresence } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
 import { useState } from "react";
-import { CloudRain, Search, LifeBuoy, Compass } from "lucide-react";
+import phaseOnsetImg from "@/assets/phase-onset.jpg";
+import phaseRecognitionImg from "@/assets/phase-recognition.jpg";
+import phaseTreatmentImg from "@/assets/phase-treatment.jpg";
+import phaseLivingImg from "@/assets/phase-living.jpg";
 
-const phaseIcons: Record<string, { icon: typeof CloudRain; label: string }> = {
-  onset: { icon: CloudRain, label: "Gathering clouds representing onset" },
-  recognition: { icon: Search, label: "Awareness and recognition" },
-  treatment: { icon: LifeBuoy, label: "Support and treatment" },
-  living: { icon: Compass, label: "Navigation and ongoing management" },
+const phaseVisuals: Record<string, { src: string; alt: string }> = {
+  onset: { src: phaseOnsetImg, alt: "A silhouette standing in a foggy forest, representing a clouding mind and the onset of depression" },
+  recognition: { src: phaseRecognitionImg, alt: "A person gazing at a still lake reflecting their image, symbolizing self-awareness and recognition" },
+  treatment: { src: phaseTreatmentImg, alt: "Gentle hands holding a small seedling, representing nurturing mental health and gradual recovery" },
+  living: { src: phaseLivingImg, alt: "A person walking in rain with an umbrella, representing resilience and ongoing coping tools" },
 };
 
 interface PhaseData {
@@ -139,22 +142,20 @@ const AboutDepression = () => {
                         </motion.li>
                       ))}
                     </ul>
-                    {(() => {
-                      const PhaseIcon = phaseIcons[activePhase]?.icon;
-                      return PhaseIcon ? (
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ duration: 0.4, delay: 0.15 }}
-                          className="flex items-center justify-center md:flex-shrink-0"
-                          aria-label={phaseIcons[activePhase].label}
-                        >
-                          <div className="w-20 h-20 md:w-28 md:h-28 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
-                            <PhaseIcon className="w-10 h-10 md:w-14 md:h-14 text-primary/50" strokeWidth={1.2} />
-                          </div>
-                        </motion.div>
-                      ) : null;
-                    })()}
+                    {phaseVisuals[activePhase] && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.4, delay: 0.1 }}
+                        className="flex items-center justify-center md:flex-shrink-0"
+                      >
+                        <img
+                          src={phaseVisuals[activePhase].src}
+                          alt={phaseVisuals[activePhase].alt}
+                          className="w-28 h-28 md:w-36 md:h-36 rounded-xl object-cover"
+                        />
+                      </motion.div>
+                    )}
                   </div>
                 </motion.div>
               )}
