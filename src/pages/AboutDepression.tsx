@@ -7,10 +7,10 @@ import phaseTreatmentImg from "@/assets/treatment.png";
 import phaseLivingImg from "@/assets/living-with.png";
 
 const phaseVisuals: Record<string, { src: string; alt: string }> = {
-  onset: { src: phaseOnsetImg, alt: "A silhouette standing in a foggy forest, representing a clouding mind and the onset of depression" },
-  recognition: { src: phaseRecognitionImg, alt: "A person gazing at a still lake reflecting their image, symbolizing self-awareness and recognition" },
-  treatment: { src: phaseTreatmentImg, alt: "Gentle hands holding a small seedling, representing nurturing mental health and gradual recovery" },
-  living: { src: phaseLivingImg, alt: "A person walking in rain with an umbrella, representing resilience and ongoing coping tools" },
+  onset: { src: phaseOnsetImg, alt: "A frozen cracked river in cool blue tones, symbolizing emotional stuckness and lack of flow" },
+  recognition: { src: phaseRecognitionImg, alt: "A person wearing a soft therapy eye mask with warm light glowing around the edges, symbolizing the inward journey and first lift" },
+  treatment: { src: phaseTreatmentImg, alt: "A vibrant green sprout pushing through dark soil, symbolizing neural renewal and gradual recovery" },
+  living: { src: phaseLivingImg, alt: "A person standing on a ridge overlooking a wide clear landscape at dawn, symbolizing clarity and perspective" },
 };
 
 interface PhaseData {
