@@ -1,16 +1,13 @@
 import { motion, AnimatePresence } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
 import { useState } from "react";
-import phaseOnset from "@/assets/phase-onset.jpg";
-import phaseRecognition from "@/assets/phase-recognition.jpg";
-import phaseTreatment from "@/assets/phase-treatment.jpg";
-import phaseLiving from "@/assets/phase-living.jpg";
+import { CloudRain, Search, LifeBuoy, Compass } from "lucide-react";
 
-const phaseImages: Record<string, { src: string; alt: string }> = {
-  onset: { src: phaseOnset, alt: "Calm landscape with gathering clouds representing the onset of depression" },
-  recognition: { src: phaseRecognition, alt: "Misty valley representing recognizing depression" },
-  treatment: { src: phaseTreatment, alt: "Light breaking through clouds representing treatment" },
-  living: { src: phaseLiving, alt: "Peaceful sunlit meadow representing living with depression" },
+const phaseIcons: Record<string, { icon: typeof CloudRain; label: string }> = {
+  onset: { icon: CloudRain, label: "Gathering clouds representing onset" },
+  recognition: { icon: Search, label: "Awareness and recognition" },
+  treatment: { icon: LifeBuoy, label: "Support and treatment" },
+  living: { icon: Compass, label: "Navigation and ongoing management" },
 };
 
 interface PhaseData {
@@ -116,29 +113,9 @@ const AboutDepression = () => {
               ))}
             </div>
 
-            {/* Visual panel */}
+            {/* Phase content with inline icon */}
             <AnimatePresence mode="wait">
-              {activePhase && phaseImages[activePhase] && (
-                <motion.div
-                  key={`img-${activePhase}`}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.4 }}
-                  className="mb-6 overflow-hidden rounded-2xl border border-border"
-                >
-                  <img
-                    src={phaseImages[activePhase].src}
-                    alt={phaseImages[activePhase].alt}
-                    className="w-full h-[180px] md:h-[240px] object-cover"
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Phase content */}
-            <AnimatePresence mode="wait">
-              {activeData && (
+              {activeData && activePhase && (
                 <motion.div
                   key={activeData.id}
                   initial={{ opacity: 0, y: 16 }}
@@ -147,20 +124,38 @@ const AboutDepression = () => {
                   transition={{ duration: 0.35 }}
                   className="bg-card/60 backdrop-blur-sm rounded-2xl border border-border p-6 md:p-8"
                 >
-                  <ul className="space-y-4">
-                    {activeData.bullets.map((bullet, i) => (
-                      <motion.li
-                        key={i}
-                        initial={{ opacity: 0, x: -12 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.08 }}
-                        className="flex items-start gap-3 text-foreground/90 leading-relaxed"
-                      >
-                        <span className="mt-2 w-1.5 h-1.5 rounded-full bg-primary/60 flex-shrink-0" />
-                        <span>{bullet}</span>
-                      </motion.li>
-                    ))}
-                  </ul>
+                  <div className="flex flex-col md:flex-row md:items-center gap-6">
+                    <ul className="space-y-4 flex-1">
+                      {activeData.bullets.map((bullet, i) => (
+                        <motion.li
+                          key={i}
+                          initial={{ opacity: 0, x: -12 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: i * 0.08 }}
+                          className="flex items-start gap-3 text-foreground/90 leading-relaxed"
+                        >
+                          <span className="mt-2 w-1.5 h-1.5 rounded-full bg-primary/60 flex-shrink-0" />
+                          <span>{bullet}</span>
+                        </motion.li>
+                      ))}
+                    </ul>
+                    {(() => {
+                      const PhaseIcon = phaseIcons[activePhase]?.icon;
+                      return PhaseIcon ? (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.4, delay: 0.15 }}
+                          className="flex items-center justify-center md:flex-shrink-0"
+                          aria-label={phaseIcons[activePhase].label}
+                        >
+                          <div className="w-20 h-20 md:w-28 md:h-28 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
+                            <PhaseIcon className="w-10 h-10 md:w-14 md:h-14 text-primary/50" strokeWidth={1.2} />
+                          </div>
+                        </motion.div>
+                      ) : null;
+                    })()}
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
