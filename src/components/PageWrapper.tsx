@@ -5,19 +5,11 @@ import homepageBackground from '@/assets/homepage-background.jpg';
 
 interface PageWrapperProps {
   children: ReactNode;
-  backPath?: string;
-  nextPath?: string;
-  backLabel?: string;
-  nextLabel?: string;
   showNav?: boolean;
 }
 
 const PageWrapper = ({ 
   children, 
-  backPath, 
-  nextPath, 
-  backLabel, 
-  nextLabel,
   showNav = true 
 }: PageWrapperProps) => {
   const mouseX = useMotionValue(0);
@@ -61,14 +53,7 @@ const PageWrapper = ({
       />
       <div className="fixed inset-0 bg-gradient-to-t from-background via-background/70 to-background/50 pointer-events-none z-0" />
 
-      {showNav && (
-        <Navigation 
-          backPath={backPath} 
-          nextPath={nextPath} 
-          backLabel={backLabel}
-          nextLabel={nextLabel}
-        />
-      )}
+      {showNav && <Navigation />}
       <main className={`relative z-10 ${showNav ? 'pt-20' : ''}`}>
         {children}
       </main>

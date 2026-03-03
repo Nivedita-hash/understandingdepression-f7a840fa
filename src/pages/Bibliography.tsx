@@ -52,10 +52,7 @@ const Bibliography = () => {
   }, [mouseX, mouseY]);
 
   return (
-    <PageWrapper 
-      backPath="/learned"
-      backLabel="What We Learned"
-    >
+    <PageWrapper>
       {/* Animated background image with parallax */}
       <motion.div 
         className="fixed inset-[-20px] pointer-events-none z-0"

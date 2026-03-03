@@ -55,12 +55,7 @@ const WhatWeLearned = () => {
   }, [mouseX, mouseY]);
 
   return (
-    <PageWrapper 
-      backPath="/compare"
-      backLabel="Compare"
-      nextPath="/bibliography"
-      nextLabel="Sources"
-    >
+    <PageWrapper>
       {/* Animated background image with parallax */}
       <motion.div 
         className="fixed inset-[-20px] pointer-events-none z-0"
