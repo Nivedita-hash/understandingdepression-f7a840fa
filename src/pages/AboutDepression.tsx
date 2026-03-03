@@ -1,10 +1,10 @@
 import { motion, AnimatePresence } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
 import { useState } from "react";
-import phaseOnsetImg from "@/assets/phase-onset.jpg";
-import phaseRecognitionImg from "@/assets/phase-recognition.jpg";
-import phaseTreatmentImg from "@/assets/phase-treatment.jpg";
-import phaseLivingImg from "@/assets/phase-living.jpg";
+import phaseOnsetImg from "@/assets/onset.png";
+import phaseRecognitionImg from "@/assets/recognition.png";
+import phaseTreatmentImg from "@/assets/treatment.png";
+import phaseLivingImg from "@/assets/living-with.png";
 
 const phaseVisuals: Record<string, { src: string; alt: string }> = {
   onset: { src: phaseOnsetImg, alt: "A silhouette standing in a foggy forest, representing a clouding mind and the onset of depression" },
