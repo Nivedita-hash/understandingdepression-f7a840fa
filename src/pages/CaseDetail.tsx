@@ -107,18 +107,30 @@ const CaseDetail = () => {
           </div>
         </motion.header>
 
-        {/* Featured Image */}
+        {/* Featured Media */}
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mb-12 rounded-2xl overflow-hidden shadow-lg"
         >
-          <img 
-            src={caseStudy.image} 
-            alt={caseStudy.imageAlt}
-            className="w-full h-64 md:h-80 object-cover"
-          />
+          {caseId === 1 ? (
+            <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+              <iframe
+                className="absolute inset-0 w-full h-full"
+                src="https://www.youtube.com/embed/MvhCX1K5wpE?autoplay=1&mute=1&rel=0"
+                title="Sarah's Journey"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          ) : (
+            <img 
+              src={caseStudy.image} 
+              alt={caseStudy.imageAlt}
+              className="w-full h-64 md:h-80 object-cover"
+            />
+          )}
         </motion.div>
 
         {/* Story Sections */}
