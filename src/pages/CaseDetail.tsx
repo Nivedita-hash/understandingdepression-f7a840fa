@@ -133,29 +133,8 @@ const CaseDetail = () => {
           )}
         </motion.div>
 
-        {/* Story Sections */}
-        <div className="space-y-8 mb-16">
-          {sections.map((section, index) => (
-            <motion.div
-              key={section.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="section-card"
-            >
-              <div className="flex items-start gap-4">
-                <div className={`flex-shrink-0 w-10 h-10 rounded-xl ${section.color} flex items-center justify-center`}>
-                  <section.icon className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-serif text-xl font-medium mb-3">{section.title}</h3>
-                  <p className="narrative-text text-muted-foreground">{section.content}</p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+
+
 
 
         {/* Source Citation */}
