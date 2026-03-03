@@ -1,6 +1,17 @@
 import { motion, AnimatePresence } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
 import { useState } from "react";
+import phaseOnset from "@/assets/phase-onset.jpg";
+import phaseRecognition from "@/assets/phase-recognition.jpg";
+import phaseTreatment from "@/assets/phase-treatment.jpg";
+import phaseLiving from "@/assets/phase-living.jpg";
+
+const phaseImages: Record<string, { src: string; alt: string }> = {
+  onset: { src: phaseOnset, alt: "Calm landscape with gathering clouds representing the onset of depression" },
+  recognition: { src: phaseRecognition, alt: "Misty valley representing recognizing depression" },
+  treatment: { src: phaseTreatment, alt: "Light breaking through clouds representing treatment" },
+  living: { src: phaseLiving, alt: "Peaceful sunlit meadow representing living with depression" },
+};
 
 interface PhaseData {
   id: string;
@@ -104,6 +115,26 @@ const AboutDepression = () => {
                 </motion.button>
               ))}
             </div>
+
+            {/* Visual panel */}
+            <AnimatePresence mode="wait">
+              {activePhase && phaseImages[activePhase] && (
+                <motion.div
+                  key={`img-${activePhase}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="mb-6 overflow-hidden rounded-2xl border border-border"
+                >
+                  <img
+                    src={phaseImages[activePhase].src}
+                    alt={phaseImages[activePhase].alt}
+                    className="w-full h-[180px] md:h-[240px] object-cover"
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Phase content */}
             <AnimatePresence mode="wait">
