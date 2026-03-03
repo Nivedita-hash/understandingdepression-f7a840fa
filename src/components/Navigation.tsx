@@ -63,6 +63,9 @@ const Navigation = () => {
     // All other pages (transition, compare, learned, bibliography)
     left = [{ label: 'Home', path: '/', icon: <Home className="w-4 h-4" /> }];
     center = [{ label: 'Case Stories', path: '/cases', icon: <LayoutGrid className="w-4 h-4" /> }];
+    if (path === '/transition') {
+      right = [{ label: 'Dashboard', path: '/compare', primary: true, icon: <ArrowRight className="w-4 h-4" /> }];
+    }
   }
 
   const renderButton = (btn: NavButton) => (
