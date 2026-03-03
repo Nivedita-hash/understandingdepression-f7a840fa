@@ -2,7 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { useEffect } from 'react';
 import PageWrapper from '@/components/PageWrapper';
-import Timeline from '@/components/Timeline';
+
 import ScrollIndicator from '@/components/ScrollIndicator';
 import { caseStudies } from '@/data/caseStudies';
 import { User, AlertTriangle, Stethoscope, TrendingUp, CheckCircle } from 'lucide-react';
@@ -157,20 +157,6 @@ const CaseDetail = () => {
           ))}
         </div>
 
-        {/* Timeline Section */}
-        <motion.section 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="section-card"
-        >
-          <h2 className="heading-section text-center mb-8">Journey Timeline</h2>
-          <p className="text-center text-muted-foreground mb-8">
-            Drag the slider or click events to explore the journey
-          </p>
-          <Timeline events={caseStudy.timeline} />
-        </motion.section>
 
         {/* Source Citation */}
         <motion.footer 
