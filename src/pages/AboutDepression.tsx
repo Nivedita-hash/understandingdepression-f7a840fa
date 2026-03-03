@@ -1,6 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
-import ScrollIndicator from "@/components/ScrollIndicator";
 import { useState } from "react";
 
 interface PhaseData {
@@ -156,7 +155,7 @@ const AboutDepression = () => {
         </section>
       </div>
 
-      <ScrollIndicator />
+      
     </PageWrapper>
   );
 };
