@@ -65,12 +65,21 @@ const Navigation = () => {
               <span>Back</span>
             </button>
           )}
+          {path === '/transition' && (
+            <button
+              onClick={() => handleNavigate('/case/4')}
+              className="nav-button-secondary"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back</span>
+            </button>
+          )}
         </div>
 
         <div className="flex items-center gap-3">
           {isCase && (
             <button
-              onClick={() => handleNavigate(caseNum! < 4 ? `/case/${caseNum! + 1}` : '/compare')}
+              onClick={() => handleNavigate(caseNum! < 4 ? `/case/${caseNum! + 1}` : '/transition')}
               className="nav-button-primary"
             >
               <span>Next</span>
