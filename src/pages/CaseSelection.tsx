@@ -62,7 +62,7 @@ const CaseCard = ({ study, index }: { study: typeof caseStudies[0]; index: numbe
         onClick={(e) => { e.stopPropagation(); handleClick(); }}
         className="w-full py-2.5 px-4 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 mt-auto"
       >
-        Explore This Journey
+        {study.id === 1 ? 'Explore Case Story' : 'Explore This Journey'}
         <ChevronRight className="w-4 h-4" />
       </button>
     </motion.article>
