@@ -5,7 +5,7 @@ import PageWrapper from '@/components/PageWrapper';
 import { caseStudies } from '@/data/caseStudies';
 
 const caseLabels = [
-  { ageRange: '32 years old' },
+  { ageRange: 'Ketamine Treatment' },
   { ageRange: '45 years old' },
   { ageRange: '38 years old' },
   { ageRange: '24 years old' },
