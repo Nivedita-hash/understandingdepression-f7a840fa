@@ -5,7 +5,7 @@ import PageWrapper from '@/components/PageWrapper';
 import { caseStudies } from '@/data/caseStudies';
 
 const caseLabels = [
-  { ageRange: '32 years old' },
+  { ageRange: 'Ketamine Treatment' },
   { ageRange: '45 years old' },
   { ageRange: '38 years old' },
   { ageRange: '24 years old' },
@@ -39,7 +39,7 @@ const CaseCard = ({ study, index }: { study: typeof caseStudies[0]; index: numbe
         </span>
       </div>
 
-      <h3 className="font-serif text-xl font-medium mb-3">{study.title}</h3>
+      <h3 className="font-serif text-xl font-medium mb-3">{study.id === 1 ? 'Ketamine Treatment in Severe Depression' : study.title}</h3>
 
       {/* Tags */}
       <div className="flex flex-wrap gap-2 mb-4">
@@ -62,7 +62,7 @@ const CaseCard = ({ study, index }: { study: typeof caseStudies[0]; index: numbe
         onClick={(e) => { e.stopPropagation(); handleClick(); }}
         className="w-full py-2.5 px-4 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 mt-auto"
       >
-        Explore This Journey
+        {study.id === 1 ? 'Explore Case Story' : 'Explore This Journey'}
         <ChevronRight className="w-4 h-4" />
       </button>
     </motion.article>

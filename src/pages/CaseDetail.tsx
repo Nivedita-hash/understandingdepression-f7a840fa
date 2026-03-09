@@ -107,34 +107,55 @@ const CaseDetail = () => {
           </div>
         </motion.header>
 
+        {/* Introduction Text (Case 1 only) */}
+        {caseId === 1 && (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="mb-8"
+          >
+            <p className="narrative-text text-muted-foreground leading-relaxed mb-4">
+              This case story is based on a clinical study examining ketamine infusion therapy for treatment-resistant depression. The patient had a long history of severe depressive symptoms and limited response to conventional treatments. Researchers explored whether ketamine could provide rapid symptom relief and measurable neurological changes.
+            </p>
+            <p className="narrative-text text-muted-foreground leading-relaxed">
+              The case demonstrates how clinical assessments, symptom scales, and neurophysiological measurements can be combined to better understand treatment outcomes.
+            </p>
+          </motion.div>
+        )}
+
         {/* Featured Media */}
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="mb-12 rounded-2xl overflow-hidden shadow-lg"
+          className="mb-12"
         >
-          {caseId === 1 ? (
-            <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-              <iframe
-                className="absolute inset-0 w-full h-full"
-                src="https://www.youtube.com/embed/MvhCX1K5wpE?autoplay=1&mute=1&rel=0"
-                title="Sarah's Journey"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
+          <div className="rounded-2xl overflow-hidden shadow-lg">
+            {caseId === 1 ? (
+              <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                <iframe
+                  className="absolute inset-0 w-full h-full"
+                  src="https://www.youtube.com/embed/MvhCX1K5wpE?autoplay=1&mute=1&rel=0"
+                  title="Ketamine Treatment Case Story"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+            ) : (
+              <img 
+                src={caseStudy.image} 
+                alt={caseStudy.imageAlt}
+                className="w-full h-64 md:h-80 object-cover"
               />
-            </div>
-          ) : (
-            <img 
-              src={caseStudy.image} 
-              alt={caseStudy.imageAlt}
-              className="w-full h-64 md:h-80 object-cover"
-            />
+            )}
+          </div>
+          {caseId === 1 && (
+            <p className="text-sm text-muted-foreground text-center mt-3 italic">
+              Narrative visualization of a clinical case study illustrating the treatment process and outcomes of ketamine therapy in severe depression.
+            </p>
           )}
         </motion.div>
-
-
-
 
 
         {/* Source Citation */}
