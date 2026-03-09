@@ -39,7 +39,7 @@ const CaseCard = ({ study, index }: { study: typeof caseStudies[0]; index: numbe
         </span>
       </div>
 
-      <h3 className="font-serif text-xl font-medium mb-3">{study.id === 1 ? 'Ketamine Treatment in Severe Depression' : study.title}</h3>
+      <h3 className="font-serif text-xl font-medium mb-3">{study.id === 1 ? "A Student's Turning Point with Ketamine" : study.title}</h3>
 
       {/* Tags */}
       <div className="flex flex-wrap gap-2 mb-4">
