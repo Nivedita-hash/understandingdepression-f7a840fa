@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Home } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 
 // Ordered learning flow (excluding Home)
 const flowOrder = [
@@ -21,6 +22,27 @@ const Navigation = () => {
   const location = useLocation();
   const path = location.pathname;
 
+  const [aboutGateOpen, setAboutGateOpen] = useState(false);
+
+  // Listen for gate event from AboutDepression page
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.allPhasesVisited) {
+        setAboutGateOpen(true);
+      }
+    };
+    window.addEventListener('about-depression-gate', handler);
+    return () => window.removeEventListener('about-depression-gate', handler);
+  }, []);
+
+  // Reset gate when leaving about-depression
+  useEffect(() => {
+    if (path !== '/about-depression') {
+      setAboutGateOpen(false);
+    }
+  }, [path]);
+
   const handleNavigate = (to: string) => {
     navigate(to);
     window.scrollTo({ top: 0, behavior: 'auto' });
@@ -40,6 +62,10 @@ const Navigation = () => {
   const caseNum = caseMatch ? parseInt(caseMatch[1]) : null;
   const isCase = caseNum !== null && caseNum >= 1 && caseNum <= 4;
 
+  // Determine if Next should be hidden on about-depression
+  const isAboutPage = path === '/about-depression';
+  const hideNext = isAboutPage && !aboutGateOpen;
+
   return (
     <motion.nav
       initial={{ opacity: 0, y: -20 }}
@@ -49,23 +75,18 @@ const Navigation = () => {
     >
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => handleNavigate('/')}
-            className="nav-button-secondary"
-          >
-            <Home className="w-4 h-4" />
-            <span>Home</span>
-          </button>
-          {isCase && caseNum! > 1 && (
-            <button
-              onClick={() => handleNavigate(`/case/${caseNum! - 1}`)}
-              className="nav-button-secondary"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Back</span>
-            </button>
-          )}
-          {path === '/transition' && (
+          {/* Left side: Home or Back */}
+          {isCase ? (
+            caseNum! > 1 && (
+              <button
+                onClick={() => handleNavigate(`/case/${caseNum! - 1}`)}
+                className="nav-button-secondary"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Back</span>
+              </button>
+            )
+          ) : path === '/transition' ? (
             <button
               onClick={() => handleNavigate('/case/4')}
               className="nav-button-secondary"
@@ -73,27 +94,40 @@ const Navigation = () => {
               <ArrowLeft className="w-4 h-4" />
               <span>Back</span>
             </button>
+          ) : (
+            <button
+              onClick={() => handleNavigate('/')}
+              className="nav-button-secondary"
+            >
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+            </button>
           )}
         </div>
 
         <div className="flex items-center gap-3">
-          {isCase && (
-            <button
-              onClick={() => handleNavigate(caseNum! < 4 ? `/case/${caseNum! + 1}` : '/transition')}
-              className="nav-button-primary"
-            >
-              <span>Next</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          )}
-          {!isCase && nextPath && (
-            <button
-              onClick={() => handleNavigate(nextPath)}
-              className="nav-button-primary"
-            >
-              <span>Next</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+          {/* Right side: Next */}
+          {!hideNext && (
+            <>
+              {isCase && (
+                <button
+                  onClick={() => handleNavigate(caseNum! < 4 ? `/case/${caseNum! + 1}` : '/transition')}
+                  className="nav-button-primary"
+                >
+                  <span>Next</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              )}
+              {!isCase && nextPath && (
+                <button
+                  onClick={() => handleNavigate(nextPath)}
+                  className="nav-button-primary"
+                >
+                  <span>Next</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              )}
+            </>
           )}
         </div>
       </div>

@@ -1,12 +1,12 @@
-import { useNavigate } from "react-router-dom";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ArrowRight, BookOpen } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useEffect } from "react";
 import homepageBackground from "@/assets/homepage-background.jpg";
 
-const Index = () => {
-  const navigate = useNavigate();
+const PRE_ASSESSMENT_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLSf6hYHerylV3KTkSY11w4ELq30bJproMS7aFM23J0Qhqmj0CA/viewform";
 
+const Index = () => {
   // Mouse position tracking
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -32,11 +32,6 @@ const Index = () => {
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [mouseX, mouseY]);
-
-  const handleNavigate = (path: string) => {
-    navigate(path);
-    window.scrollTo({ top: 0, behavior: "instant" });
-  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12 relative overflow-hidden">
@@ -100,16 +95,17 @@ const Index = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          className="flex flex-col items-center justify-center gap-4"
         >
-          <button onClick={() => handleNavigate("/about-depression")} className="nav-button-secondary group">
-            <BookOpen className="w-4 h-4" />
-            Learn About Depression
-          </button>
-          <button onClick={() => handleNavigate("/cases")} className="nav-button-primary group">
-            Explore Case Stories
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </button>
+          <a
+            href={PRE_ASSESSMENT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="nav-button-primary group text-lg px-8 py-3"
+          >
+            Start Pre-Assessment
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          </a>
         </motion.div>
       </motion.div>
 
