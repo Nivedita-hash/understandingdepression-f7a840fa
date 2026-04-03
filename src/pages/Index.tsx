@@ -1,34 +1,43 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ArrowRight } from "lucide-react";
-import { useEffect } from "react";
+import { ArrowRight, CheckCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import homepageBackground from "@/assets/homepage-background.jpg";
 
-const PRE_ASSESSMENT_URL =
-  "https://docs.google.com/forms/d/e/1FAIpQLSf6hYHerylV3KTkSY11w4ELq30bJproMS7aFM23J0Qhqmj0CA/viewform";
+const PRE_ASSESSMENT_URL = "https://forms.gle/o8WxXdHNWC5zKx36A";
+const STORAGE_KEY = "pre-assessment-done";
 
 const Index = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const [preDone, setPreDone] = useState(() => localStorage.getItem(STORAGE_KEY) === "true");
+
+  // Detect ?pre=done and persist
+  useEffect(() => {
+    if (searchParams.get("pre") === "done") {
+      localStorage.setItem(STORAGE_KEY, "true");
+      setPreDone(true);
+      // Clean up URL
+      searchParams.delete("pre");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
+
   // Mouse position tracking
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-
-  // Smooth spring physics for natural movement
   const springConfig = { damping: 50, stiffness: 100 };
   const smoothX = useSpring(mouseX, springConfig);
   const smoothY = useSpring(mouseY, springConfig);
-
-  // Transform mouse position to subtle parallax offset
   const bgX = useTransform(smoothX, [0, 1], [-15, 15]);
   const bgY = useTransform(smoothY, [0, 1], [-10, 10]);
   const bgScale = useTransform(smoothY, [0, 1], [1.05, 1.1]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      const { clientX, clientY } = e;
-      const { innerWidth, innerHeight } = window;
-      mouseX.set(clientX / innerWidth);
-      mouseY.set(clientY / innerHeight);
+      mouseX.set(e.clientX / window.innerWidth);
+      mouseY.set(e.clientY / window.innerHeight);
     };
-
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [mouseX, mouseY]);
@@ -85,11 +94,26 @@ const Index = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="narrative-text mx-auto mb-12 text-muted-foreground"
+          className="narrative-text mx-auto mb-8 text-muted-foreground"
         >
           Depression affects millions, yet each person's experience is unique. Follow four real stories to understand
           how this condition unfolds from first symptoms through treatment and beyond.
         </motion.p>
+
+        {/* Success message after pre-assessment */}
+        {preDone && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="flex items-center justify-center gap-2 mb-6 text-primary"
+          >
+            <CheckCircle className="w-5 h-5" />
+            <span className="text-sm md:text-base font-medium">
+              Great — your pre-assessment is complete. Continue to the next step.
+            </span>
+          </motion.div>
+        )}
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -97,15 +121,25 @@ const Index = () => {
           transition={{ duration: 0.6, delay: 0.6 }}
           className="flex flex-col items-center justify-center gap-4"
         >
-          <a
-            href={PRE_ASSESSMENT_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="nav-button-primary group text-lg px-8 py-3"
-          >
-            Start Pre-Assessment
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </a>
+          {preDone ? (
+            <button
+              onClick={() => navigate("/about-depression")}
+              className="nav-button-primary group text-lg px-8 py-3"
+            >
+              Continue to Learn About Depression
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </button>
+          ) : (
+            <a
+              href={PRE_ASSESSMENT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-button-primary group text-lg px-8 py-3"
+            >
+              Start Pre-Assessment
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </a>
+          )}
         </motion.div>
       </motion.div>
 
