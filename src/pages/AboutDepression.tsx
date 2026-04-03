@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import phaseOnsetImg from "@/assets/onset.png";
 import phaseRecognitionImg from "@/assets/recognition.png";
 import phaseTreatmentImg from "@/assets/treatment.png";
@@ -64,6 +64,23 @@ const phases: PhaseData[] = [
 
 const AboutDepression = () => {
   const [activePhase, setActivePhase] = useState<string | null>(null);
+  const [visitedPhases, setVisitedPhases] = useState<Set<string>>(new Set());
+
+  const allPhasesVisited = phases.every((p) => visitedPhases.has(p.id));
+
+  // Expose gating state so Navigation can read it
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("about-depression-gate", { detail: { allPhasesVisited } }));
+  }, [allPhasesVisited]);
+
+  const handlePhaseClick = (phaseId: string) => {
+    setActivePhase(activePhase === phaseId ? null : phaseId);
+    setVisitedPhases((prev) => {
+      const next = new Set(prev);
+      next.add(phaseId);
+      return next;
+    });
+  };
 
   const activeData = phases.find((p) => p.id === activePhase);
 
@@ -94,26 +111,45 @@ const AboutDepression = () => {
         {/* Phase Buttons + Content */}
         <section className="px-6 pb-8">
           <div className="max-w-3xl mx-auto">
+            {/* Instruction hint */}
+            {!allPhasesVisited && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-sm text-muted-foreground text-center mb-4"
+              >
+                Explore all four phases to continue.
+              </motion.p>
+            )}
+
             {/* Phase buttons */}
             <div className="flex flex-wrap justify-center gap-3 mb-8">
-              {phases.map((phase, index) => (
-                <motion.button
-                  key={phase.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
-                  onClick={() => setActivePhase(activePhase === phase.id ? null : phase.id)}
-                  className={`px-6 py-3 rounded-full font-medium text-sm md:text-base backdrop-blur-sm border transition-all duration-300 ${
-                    activePhase === phase.id
-                      ? "bg-primary/20 text-primary border-primary/40 shadow-md"
-                      : "bg-card/80 text-foreground border-border hover:bg-card hover:shadow-lg"
-                  }`}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  {phase.title}
-                </motion.button>
-              ))}
+              {phases.map((phase, index) => {
+                const visited = visitedPhases.has(phase.id);
+                return (
+                  <motion.button
+                    key={phase.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+                    onClick={() => handlePhaseClick(phase.id)}
+                    className={`px-6 py-3 rounded-full font-medium text-sm md:text-base backdrop-blur-sm border transition-all duration-300 ${
+                      activePhase === phase.id
+                        ? "bg-primary/20 text-primary border-primary/40 shadow-md"
+                        : visited
+                        ? "bg-card/80 text-foreground border-primary/30 hover:bg-card hover:shadow-lg"
+                        : "bg-card/80 text-foreground border-border hover:bg-card hover:shadow-lg"
+                    }`}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {phase.title}
+                    {visited && activePhase !== phase.id && (
+                      <span className="ml-1.5 text-primary/60">✓</span>
+                    )}
+                  </motion.button>
+                );
+              })}
             </div>
 
             {/* Phase content with inline icon */}
@@ -181,8 +217,6 @@ const AboutDepression = () => {
           </motion.div>
         </section>
       </div>
-
-      
     </PageWrapper>
   );
 };
