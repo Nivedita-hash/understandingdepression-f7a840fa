@@ -13,6 +13,7 @@ const flowOrder = [
   '/case/4',
   '/transition',
   '/compare',
+  '/post-assessment',
   '/learned',
   '/bibliography',
 ];

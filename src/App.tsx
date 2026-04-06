@@ -8,6 +8,7 @@ import AboutDepression from "./pages/AboutDepression";
 import CaseSelection from "./pages/CaseSelection";
 import CaseDetail from "./pages/CaseDetail";
 import Transition from "./pages/Transition";
+import PostAssessmentTransition from "./pages/PostAssessmentTransition";
 import ComparativeView from "./pages/ComparativeView";
 import WhatWeLearned from "./pages/WhatWeLearned";
 import Bibliography from "./pages/Bibliography";
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/cases" element={<CaseSelection />} />
           <Route path="/case/:id" element={<CaseDetail />} />
           <Route path="/transition" element={<Transition />} />
+          <Route path="/post-assessment" element={<PostAssessmentTransition />} />
           <Route path="/compare" element={<ComparativeView />} />
           <Route path="/learned" element={<WhatWeLearned />} />
           <Route path="/bibliography" element={<Bibliography />} />
