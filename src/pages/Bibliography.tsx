@@ -82,7 +82,7 @@ const Bibliography = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h1 className="heading-display mb-6">Bibliography</h1>
+          <h1 className="heading-display mb-6">References</h1>
           <p className="narrative-text mx-auto text-muted-foreground">
             All case studies and information presented are based on peer-reviewed research.
           </p>
