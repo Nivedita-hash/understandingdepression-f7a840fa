@@ -63,9 +63,10 @@ const Navigation = () => {
   const caseNum = caseMatch ? parseInt(caseMatch[1]) : null;
   const isCase = caseNum !== null && caseNum >= 1 && caseNum <= 4;
 
-  // Determine if Next should be hidden on about-depression
+  // Determine if Next should be hidden on about-depression or post-assessment
   const isAboutPage = path === '/about-depression';
-  const hideNext = isAboutPage && !aboutGateOpen;
+  const isPostAssessment = path === '/post-assessment';
+  const hideNext = (isAboutPage && !aboutGateOpen) || isPostAssessment;
 
   return (
     <motion.nav
