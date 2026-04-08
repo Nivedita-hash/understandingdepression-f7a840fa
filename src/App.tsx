@@ -4,12 +4,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
-import AboutDepression from "./pages/AboutDepression";
-import CaseSelection from "./pages/CaseSelection";
+import PreAssessment from "./pages/PreAssessment";
 import CaseDetail from "./pages/CaseDetail";
-import Transition from "./pages/Transition";
-import PostAssessmentTransition from "./pages/PostAssessmentTransition";
-import ComparativeView from "./pages/ComparativeView";
+import CaseTransition from "./pages/CaseTransition";
+import PostAssessment from "./pages/PostAssessment";
 import WhatWeLearned from "./pages/WhatWeLearned";
 import Bibliography from "./pages/Bibliography";
 import NotFound from "./pages/NotFound";
@@ -24,12 +22,10 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/about-depression" element={<AboutDepression />} />
-          <Route path="/cases" element={<CaseSelection />} />
+          <Route path="/pre-assessment" element={<PreAssessment />} />
           <Route path="/case/:id" element={<CaseDetail />} />
-          <Route path="/transition" element={<Transition />} />
-          <Route path="/post-assessment" element={<PostAssessmentTransition />} />
-          <Route path="/compare" element={<ComparativeView />} />
+          <Route path="/case-transition/:fromCase" element={<CaseTransition />} />
+          <Route path="/post-assessment" element={<PostAssessment />} />
           <Route path="/learned" element={<WhatWeLearned />} />
           <Route path="/bibliography" element={<Bibliography />} />
           <Route path="*" element={<NotFound />} />
