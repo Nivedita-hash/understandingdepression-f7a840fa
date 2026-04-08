@@ -15,6 +15,9 @@ const CaseDetail = () => {
   const caseId = parseInt(id || '1');
   const caseStudy = caseStudies.find(c => c.id === caseId);
 
+  // Track time on this case page
+  usePageTimer(`case${caseId}` as 'case1' | 'case2' | 'case3' | 'case4');
+
   // Mouse position tracking for parallax
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
