@@ -52,7 +52,7 @@ const Bibliography = () => {
   }, [mouseX, mouseY]);
 
   return (
-    <PageWrapper>
+    <PageWrapper showNav={false}>
       {/* Animated background image with parallax */}
       <motion.div 
         className="fixed inset-[-20px] pointer-events-none z-0"

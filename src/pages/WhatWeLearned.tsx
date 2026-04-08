@@ -27,7 +27,7 @@ const WhatWeLearned = () => {
   }, [mouseX, mouseY]);
 
   return (
-    <PageWrapper>
+    <PageWrapper showNav={false}>
       <motion.div
         className="fixed inset-[-20px] pointer-events-none z-0"
         style={{
