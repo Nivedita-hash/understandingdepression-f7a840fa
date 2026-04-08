@@ -7,6 +7,8 @@ import Index from "./pages/Index";
 import PreAssessment from "./pages/PreAssessment";
 import CaseDetail from "./pages/CaseDetail";
 import CaseTransition from "./pages/CaseTransition";
+import ChoiceScreen from "./pages/ChoiceScreen";
+import ComparativeDashboard from "./pages/ComparativeDashboard";
 import PostAssessment from "./pages/PostAssessment";
 import WhatWeLearned from "./pages/WhatWeLearned";
 import Bibliography from "./pages/Bibliography";
@@ -25,6 +27,8 @@ const App = () => (
           <Route path="/pre-assessment" element={<PreAssessment />} />
           <Route path="/case/:id" element={<CaseDetail />} />
           <Route path="/case-transition/:fromCase" element={<CaseTransition />} />
+          <Route path="/choice" element={<ChoiceScreen />} />
+          <Route path="/compare" element={<ComparativeDashboard />} />
           <Route path="/post-assessment" element={<PostAssessment />} />
           <Route path="/learned" element={<WhatWeLearned />} />
           <Route path="/bibliography" element={<Bibliography />} />
