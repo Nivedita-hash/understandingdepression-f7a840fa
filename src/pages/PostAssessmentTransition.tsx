@@ -1,10 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import PageWrapper from '@/components/PageWrapper';
 import { ArrowRight } from 'lucide-react';
 import homepageBackground from '@/assets/homepage-background.jpg';
+import { finalizeEvaluationData, getSessionId } from '@/lib/timeTracking';
 
-const POST_ASSESSMENT_URL =
+const POST_ASSESSMENT_BASE =
   'https://docs.google.com/forms/d/e/1FAIpQLSdqHfxqKc8_5eXh6LHc_a2SVD5Wo833ckp1NXsZvm-VdRi0Yw/viewform?usp=header';
 
 const PostAssessmentTransition = () => {
