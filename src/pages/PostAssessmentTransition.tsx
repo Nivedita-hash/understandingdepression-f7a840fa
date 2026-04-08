@@ -97,7 +97,7 @@ const PostAssessmentTransition = () => {
             className="mt-10"
           >
             <a
-              href={POST_ASSESSMENT_URL}
+              href={surveyUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="nav-button-primary group text-lg px-8 py-3 inline-flex items-center gap-2"
