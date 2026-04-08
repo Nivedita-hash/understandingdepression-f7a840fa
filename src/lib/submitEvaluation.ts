@@ -1,5 +1,5 @@
 // Submit all evaluation data to Google Sheets via Apps Script
-const GOOGLE_SCRIPT_URL = 'REPLACE_WITH_YOUR_APPS_SCRIPT_URL';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNPf0-nZIZ6sqMfWU8frBDIXutvROui08Ycw7Fo0DPK2Wc4c8L2caQFjKxq6JFGEzsQA/exec';
 
 export interface EvaluationPayload {
   session_id: string;
@@ -35,11 +35,6 @@ export function buildEvaluationPayload(): EvaluationPayload {
 }
 
 export async function submitToGoogleSheet(data: EvaluationPayload): Promise<boolean> {
-  if (GOOGLE_SCRIPT_URL === 'REPLACE_WITH_YOUR_APPS_SCRIPT_URL') {
-    console.warn('[Evaluation] Google Apps Script URL not configured. Data logged to console:', data);
-    return false;
-  }
-
   try {
     await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
