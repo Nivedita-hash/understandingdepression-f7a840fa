@@ -13,6 +13,11 @@ const Index = () => {
   const navigate = useNavigate();
   const [preDone, setPreDone] = useState(() => localStorage.getItem(STORAGE_KEY) === "true");
 
+  // Initialize session tracking
+  useEffect(() => {
+    initSession();
+  }, []);
+
   // Detect ?pre=done and persist
   useEffect(() => {
     if (searchParams.get("pre") === "done") {

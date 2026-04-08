@@ -7,6 +7,7 @@ import ScrollIndicator from '@/components/ScrollIndicator';
 import { caseStudies } from '@/data/caseStudies';
 import { User, AlertTriangle, Stethoscope, TrendingUp, CheckCircle } from 'lucide-react';
 import homepageBackground from '@/assets/homepage-background.jpg';
+import { usePageTimer } from '@/hooks/usePageTimer';
 
 const CaseDetail = () => {
   const { id } = useParams();
