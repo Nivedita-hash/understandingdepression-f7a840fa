@@ -20,11 +20,11 @@ const CaseTransition = () => {
   }, []);
 
   const handleContinue = () => {
-    const nextCase = caseIndex + 2; // fromCase is 1-indexed, next is +1
+    const nextCase = caseIndex + 2;
     if (nextCase <= 4) {
       navigate(`/case/${nextCase}`);
     } else {
-      navigate('/post-assessment');
+      navigate('/choice');
     }
   };
 

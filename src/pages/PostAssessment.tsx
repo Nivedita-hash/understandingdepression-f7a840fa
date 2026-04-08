@@ -9,6 +9,7 @@ import {
 } from '@/data/assessmentQuestions';
 import { ArrowRight } from 'lucide-react';
 import { getSessionId, finalizeEvaluationData } from '@/lib/timeTracking';
+import { buildEvaluationPayload, submitToGoogleSheet } from '@/lib/submitEvaluation';
 
 const PostAssessment = () => {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ const PostAssessment = () => {
     setResponses((prev) => ({ ...prev, [questionId]: value }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!allAnswered) return;
     finalizeEvaluationData();
     const data = {
@@ -33,6 +34,11 @@ const PostAssessment = () => {
       responses,
     };
     localStorage.setItem('post_assessment_responses', JSON.stringify(data));
+
+    // Submit all evaluation data to Google Sheet
+    const payload = buildEvaluationPayload();
+    await submitToGoogleSheet(payload);
+
     navigate('/learned');
   };
 
