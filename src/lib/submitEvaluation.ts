@@ -35,13 +35,24 @@ export function buildEvaluationPayload(): EvaluationPayload {
 }
 
 export async function submitToGoogleSheet(data: EvaluationPayload): Promise<boolean> {
+  const body = JSON.stringify(data);
+
   try {
+    if (typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function') {
+      const payload = new Blob([body], { type: 'text/plain;charset=utf-8' });
+      if (navigator.sendBeacon(GOOGLE_SCRIPT_URL, payload)) {
+        return true;
+      }
+    }
+
     await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
+      keepalive: true,
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(data),
+      body,
     });
+
     return true;
   } catch (err) {
     console.error('[Evaluation] Failed to submit:', err);
