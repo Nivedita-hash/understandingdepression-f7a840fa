@@ -6,7 +6,7 @@ const PAGE_TIMES_KEY = 'page_times';
 const EVALUATION_KEY = 'evaluation_data';
 
 // Tracked page keys
-type TrackedPage = 'case1' | 'case2' | 'case3' | 'case4' | 'dashboard';
+type TrackedPage = 'case1' | 'case2' | 'case3' | 'case4' | 'video' | 'dashboard';
 
 function generateSessionId(): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -28,7 +28,7 @@ export function initSession(): void {
   // Initialize page times if not present
   if (!localStorage.getItem(PAGE_TIMES_KEY)) {
     localStorage.setItem(PAGE_TIMES_KEY, JSON.stringify({
-      case1: 0, case2: 0, case3: 0, case4: 0, dashboard: 0,
+      case1: 0, case2: 0, case3: 0, case4: 0, video: 0, dashboard: 0,
     }));
   }
 }
@@ -42,7 +42,7 @@ function getPageTimes(): Record<TrackedPage, number> {
   try {
     return JSON.parse(localStorage.getItem(PAGE_TIMES_KEY) || '{}');
   } catch {
-    return { case1: 0, case2: 0, case3: 0, case4: 0, dashboard: 0 };
+    return { case1: 0, case2: 0, case3: 0, case4: 0, video: 0, dashboard: 0 };
   }
 }
 

@@ -25,10 +25,7 @@ export function buildEvaluationPayload(): EvaluationPayload {
     pre_answers: preRaw ? JSON.parse(preRaw).responses || {} : {},
     post_answers: postRaw ? JSON.parse(postRaw).responses || {} : {},
     case_times: {
-      case1: pageTimes.case1 || 0,
-      case2: pageTimes.case2 || 0,
-      case3: pageTimes.case3 || 0,
-      case4: pageTimes.case4 || 0,
+      video: pageTimes.video || pageTimes.case1 || 0,
     },
     total_time_ms: Date.now() - sessionStart,
     visited_dashboard: localStorage.getItem('visited_dashboard') === 'true',
