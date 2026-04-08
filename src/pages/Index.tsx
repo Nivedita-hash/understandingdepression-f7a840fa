@@ -3,6 +3,7 @@ import { ArrowRight, CheckCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import homepageBackground from "@/assets/homepage-background.jpg";
+import { initSession } from "@/lib/timeTracking";
 
 const PRE_ASSESSMENT_URL = "https://forms.gle/o8WxXdHNWC5zKx36A";
 const STORAGE_KEY = "pre-assessment-done";
