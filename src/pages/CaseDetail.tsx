@@ -7,12 +7,16 @@ import ScrollIndicator from '@/components/ScrollIndicator';
 import { caseStudies } from '@/data/caseStudies';
 import { User, AlertTriangle, Stethoscope, TrendingUp, CheckCircle } from 'lucide-react';
 import homepageBackground from '@/assets/homepage-background.jpg';
+import { usePageTimer } from '@/hooks/usePageTimer';
 
 const CaseDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const caseId = parseInt(id || '1');
   const caseStudy = caseStudies.find(c => c.id === caseId);
+
+  // Track time on this case page
+  usePageTimer(`case${caseId}` as 'case1' | 'case2' | 'case3' | 'case4');
 
   // Mouse position tracking for parallax
   const mouseX = useMotionValue(0);

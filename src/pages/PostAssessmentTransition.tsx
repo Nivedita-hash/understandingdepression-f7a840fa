@@ -1,13 +1,21 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import PageWrapper from '@/components/PageWrapper';
 import { ArrowRight } from 'lucide-react';
 import homepageBackground from '@/assets/homepage-background.jpg';
+import { finalizeEvaluationData, getSessionId } from '@/lib/timeTracking';
 
-const POST_ASSESSMENT_URL =
+const POST_ASSESSMENT_BASE =
   'https://docs.google.com/forms/d/e/1FAIpQLSdqHfxqKc8_5eXh6LHc_a2SVD5Wo833ckp1NXsZvm-VdRi0Yw/viewform?usp=header';
 
 const PostAssessmentTransition = () => {
+  // Finalize evaluation data and build survey URL with session_id
+  const surveyUrl = useMemo(() => {
+    finalizeEvaluationData();
+    const sessionId = getSessionId();
+    return `${POST_ASSESSMENT_BASE}&entry.1234567890=${encodeURIComponent(sessionId)}`;
+  }, []);
+
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const springConfig = { damping: 50, stiffness: 100 };
@@ -89,7 +97,7 @@ const PostAssessmentTransition = () => {
             className="mt-10"
           >
             <a
-              href={POST_ASSESSMENT_URL}
+              href={surveyUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="nav-button-primary group text-lg px-8 py-3 inline-flex items-center gap-2"
