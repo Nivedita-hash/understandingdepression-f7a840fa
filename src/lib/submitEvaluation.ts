@@ -39,7 +39,7 @@ export async function submitToGoogleSheet(data: EvaluationPayload): Promise<bool
     await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(data),
     });
     return true;
