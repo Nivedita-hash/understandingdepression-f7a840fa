@@ -2,10 +2,12 @@ import { useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import PageWrapper from '@/components/PageWrapper';
 import { caseStudies } from '@/data/caseStudies';
-import { ExternalLink, BookOpen, FileText } from 'lucide-react';
+import { ExternalLink, BookOpen, FileText, Home } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import homepageBackground from '@/assets/homepage-background.jpg';
 
 const Bibliography = () => {
+  const navigate = useNavigate();
   const additionalSources = [
     {
       title: "Diagnostic and Statistical Manual of Mental Disorders (DSM-5)",
@@ -189,6 +191,22 @@ const Bibliography = () => {
             are intended to foster understanding of the diverse ways depression manifests and 
             resolves over time.
           </p>
+        </motion.div>
+
+        {/* Back to Home */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.9 }}
+          className="mt-10 text-center"
+        >
+          <button
+            onClick={() => navigate('/')}
+            className="nav-button-primary group text-lg px-8 py-3 inline-flex items-center gap-2"
+          >
+            <Home className="w-5 h-5" />
+            Back to Home
+          </button>
         </motion.div>
 
         {/* Footer */}
