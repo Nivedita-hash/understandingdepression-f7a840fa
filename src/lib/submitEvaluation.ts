@@ -1,5 +1,7 @@
 // Submit all evaluation data to Google Sheets via Apps Script
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwD7HsNdJiqi-09XvKh9zxl1oRkfK3ho68XonDVGv89noE2KLG1pP706ATiOc2G2YlkOQ/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyO1nDbPFpT0z_2U7ULtpohzAQp_tvaIeI5r3znrSalHlcw-teNWNEfuxMLlebWmgcF/exec';
+
+const SUBMITTED_KEY = 'evaluation_submitted';
 
 export interface EvaluationPayload {
   session_id: string;
@@ -35,12 +37,21 @@ export function buildEvaluationPayload(): EvaluationPayload {
 }
 
 export async function submitToGoogleSheet(data: EvaluationPayload): Promise<boolean> {
+  // Prevent duplicate submissions per session
+  const submittedSession = localStorage.getItem(SUBMITTED_KEY);
+  if (submittedSession === data.session_id) {
+    console.log('[Evaluation] Already submitted for session', data.session_id);
+    return true;
+  }
+
   const body = JSON.stringify(data);
+  console.log('[Evaluation] Submitting:', data);
 
   try {
     if (typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function') {
       const payload = new Blob([body], { type: 'text/plain;charset=utf-8' });
       if (navigator.sendBeacon(GOOGLE_SCRIPT_URL, payload)) {
+        localStorage.setItem(SUBMITTED_KEY, data.session_id);
         return true;
       }
     }
@@ -53,6 +64,7 @@ export async function submitToGoogleSheet(data: EvaluationPayload): Promise<bool
       body,
     });
 
+    localStorage.setItem(SUBMITTED_KEY, data.session_id);
     return true;
   } catch (err) {
     console.error('[Evaluation] Failed to submit:', err);
