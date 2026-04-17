@@ -209,6 +209,12 @@ export const dashboardCases: DashboardCase[] = [
         },
       },
     },
+    metrics: {
+      before: { mood: 0, sleep: 1, motivation: 0, depressiveSymptoms: 3, functionalImpairment: 3, treatmentResponse: 0, eegMarker: 1 },
+      early:  { mood: 1, sleep: 1, motivation: 1, depressiveSymptoms: 3, functionalImpairment: 2, treatmentResponse: 1, eegMarker: 1 },
+      mid:    { mood: 2, sleep: 2, motivation: 2, depressiveSymptoms: 2, functionalImpairment: 2, treatmentResponse: 2, eegMarker: 2 },
+      after:  { mood: 2, sleep: 3, motivation: 2, depressiveSymptoms: 1, functionalImpairment: 1, treatmentResponse: 3, eegMarker: 3 },
+    },
     keyDifferences: {
       symptoms:
         'Symptoms shift from severe and persistent to reduced but still present — a meaningful improvement, not a full remission.',
