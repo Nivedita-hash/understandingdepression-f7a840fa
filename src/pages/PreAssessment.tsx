@@ -2,18 +2,31 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageWrapper from '@/components/PageWrapper';
-import { preAssessmentQuestions, LIKERT_LABELS } from '@/data/assessmentQuestions';
+import {
+  preAssessmentQuestions,
+  LIKERT_LABELS,
+  type AssessmentQuestion,
+} from '@/data/assessmentQuestions';
 import { ArrowRight } from 'lucide-react';
 import { getSessionId } from '@/lib/timeTracking';
 
+const isAnswered = (q: AssessmentQuestion, value: string | number | undefined) => {
+  if (value === undefined || value === null) return false;
+  if (q.type === 'short-answer') {
+    const min = q.minLength ?? 1;
+    return typeof value === 'string' && value.trim().length >= min;
+  }
+  return true;
+};
+
 const PreAssessment = () => {
   const navigate = useNavigate();
-  const [responses, setResponses] = useState<Record<string, number>>({});
+  const [responses, setResponses] = useState<Record<string, string | number>>({});
 
-  const allAnswered = preAssessmentQuestions.every((q) => responses[q.id] !== undefined);
+  const allAnswered = preAssessmentQuestions.every((q) => isAnswered(q, responses[q.id]));
 
-  const handleSelect = (questionId: string, value: number) => {
-    setResponses((prev) => ({ ...prev, [questionId]: value }));
+  const setAnswer = (id: string, value: string | number) => {
+    setResponses((prev) => ({ ...prev, [id]: value }));
   };
 
   const handleSubmit = () => {
@@ -25,6 +38,77 @@ const PreAssessment = () => {
     };
     localStorage.setItem('pre_assessment_responses', JSON.stringify(data));
     navigate('/about-depression');
+  };
+
+  const renderQuestion = (question: AssessmentQuestion, index: number) => {
+    const baseHeader = (
+      <p className="font-medium text-foreground mb-4 text-sm md:text-base">
+        {index + 1}. {question.text}
+      </p>
+    );
+
+    if (question.type === 'likert') {
+      return (
+        <>
+          {baseHeader}
+          <div className="flex flex-wrap gap-2">
+            {LIKERT_LABELS.map((label, value) => (
+              <button
+                key={value}
+                onClick={() => setAnswer(question.id, value + 1)}
+                className={`px-3 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 border ${
+                  responses[question.id] === value + 1
+                    ? 'bg-primary text-primary-foreground border-primary shadow-md'
+                    : 'bg-card text-muted-foreground border-border hover:border-primary/40 hover:text-foreground'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </>
+      );
+    }
+
+    if (question.type === 'multiple-choice') {
+      return (
+        <>
+          {baseHeader}
+          <div className="grid gap-2">
+            {question.options.map((option) => (
+              <button
+                key={option}
+                onClick={() => setAnswer(question.id, option)}
+                className={`text-left px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 border ${
+                  responses[question.id] === option
+                    ? 'bg-primary text-primary-foreground border-primary shadow-md'
+                    : 'bg-card text-muted-foreground border-border hover:border-primary/40 hover:text-foreground'
+                }`}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+        </>
+      );
+    }
+
+    // short-answer
+    return (
+      <>
+        {baseHeader}
+        {question.helpText && (
+          <p className="text-xs text-muted-foreground mb-2">{question.helpText}</p>
+        )}
+        <textarea
+          value={(responses[question.id] as string) || ''}
+          onChange={(e) => setAnswer(question.id, e.target.value)}
+          rows={3}
+          className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition"
+          placeholder="Share your thoughts..."
+        />
+      </>
+    );
   };
 
   return (
@@ -52,29 +136,11 @@ const PreAssessment = () => {
                 transition={{ duration: 0.4, delay: index * 0.05 }}
                 className="section-card"
               >
-                <p className="font-medium text-foreground mb-4 text-sm md:text-base">
-                  {index + 1}. {question.text}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {LIKERT_LABELS.map((label, value) => (
-                    <button
-                      key={value}
-                      onClick={() => handleSelect(question.id, value + 1)}
-                      className={`px-3 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 border ${
-                        responses[question.id] === value + 1
-                          ? 'bg-primary text-primary-foreground border-primary shadow-md'
-                          : 'bg-card text-muted-foreground border-border hover:border-primary/40 hover:text-foreground'
-                      }`}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
+                {renderQuestion(question, index)}
               </motion.div>
             ))}
           </div>
 
-          {/* Submit button */}
           <AnimatePresence>
             {allAnswered && (
               <motion.div

@@ -2,6 +2,7 @@ export interface LikertQuestion {
   id: string;
   text: string;
   type: 'likert';
+  reverseCoded?: boolean;
 }
 
 export interface MultipleChoiceQuestion {
@@ -11,7 +12,15 @@ export interface MultipleChoiceQuestion {
   options: string[];
 }
 
-export type AssessmentQuestion = LikertQuestion | MultipleChoiceQuestion;
+export interface ShortAnswerQuestion {
+  id: string;
+  text: string;
+  type: 'short-answer';
+  helpText?: string;
+  minLength?: number;
+}
+
+export type AssessmentQuestion = LikertQuestion | MultipleChoiceQuestion | ShortAnswerQuestion;
 
 export const LIKERT_LABELS = [
   'Strongly Disagree',
@@ -21,45 +30,62 @@ export const LIKERT_LABELS = [
   'Strongly Agree',
 ] as const;
 
-export const preAssessmentQuestions: LikertQuestion[] = [
-  { id: 'pre-1', type: 'likert', text: 'I have a good understanding of what depression is.' },
-  { id: 'pre-2', type: 'likert', text: 'Depression is a sign of personal weakness.' },
-  { id: 'pre-3', type: 'likert', text: 'People with depression can simply "snap out of it" if they try hard enough.' },
-  { id: 'pre-4', type: 'likert', text: 'Depression affects people from all walks of life.' },
-  { id: 'pre-5', type: 'likert', text: 'I would feel comfortable talking to someone who has depression.' },
-  { id: 'pre-6', type: 'likert', text: 'Treatment for depression is usually effective.' },
-  { id: 'pre-7', type: 'likert', text: 'I can recognize common symptoms of depression.' },
-  { id: 'pre-8', type: 'likert', text: 'Depression is a medical condition, not a choice.' },
+export const preAssessmentQuestions: AssessmentQuestion[] = [
+  {
+    id: 'pre_learned_before',
+    type: 'multiple-choice',
+    text: 'Have you learned about depression before?',
+    options: [
+      'Yes, in a class',
+      'Yes, from reading online/books',
+      'Yes, from someone I know',
+      'No / not much',
+    ],
+  },
+  {
+    id: 'pre_supported_someone',
+    type: 'multiple-choice',
+    text: 'Have you supported someone with depression (or someone who might have had it)?',
+    options: ['Yes', 'No', 'Prefer not to say'],
+  },
+  { id: 'pre_change_over_time', type: 'likert', text: 'Depression can change over time.' },
+  { id: 'pre_differs_between_people', type: 'likert', text: 'Two people can experience depression in very different ways.' },
+  { id: 'pre_same_for_everyone', type: 'likert', text: 'Depression is mostly the same for everyone.', reverseCoded: true },
+  { id: 'pre_only_sadness', type: 'likert', text: 'Depression is only about feeling sad.', reverseCoded: true },
+  { id: 'pre_life_context_shapes_depression', type: 'likert', text: 'A person\'s life situation (stress, family, work, health) can affect how depression looks.' },
+  { id: 'pre_imagine_living_with_depression', type: 'likert', text: 'I can imagine what it might feel like to live with depression.' },
+  { id: 'pre_snap_out_if_tried_harder', type: 'likert', text: 'People with depression could "snap out of it" if they tried harder.', reverseCoded: true },
+  {
+    id: 'pre_journey_differences',
+    type: 'short-answer',
+    text: 'What differences do you think might exist between two people\'s depression journeys?',
+    helpText: 'Examples: triggers, how it changes over time, what support helps, how long it lasts.',
+    minLength: 3,
+  },
 ];
 
 export const postAssessmentQuestions: AssessmentQuestion[] = [
-  { id: 'post-1', type: 'likert', text: 'I now have a better understanding of what depression is.' },
-  { id: 'post-2', type: 'likert', text: 'Depression is a sign of personal weakness.' },
-  { id: 'post-3', type: 'likert', text: 'People with depression can simply "snap out of it" if they try hard enough.' },
-  { id: 'post-4', type: 'likert', text: 'Depression affects people from all walks of life.' },
-  { id: 'post-5', type: 'likert', text: 'I would feel comfortable talking to someone who has depression.' },
-  { id: 'post-6', type: 'likert', text: 'Treatment for depression is usually effective.' },
-  { id: 'post-7', type: 'likert', text: 'I can recognize common symptoms of depression.' },
-  { id: 'post-8', type: 'likert', text: 'Depression is a medical condition, not a choice.' },
-  { id: 'post-9', type: 'likert', text: 'The case stories helped me understand depression better.' },
-  { id: 'post-10', type: 'likert', text: 'I feel more empathy toward people experiencing depression.' },
   {
-    id: 'post-mc-1',
+    id: 'post_used_comparative_dashboard',
     type: 'multiple-choice',
-    text: 'Which case story resonated with you the most?',
-    options: ['Case 1 – Ketamine Treatment', 'Case 2 – Marcus and Grief', 'Case 3 – Elena\'s Battle', 'Case 4 – James\'s Path'],
+    text: 'Did you use the Comparative Dashboard?',
+    options: ['Yes', 'No'],
   },
+  { id: 'post_understand_shift_over_time', type: 'likert', text: 'Now I understand that depression can shift over time (it can move through phases).' },
+  { id: 'post_understand_differs_between_people', type: 'likert', text: 'Now I understand that depression can look different from person to person.' },
+  { id: 'post_still_same_for_everyone', type: 'likert', text: 'I still think depression is mostly the same for everyone.', reverseCoded: true },
+  { id: 'post_still_only_sadness', type: 'likert', text: 'I still think depression is only about feeling sad.', reverseCoded: true },
+  { id: 'post_understand_life_context', type: 'likert', text: 'I understand better how life situations (stress, family, work, health) can shape depression.' },
+  { id: 'post_more_able_to_imagine', type: 'likert', text: 'I feel more able to imagine what it\'s like to live with depression.' },
+  { id: 'post_still_snap_out', type: 'likert', text: 'I still feel people could "snap out of depression" if they tried harder.', reverseCoded: true },
   {
-    id: 'post-mc-2',
-    type: 'multiple-choice',
-    text: 'What is the most important thing you learned?',
-    options: [
-      'Depression manifests differently for everyone',
-      'Treatment can take many forms',
-      'Recovery is not always linear',
-      'Support systems matter greatly',
-    ],
+    id: 'post_two_differences_noticed',
+    type: 'short-answer',
+    text: 'Name two differences you noticed between the case journeys.',
+    helpText: 'Examples: triggers, phase changes, supports, treatment paths, duration.',
+    minLength: 3,
   },
+  { id: 'post_website_helped_notice_differences', type: 'likert', text: 'This website helped me notice differences across depression journeys.' },
 ];
 
 export const transitionMessages = [
