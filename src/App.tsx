@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import PreAssessment from "./pages/PreAssessment";
 import PreVideoTransition from "./pages/PreVideoTransition";
+import AboutDepression from "./pages/AboutDepression";
 import VideoPage from "./pages/VideoPage";
 import PostVideoTransition from "./pages/PostVideoTransition";
 import ChoiceScreen from "./pages/ChoiceScreen";
@@ -26,6 +27,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/pre-assessment" element={<PreAssessment />} />
+          <Route path="/about-depression" element={<AboutDepression />} />
           <Route path="/pre-video" element={<PreVideoTransition />} />
           <Route path="/video" element={<VideoPage />} />
           <Route path="/video-transition" element={<PostVideoTransition />} />

@@ -24,7 +24,7 @@ const PreAssessment = () => {
       responses,
     };
     localStorage.setItem('pre_assessment_responses', JSON.stringify(data));
-    navigate('/pre-video');
+    navigate('/about-depression');
   };
 
   return (
