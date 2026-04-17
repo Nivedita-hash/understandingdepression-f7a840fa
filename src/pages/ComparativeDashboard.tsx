@@ -231,6 +231,9 @@ const ComparativeDashboard = () => {
             </ol>
           </section>
 
+          {/* Visual charts */}
+          <DashboardCharts activeCase={activeCase} view={view} />
+
           {/* Main content card */}
           <AnimatePresence mode="wait">
             <motion.section
