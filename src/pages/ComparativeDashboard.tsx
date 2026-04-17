@@ -12,6 +12,7 @@ import {
   type PhaseKey,
   type ViewKey,
 } from '@/data/dashboardData';
+import DashboardCharts from '@/components/DashboardCharts';
 import {
   Tooltip,
   TooltipContent,
@@ -229,6 +230,9 @@ const ComparativeDashboard = () => {
               })}
             </ol>
           </section>
+
+          {/* Visual charts */}
+          <DashboardCharts activeCase={activeCase} view={view} />
 
           {/* Main content card */}
           <AnimatePresence mode="wait">

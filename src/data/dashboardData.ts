@@ -28,18 +28,42 @@ export interface PhaseContent {
   eeg: EEGContent;
 }
 
+/**
+ * Simple 0–3 ordinal scale derived from the narrative summary.
+ * 0 = none/very low, 1 = low, 2 = medium, 3 = high.
+ * NOT a clinical measurement.
+ */
+export type NarrativeScore = 0 | 1 | 2 | 3;
+
+export interface PhaseMetrics {
+  // Experience view (patient-reported)
+  mood: NarrativeScore;        // mood quality (higher = better mood)
+  sleep: NarrativeScore;       // sleep quality (higher = better)
+  motivation: NarrativeScore;  // motivation/energy (higher = better)
+  // Clinical view (symptom clusters; higher = MORE symptoms)
+  depressiveSymptoms: NarrativeScore;
+  functionalImpairment: NarrativeScore;
+  treatmentResponse: NarrativeScore; // higher = better response
+  // Brain / EEG view (single neural marker, abstract index 0–3)
+  eegMarker: NarrativeScore;   // higher = pattern more associated w/ improved regulation
+}
+
 export interface DashboardCase {
   id: number;
   title: string;
   shortLabel: string;
   whatThisCaseShows: string[];
   phases: Record<PhaseKey, PhaseContent>;
+  metrics: Record<PhaseKey, PhaseMetrics>;
   keyDifferences: {
     symptoms: string;
     dailyLife: string;
     treatmentEeg: string;
   };
 }
+
+export const scoreLabel = (s: NarrativeScore): string =>
+  ['None', 'Low', 'Medium', 'High'][s];
 
 export const phaseOrder: { key: PhaseKey; label: string; short: string }[] = [
   { key: 'before', label: 'Before treatment', short: 'Before' },
@@ -184,6 +208,12 @@ export const dashboardCases: DashboardCase[] = [
             'It does not mean the brain is "back to normal" or that relapse is impossible.',
         },
       },
+    },
+    metrics: {
+      before: { mood: 0, sleep: 1, motivation: 0, depressiveSymptoms: 3, functionalImpairment: 3, treatmentResponse: 0, eegMarker: 1 },
+      early:  { mood: 1, sleep: 1, motivation: 1, depressiveSymptoms: 3, functionalImpairment: 2, treatmentResponse: 1, eegMarker: 1 },
+      mid:    { mood: 2, sleep: 2, motivation: 2, depressiveSymptoms: 2, functionalImpairment: 2, treatmentResponse: 2, eegMarker: 2 },
+      after:  { mood: 2, sleep: 3, motivation: 2, depressiveSymptoms: 1, functionalImpairment: 1, treatmentResponse: 3, eegMarker: 3 },
     },
     keyDifferences: {
       symptoms:
