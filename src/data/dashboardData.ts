@@ -28,18 +28,42 @@ export interface PhaseContent {
   eeg: EEGContent;
 }
 
+/**
+ * Simple 0–3 ordinal scale derived from the narrative summary.
+ * 0 = none/very low, 1 = low, 2 = medium, 3 = high.
+ * NOT a clinical measurement.
+ */
+export type NarrativeScore = 0 | 1 | 2 | 3;
+
+export interface PhaseMetrics {
+  // Experience view (patient-reported)
+  mood: NarrativeScore;        // mood quality (higher = better mood)
+  sleep: NarrativeScore;       // sleep quality (higher = better)
+  motivation: NarrativeScore;  // motivation/energy (higher = better)
+  // Clinical view (symptom clusters; higher = MORE symptoms)
+  depressiveSymptoms: NarrativeScore;
+  functionalImpairment: NarrativeScore;
+  treatmentResponse: NarrativeScore; // higher = better response
+  // Brain / EEG view (single neural marker, abstract index 0–3)
+  eegMarker: NarrativeScore;   // higher = pattern more associated w/ improved regulation
+}
+
 export interface DashboardCase {
   id: number;
   title: string;
   shortLabel: string;
   whatThisCaseShows: string[];
   phases: Record<PhaseKey, PhaseContent>;
+  metrics: Record<PhaseKey, PhaseMetrics>;
   keyDifferences: {
     symptoms: string;
     dailyLife: string;
     treatmentEeg: string;
   };
 }
+
+export const scoreLabel = (s: NarrativeScore): string =>
+  ['None', 'Low', 'Medium', 'High'][s];
 
 export const phaseOrder: { key: PhaseKey; label: string; short: string }[] = [
   { key: 'before', label: 'Before treatment', short: 'Before' },
