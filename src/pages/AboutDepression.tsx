@@ -1,6 +1,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import phaseOnsetImg from "@/assets/onset.png";
 import phaseRecognitionImg from "@/assets/recognition.png";
 import phaseTreatmentImg from "@/assets/treatment.png";
@@ -63,6 +65,7 @@ const phases: PhaseData[] = [
 ];
 
 const AboutDepression = () => {
+  const navigate = useNavigate();
   const [activePhase, setActivePhase] = useState<string | null>(null);
   const [visitedPhases, setVisitedPhases] = useState<Set<string>>(new Set());
 
@@ -215,6 +218,28 @@ const AboutDepression = () => {
             </p>
             <div className="w-16 h-px bg-border mx-auto mt-8" />
           </motion.div>
+
+          <AnimatePresence>
+            {allPhasesVisited && (
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="mt-10 flex justify-center"
+              >
+                <button
+                  onClick={() => {
+                    navigate('/pre-video');
+                    window.scrollTo({ top: 0, behavior: 'auto' });
+                  }}
+                  className="nav-button-primary group text-base px-8 py-3 inline-flex items-center gap-2"
+                >
+                  Continue
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </section>
       </div>
     </PageWrapper>
