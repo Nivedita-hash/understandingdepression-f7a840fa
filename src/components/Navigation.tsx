@@ -5,13 +5,12 @@ import { useState, useEffect } from 'react';
 
 // Ordered learning flow (excluding Home)
 const flowOrder = [
+  '/pre-assessment',
   '/about-depression',
-  '/cases',
-  '/case/1',
-  '/case/2',
-  '/case/3',
-  '/case/4',
-  '/transition',
+  '/pre-video',
+  '/video',
+  '/video-transition',
+  '/choice',
   '/compare',
   '/post-assessment',
   '/learned',
