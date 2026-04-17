@@ -12,6 +12,7 @@ import {
   type PhaseKey,
   type ViewKey,
 } from '@/data/dashboardData';
+import DashboardCharts from '@/components/DashboardCharts';
 import {
   Tooltip,
   TooltipContent,
