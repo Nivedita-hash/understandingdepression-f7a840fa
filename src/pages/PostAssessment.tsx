@@ -27,6 +27,10 @@ const PostAssessment = () => {
 
   const allAnswered = postAssessmentQuestions.every((q) => isAnswered(q, responses[q.id]));
 
+  useEffect(() => {
+    trackPageVisit('post_assessment');
+  }, []);
+
   const setAnswer = (id: string, value: string | number) => {
     setResponses((prev) => ({ ...prev, [id]: value }));
   };
@@ -41,9 +45,11 @@ const PostAssessment = () => {
     };
     localStorage.setItem('post_assessment_responses', JSON.stringify(data));
 
-    // Submit all evaluation data to Google Sheet (preserves visited_dashboard separately)
-    const payload = buildEvaluationPayload();
-    await submitToGoogleSheet(payload);
+    const feedback = (responses['post_feedback_suggestions'] as string) || '';
+    gaEvent('feedback_submitted', { text_length: feedback.length });
+
+    const payload = buildFinalData();
+    await submitFinalData(payload);
 
     navigate('/learned');
   };
