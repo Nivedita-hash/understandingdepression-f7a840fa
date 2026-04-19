@@ -23,6 +23,12 @@ const VideoPage = () => {
   const playerRef = useRef<any>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const maxReachedRef = useRef(0);
+  const startedRef = useRef(false);
+  const completedRef = useRef(false);
+
+  useEffect(() => {
+    trackPageVisit('video');
+  }, []);
 
   const initPlayer = useCallback(() => {
     const createPlayer = () => {
