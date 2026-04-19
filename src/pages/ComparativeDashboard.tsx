@@ -37,9 +37,7 @@ const ComparativeDashboard = () => {
               Explore how symptoms, treatment response, and recovery patterns differ across real depression case stories.
             </p>
           </div>
-          <TableauEmbed
-            src="https://public.tableau.com/views/NarrativeProj_v1_2/Dashboard1?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link"
-          />
+          <TableauEmbed name="NarrativeProj_v1_2/Dashboard1" />
         </motion.section>
 
         <div className="text-center mt-10 mb-4">

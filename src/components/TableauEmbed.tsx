@@ -1,76 +1,106 @@
-import { useEffect, useRef, useState } from 'react';
-
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace JSX {
-    interface IntrinsicElements {
-      'tableau-viz': React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
-          id?: string;
-          src?: string;
-          toolbar?: string;
-          'hide-tabs'?: boolean | string;
-          width?: string;
-          height?: string;
-        },
-        HTMLElement
-      >;
-    }
-  }
-}
+import { useEffect, useRef } from 'react';
 
 interface TableauEmbedProps {
-  src: string;
-  /** Optional fixed height override. If omitted, height adapts to viewport. */
-  height?: string;
+  /** Tableau workbook/view path, e.g. "NarrativeProj_v1_2/Dashboard1" */
+  name?: string;
+  /** Static fallback image path under public.tableau.com/static/images */
+  staticImage?: string;
+  /** Static image used inside <noscript> */
+  staticImageRss?: string;
 }
 
-const computeResponsiveHeight = (): string => {
-  if (typeof window === 'undefined') return '800px';
-  const w = window.innerWidth;
-  const h = window.innerHeight;
-  // Aim for ~85% of viewport height, clamped per breakpoint
-  if (w < 640) return `${Math.round(Math.min(Math.max(h * 0.8, 520), 720))}px`;
-  if (w < 1024) return `${Math.round(Math.min(Math.max(h * 0.82, 640), 880))}px`;
-  return `${Math.round(Math.min(Math.max(h * 0.85, 720), 1100))}px`;
-};
+/**
+ * Embeds a Tableau Public dashboard using the official Share-dialog snippet.
+ * Container is responsive and themed to match the site.
+ */
+const TableauEmbed = ({
+  name = 'NarrativeProj_v1_2/Dashboard1',
+  staticImage = 'https://public.tableau.com/static/images/Na/NarrativeProj_v1_2/Dashboard1/1.png',
+  staticImageRss = 'https://public.tableau.com/static/images/Na/NarrativeProj_v1_2/Dashboard1/1_rss.png',
+}: TableauEmbedProps) => {
+  const placeholderRef = useRef<HTMLDivElement>(null);
 
-const TableauEmbed = ({ src, height }: TableauEmbedProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [autoHeight, setAutoHeight] = useState<string>(() =>
-    height ?? computeResponsiveHeight()
-  );
-
-  // Recompute on resize when no fixed height provided
   useEffect(() => {
-    if (height) return;
-    const onResize = () => setAutoHeight(computeResponsiveHeight());
+    const divElement = placeholderRef.current;
+    if (!divElement) return;
+
+    // Build the <object> Tableau viz
+    const vizElement = document.createElement('object');
+    vizElement.className = 'tableauViz';
+    vizElement.style.display = 'none';
+
+    const params: Record<string, string> = {
+      host_url: 'https%3A%2F%2Fpublic.tableau.com%2F',
+      embed_code_version: '3',
+      site_root: '',
+      name,
+      tabs: 'no',
+      toolbar: 'yes',
+      static_image: staticImage,
+      animate_transition: 'yes',
+      display_static_image: 'yes',
+      display_spinner: 'yes',
+      display_overlay: 'yes',
+      display_count: 'yes',
+      language: 'en-US',
+    };
+    Object.entries(params).forEach(([k, v]) => {
+      const p = document.createElement('param');
+      p.setAttribute('name', k);
+      p.setAttribute('value', v);
+      vizElement.appendChild(p);
+    });
+
+    divElement.appendChild(vizElement);
+
+    // Responsive sizing per Tableau snippet
+    const sizeViz = () => {
+      const w = divElement.offsetWidth;
+      if (w > 800) {
+        vizElement.style.width = '100%';
+        vizElement.style.height = `${w * 0.75}px`;
+      } else if (w > 500) {
+        vizElement.style.width = '100%';
+        vizElement.style.height = `${w * 0.75}px`;
+      } else {
+        vizElement.style.width = '100%';
+        vizElement.style.height = '1177px';
+      }
+    };
+    sizeViz();
+
+    const scriptElement = document.createElement('script');
+    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+    vizElement.parentNode?.insertBefore(scriptElement, vizElement);
+
+    // Reflow on resize
+    const onResize = () => sizeViz();
     window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, [height]);
 
-  const effectiveHeight = height ?? autoHeight;
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    container.innerHTML = '';
-    const viz = document.createElement('tableau-viz');
-    viz.id = 'depressionDashboard';
-    viz.setAttribute('src', src);
-    viz.setAttribute('toolbar', 'bottom');
-    viz.setAttribute('hide-tabs', '');
-    viz.setAttribute('width', '100%');
-    viz.setAttribute('height', effectiveHeight);
-    container.appendChild(viz);
-  }, [src, effectiveHeight]);
+    return () => {
+      window.removeEventListener('resize', onResize);
+      if (divElement) divElement.innerHTML = '';
+    };
+  }, [name, staticImage]);
 
   return (
-    <div
-      ref={containerRef}
-      className="w-full overflow-hidden rounded-2xl border border-border bg-card shadow-lg"
-      style={{ minHeight: effectiveHeight }}
-    />
+    <div className="w-full overflow-hidden rounded-2xl border border-border bg-card shadow-lg">
+      <div
+        ref={placeholderRef}
+        className="tableauPlaceholder w-full"
+        style={{ position: 'relative' }}
+      >
+        <noscript>
+          <a href="#">
+            <img
+              alt="Depression dashboard"
+              src={staticImageRss}
+              style={{ border: 'none' }}
+            />
+          </a>
+        </noscript>
+      </div>
+    </div>
   );
 };
 
