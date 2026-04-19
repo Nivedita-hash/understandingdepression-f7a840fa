@@ -95,7 +95,7 @@ const Navigation = () => {
               <ArrowLeft className="w-4 h-4" />
               <span>Back</span>
             </button>
-          ) : (
+          ) : isAboutPage ? null : (
             <button
               onClick={() => handleNavigate('/')}
               className="nav-button-secondary"
