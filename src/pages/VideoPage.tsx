@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import PageWrapper from '@/components/PageWrapper';
 import { ArrowRight } from 'lucide-react';
 import { usePageTimer } from '@/hooks/usePageTimer';
+import { gaEvent, trackPageVisit } from '@/lib/analytics';
 
 const VIDEO_END_THRESHOLD = 20;
 
