@@ -10,6 +10,7 @@ export interface MultipleChoiceQuestion {
   text: string;
   type: 'multiple-choice';
   options: string[];
+  allowOther?: boolean;
 }
 
 export interface ShortAnswerQuestion {
