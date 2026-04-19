@@ -113,6 +113,7 @@ const PostAssessment = () => {
     }
 
     // short-answer
+    const currentValue = (responses[question.id] as string) || '';
     return (
       <motion.div
         key={question.id}
@@ -126,12 +127,23 @@ const PostAssessment = () => {
           <p className="text-xs text-muted-foreground mb-2">{question.helpText}</p>
         )}
         <textarea
-          value={(responses[question.id] as string) || ''}
-          onChange={(e) => setAnswer(question.id, e.target.value)}
+          value={currentValue}
+          onChange={(e) => {
+            const next = question.maxLength
+              ? e.target.value.slice(0, question.maxLength)
+              : e.target.value;
+            setAnswer(question.id, next);
+          }}
           rows={3}
+          maxLength={question.maxLength}
           className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition"
           placeholder="Share your thoughts..."
         />
+        {question.maxLength && (
+          <p className="mt-1 text-xs text-muted-foreground text-right">
+            {currentValue.length}/{question.maxLength}
+          </p>
+        )}
       </motion.div>
     );
   };
