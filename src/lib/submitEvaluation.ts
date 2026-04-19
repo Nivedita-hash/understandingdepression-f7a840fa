@@ -1,43 +1,105 @@
 // Submit all evaluation data to Google Sheets via Apps Script
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyO1nDbPFpT0z_2U7ULtpohzAQp_tvaIeI5r3znrSalHlcw-teNWNEfuxMLlebWmgcF/exec';
+import {
+  preAssessmentQuestions,
+  postAssessmentQuestions,
+  LIKERT_LABELS,
+  type AssessmentQuestion,
+} from '@/data/assessmentQuestions';
+import { getEnvironment, getSessionId, getStartTime } from './analytics';
+
+const GOOGLE_SCRIPT_URL =
+  'https://script.google.com/macros/s/AKfycbynwNc7sovxUKMEx7Wc_WkCWlucqvs_tdqskRIcO97kIfTwSBBQMuoKLZOoddGKSfo/exec';
 
 const SUBMITTED_KEY = 'evaluation_submitted';
 
-export interface EvaluationPayload {
+export interface FinalEvaluationData {
+  timestamp: string;
+  environment: 'preview' | 'production';
   session_id: string;
-  pre_answers: Record<string, string | number>;
-  post_answers: Record<string, string | number>;
-  case_times: Record<string, number>;
-  total_time_ms: number;
+  gender: string;
+  total_time: number;
+  video_time: number;
+  dashboard_time: number;
   visited_dashboard: boolean;
-  dashboard_time_ms: number;
-  path: 'direct' | 'dashboard';
+  post_open_text: string;
+  // Dynamic Q fields appended via index signature
+  [key: string]: unknown;
 }
 
-export function buildEvaluationPayload(): EvaluationPayload {
-  const sessionId = localStorage.getItem('session_id') || '';
-  const sessionStart = parseInt(localStorage.getItem('session_start') || '0', 10);
+function valueLabel(q: AssessmentQuestion, raw: string | number | undefined): { value: string | number | ''; label: string } {
+  if (raw === undefined || raw === null || raw === '') return { value: '', label: '' };
+  if (q.type === 'likert') {
+    const num = typeof raw === 'number' ? raw : parseInt(String(raw), 10);
+    return { value: num, label: LIKERT_LABELS[num - 1] ?? '' };
+  }
+  // multiple-choice or short-answer: store same string for both
+  return { value: raw as string, label: String(raw) };
+}
+
+function loadResponses(key: string): Record<string, string | number> {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed.responses || {};
+  } catch {
+    return {};
+  }
+}
+
+export function buildFinalData(): FinalEvaluationData {
+  const sessionId = getSessionId();
+  const sessionStart = getStartTime();
   const pageTimes = JSON.parse(localStorage.getItem('page_times') || '{}');
 
-  const preRaw = localStorage.getItem('pre_assessment_responses');
-  const postRaw = localStorage.getItem('post_assessment_responses');
+  const preAnswers = loadResponses('pre_assessment_responses');
+  const postAnswers = loadResponses('post_assessment_responses');
 
-  return {
+  // Resolve gender from pre-assessment (handles "Other:custom text")
+  const rawGender = (preAnswers['pre_gender'] as string) || '';
+  const gender = rawGender.startsWith('Other:') ? rawGender.slice(6).trim() || 'Other' : rawGender;
+
+  const data: FinalEvaluationData = {
+    timestamp: new Date().toISOString(),
+    environment: getEnvironment(),
     session_id: sessionId,
-    pre_answers: preRaw ? JSON.parse(preRaw).responses || {} : {},
-    post_answers: postRaw ? JSON.parse(postRaw).responses || {} : {},
-    case_times: {
-      video: pageTimes.video || pageTimes.case1 || 0,
-    },
-    total_time_ms: Date.now() - sessionStart,
+    gender,
+    total_time: Math.round((Date.now() - sessionStart) / 1000),
+    video_time: Math.round(((pageTimes.video || pageTimes.case1) || 0) / 1000),
+    dashboard_time: Math.round((pageTimes.dashboard || 0) / 1000),
     visited_dashboard: localStorage.getItem('visited_dashboard') === 'true',
-    dashboard_time_ms: pageTimes.dashboard || 0,
-    path: (localStorage.getItem('user_path') as 'direct' | 'dashboard') || 'direct',
+    post_open_text: '',
   };
+
+  // Pre Q1..Q11 (one row per session)
+  preAssessmentQuestions.forEach((q, i) => {
+    const idx = i + 1;
+    const { value, label } = valueLabel(q, preAnswers[q.id]);
+    data[`pre_Q${idx}_id`] = q.id;
+    data[`pre_Q${idx}_text`] = q.text;
+    data[`pre_Q${idx}_value`] = value;
+    data[`pre_Q${idx}_label`] = label;
+  });
+
+  // Post Q1..QN
+  let openText = '';
+  postAssessmentQuestions.forEach((q, i) => {
+    const idx = i + 1;
+    const { value, label } = valueLabel(q, postAnswers[q.id]);
+    data[`post_Q${idx}_id`] = q.id;
+    data[`post_Q${idx}_text`] = q.text;
+    data[`post_Q${idx}_value`] = value;
+    data[`post_Q${idx}_label`] = label;
+    if (q.id === 'post_feedback_suggestions' && typeof postAnswers[q.id] === 'string') {
+      openText = postAnswers[q.id] as string;
+    }
+  });
+  data.post_open_text = openText;
+
+  return data;
 }
 
-export async function submitToGoogleSheet(data: EvaluationPayload): Promise<boolean> {
-  // Prevent duplicate submissions per session
+export async function submitFinalData(data: FinalEvaluationData): Promise<boolean> {
   const submittedSession = localStorage.getItem(SUBMITTED_KEY);
   if (submittedSession === data.session_id) {
     console.log('[Evaluation] Already submitted for session', data.session_id);
@@ -71,3 +133,7 @@ export async function submitToGoogleSheet(data: EvaluationPayload): Promise<bool
     return false;
   }
 }
+
+// --- Backwards-compatible exports (older imports) -----------------------
+export const buildEvaluationPayload = buildFinalData;
+export const submitToGoogleSheet = submitFinalData;
