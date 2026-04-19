@@ -16,6 +16,9 @@ const isAnswered = (q: AssessmentQuestion, value: string | number | undefined) =
     const min = q.minLength ?? 1;
     return typeof value === 'string' && value.trim().length >= min;
   }
+  if (q.type === 'multiple-choice' && q.allowOther && typeof value === 'string' && value.startsWith('Other:')) {
+    return value.slice(6).trim().length > 0;
+  }
   return true;
 };
 
