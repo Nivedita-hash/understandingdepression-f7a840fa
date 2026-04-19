@@ -16,6 +16,9 @@ const isAnswered = (q: AssessmentQuestion, value: string | number | undefined) =
     const min = q.minLength ?? 1;
     return typeof value === 'string' && value.trim().length >= min;
   }
+  if (q.type === 'multiple-choice' && q.allowOther && typeof value === 'string' && value.startsWith('Other:')) {
+    return value.slice(6).trim().length > 0;
+  }
   return true;
 };
 
@@ -71,23 +74,45 @@ const PreAssessment = () => {
     }
 
     if (question.type === 'multiple-choice') {
+      const currentValue = responses[question.id];
+      const isOtherSelected =
+        question.allowOther &&
+        typeof currentValue === 'string' &&
+        currentValue.startsWith('Other:');
+      const otherText = isOtherSelected ? (currentValue as string).slice(6) : '';
+
       return (
         <>
           {baseHeader}
           <div className="grid gap-2">
-            {question.options.map((option) => (
-              <button
-                key={option}
-                onClick={() => setAnswer(question.id, option)}
-                className={`text-left px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 border ${
-                  responses[question.id] === option
-                    ? 'bg-primary text-primary-foreground border-primary shadow-md'
-                    : 'bg-card text-muted-foreground border-border hover:border-primary/40 hover:text-foreground'
-                }`}
-              >
-                {option}
-              </button>
-            ))}
+            {question.options.map((option) => {
+              const isOther = question.allowOther && option === 'Other';
+              const isSelected = isOther
+                ? isOtherSelected
+                : currentValue === option;
+              return (
+                <button
+                  key={option}
+                  onClick={() => setAnswer(question.id, isOther ? 'Other:' : option)}
+                  className={`text-left px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 border ${
+                    isSelected
+                      ? 'bg-primary text-primary-foreground border-primary shadow-md'
+                      : 'bg-card text-muted-foreground border-border hover:border-primary/40 hover:text-foreground'
+                  }`}
+                >
+                  {option}
+                </button>
+              );
+            })}
+            {isOtherSelected && (
+              <input
+                type="text"
+                value={otherText}
+                onChange={(e) => setAnswer(question.id, `Other:${e.target.value}`)}
+                placeholder="Please specify..."
+                className="mt-1 w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition"
+              />
+            )}
           </div>
         </>
       );

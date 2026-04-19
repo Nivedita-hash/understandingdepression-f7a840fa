@@ -10,6 +10,7 @@ export interface MultipleChoiceQuestion {
   text: string;
   type: 'multiple-choice';
   options: string[];
+  allowOther?: boolean;
 }
 
 export interface ShortAnswerQuestion {
@@ -55,6 +56,13 @@ export const preAssessmentQuestions: AssessmentQuestion[] = [
   { id: 'pre_life_context_shapes_depression', type: 'likert', text: 'A person\'s life situation (stress, family, work, health) can affect how depression looks.' },
   { id: 'pre_imagine_living_with_depression', type: 'likert', text: 'I can imagine what it might feel like to live with depression.' },
   { id: 'pre_snap_out_if_tried_harder', type: 'likert', text: 'People with depression could "snap out of it" if they tried harder.', reverseCoded: true },
+  {
+    id: 'pre_gender',
+    type: 'multiple-choice',
+    text: 'What is your gender?',
+    options: ['Male', 'Female', 'Prefer not to say', 'Other'],
+    allowOther: true,
+  },
   {
     id: 'pre_journey_differences',
     type: 'short-answer',
