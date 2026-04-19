@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Filter, RotateCcw, ExternalLink, ChevronRight } from 'lucide-react';
 import PageWrapper from '@/components/PageWrapper';
+import TableauEmbed from '@/components/TableauEmbed';
 import { usePageTimer } from '@/hooks/usePageTimer';
 import {
   caseStories,
@@ -118,7 +119,28 @@ const ComparativeDashboard = () => {
           </ul>
         </motion.section>
 
-        {/* Filters */}
+        {/* Tableau dashboard embed */}
+        <motion.section
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.18 }}
+          className="mb-8"
+          aria-label="Tableau dashboard"
+        >
+          <div className="text-center mb-5">
+            <h2 className="font-serif text-2xl md:text-3xl font-medium mb-2">
+              Understanding Depression Through Real Stories
+            </h2>
+            <p className="narrative-text mx-auto text-muted-foreground max-w-2xl">
+              Explore how symptoms, treatment response, and recovery patterns differ across real depression case stories.
+            </p>
+          </div>
+          <TableauEmbed
+            src="https://public.tableau.com/views/NarrativeProj_v1_2/Dashboard1?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link"
+            height="900px"
+          />
+        </motion.section>
+
         <motion.section
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
