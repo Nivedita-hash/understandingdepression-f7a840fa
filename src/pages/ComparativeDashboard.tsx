@@ -43,12 +43,20 @@ const ComparativeDashboard = () => {
   const [filters, setFilters] = useState<SelectedFilters>(emptyFilters);
   const [activeCase, setActiveCase] = useState<CaseStory | null>(null);
 
+  useEffect(() => {
+    trackPageVisit('dashboard');
+    trackDashboardVisit();
+    localStorage.setItem('visited_dashboard', 'true');
+  }, []);
+
   const toggleFilter = (group: FilterGroupKey, value: string) => {
     setFilters((prev) => {
       const cur = prev[group];
       const next = cur.includes(value) ? cur.filter((v) => v !== value) : [...cur, value];
       return { ...prev, [group]: next };
     });
+    localStorage.setItem('dashboard_interacted', 'true');
+    gaEvent('filter_select', { filter_group: group, filter_value: value });
   };
 
   const resetFilters = () => setFilters(emptyFilters());
@@ -69,7 +77,7 @@ const ComparativeDashboard = () => {
 
   const handleCaseOpen = (story: CaseStory) => {
     setActiveCase(story);
-    // lightweight analytics — count opens in localStorage (does not affect submission payload)
+    gaEvent('case_open', { case_id: story.id });
     try {
       const k = 'dashboard_case_opens';
       const cur = JSON.parse(localStorage.getItem(k) || '{}');
