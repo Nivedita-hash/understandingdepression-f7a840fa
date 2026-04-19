@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageWrapper from '@/components/PageWrapper';
@@ -9,6 +9,7 @@ import {
 } from '@/data/assessmentQuestions';
 import { ArrowRight } from 'lucide-react';
 import { getSessionId } from '@/lib/timeTracking';
+import { gaEvent, trackPageVisit } from '@/lib/analytics';
 
 const isAnswered = (q: AssessmentQuestion, value: string | number | undefined) => {
   if (value === undefined || value === null) return false;
@@ -28,6 +29,10 @@ const PreAssessment = () => {
 
   const allAnswered = preAssessmentQuestions.every((q) => isAnswered(q, responses[q.id]));
 
+  useEffect(() => {
+    trackPageVisit('pre_assessment');
+  }, []);
+
   const setAnswer = (id: string, value: string | number) => {
     setResponses((prev) => ({ ...prev, [id]: value }));
   };
@@ -40,6 +45,15 @@ const PreAssessment = () => {
       responses,
     };
     localStorage.setItem('pre_assessment_responses', JSON.stringify(data));
+
+    // Fire user_gender event (no PII; just the chosen category)
+    const rawGender = responses['pre_gender'] as string | undefined;
+    if (rawGender) {
+      const gender = rawGender.startsWith('Other:')
+        ? rawGender.slice(6).trim() || 'Other'
+        : rawGender;
+      gaEvent('user_gender', { gender });
+    }
     navigate('/about-depression');
   };
 

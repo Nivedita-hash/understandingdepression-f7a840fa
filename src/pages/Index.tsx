@@ -4,12 +4,14 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import homepageBackground from "@/assets/homepage-background.jpg";
 import { initSession } from "@/lib/timeTracking";
+import { trackPageVisit } from "@/lib/analytics";
 
 const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
     initSession();
+    trackPageVisit('home');
   }, []);
 
   // Mouse position tracking

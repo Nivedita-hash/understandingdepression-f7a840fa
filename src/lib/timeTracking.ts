@@ -1,31 +1,21 @@
 // Session-based time tracking for evaluation analytics
+// Session ID & start time are owned by analytics.ts so GA user_id and
+// the Sheets payload share the exact same session_id.
 
-const SESSION_KEY = 'session_id';
-const SESSION_START_KEY = 'session_start';
+import { getSessionId as gaGetSessionId, getStartTime, bindGaUser, gaEvent } from './analytics';
+
 const PAGE_TIMES_KEY = 'page_times';
 const EVALUATION_KEY = 'evaluation_data';
 
 // Tracked page keys
 type TrackedPage = 'case1' | 'case2' | 'case3' | 'case4' | 'video' | 'dashboard';
 
-function generateSessionId(): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = 'session_';
-  for (let i = 0; i < 12; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
-}
-
 /** Initialize session on Home page load */
 export function initSession(): void {
-  if (!localStorage.getItem(SESSION_KEY)) {
-    localStorage.setItem(SESSION_KEY, generateSessionId());
-  }
-  if (!localStorage.getItem(SESSION_START_KEY)) {
-    localStorage.setItem(SESSION_START_KEY, Date.now().toString());
-  }
-  // Initialize page times if not present
+  // Touch session_id + start_time so they exist
+  gaGetSessionId();
+  getStartTime();
+  bindGaUser();
   if (!localStorage.getItem(PAGE_TIMES_KEY)) {
     localStorage.setItem(PAGE_TIMES_KEY, JSON.stringify({
       case1: 0, case2: 0, case3: 0, case4: 0, video: 0, dashboard: 0,
@@ -34,7 +24,7 @@ export function initSession(): void {
 }
 
 export function getSessionId(): string {
-  return localStorage.getItem(SESSION_KEY) || '';
+  return gaGetSessionId();
 }
 
 /** Get stored page times */
@@ -88,15 +78,19 @@ export function createPageTimer(page: TrackedPage): () => void {
   window.addEventListener('blur', handleBlur);
   window.addEventListener('focus', handleFocus);
 
-  // Cleanup: save time and remove listeners
+  // Cleanup: save time, fire GA page_time, remove listeners
   return () => {
     if (isActive) {
       accumulated += Date.now() - startTime;
     }
-    // Only save if > 3 seconds (ignore accidental visits)
     if (accumulated > 3000) {
       savePageTime(page, accumulated);
     }
+    // Always send page_time to GA (in seconds)
+    gaEvent('page_time', {
+      page_name: page,
+      duration_sec: Math.round(accumulated / 1000),
+    });
     document.removeEventListener('visibilitychange', handleVisibility);
     window.removeEventListener('blur', handleBlur);
     window.removeEventListener('focus', handleFocus);
@@ -106,7 +100,7 @@ export function createPageTimer(page: TrackedPage): () => void {
 /** Build and store final evaluation data. Returns the data object. */
 export function finalizeEvaluationData(): Record<string, unknown> {
   const sessionId = getSessionId();
-  const sessionStart = parseInt(localStorage.getItem(SESSION_START_KEY) || '0', 10);
+  const sessionStart = getStartTime();
   const sessionEnd = Date.now();
   const pageTimes = getPageTimes();
 
@@ -122,6 +116,7 @@ export function finalizeEvaluationData(): Record<string, unknown> {
       case4: pageTimes.case4 || 0,
     },
     dashboard_time: pageTimes.dashboard || 0,
+    video_time: pageTimes.video || pageTimes.case1 || 0,
     cases_viewed: [1, 2, 3, 4].filter(
       (n) => (pageTimes[`case${n}` as TrackedPage] || 0) > 0
     ).length,
@@ -136,4 +131,8 @@ export function getPostAssessmentUrl(baseUrl: string): string {
   const sessionId = getSessionId();
   const sep = baseUrl.includes('?') ? '&' : '?';
   return `${baseUrl}${sep}entry.1234567890=${encodeURIComponent(sessionId)}`;
+}
+
+export function getPageTimeSec(page: TrackedPage): number {
+  return Math.round((getPageTimes()[page] || 0) / 1000);
 }

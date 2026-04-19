@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageWrapper from '@/components/PageWrapper';
@@ -9,7 +9,8 @@ import {
 } from '@/data/assessmentQuestions';
 import { ArrowRight } from 'lucide-react';
 import { getSessionId, finalizeEvaluationData } from '@/lib/timeTracking';
-import { buildEvaluationPayload, submitToGoogleSheet } from '@/lib/submitEvaluation';
+import { buildFinalData, submitFinalData } from '@/lib/submitEvaluation';
+import { gaEvent, trackPageVisit } from '@/lib/analytics';
 
 const isAnswered = (q: AssessmentQuestion, value: string | number | undefined) => {
   if (value === undefined || value === null) return false;
@@ -26,6 +27,10 @@ const PostAssessment = () => {
 
   const allAnswered = postAssessmentQuestions.every((q) => isAnswered(q, responses[q.id]));
 
+  useEffect(() => {
+    trackPageVisit('post_assessment');
+  }, []);
+
   const setAnswer = (id: string, value: string | number) => {
     setResponses((prev) => ({ ...prev, [id]: value }));
   };
@@ -40,9 +45,11 @@ const PostAssessment = () => {
     };
     localStorage.setItem('post_assessment_responses', JSON.stringify(data));
 
-    // Submit all evaluation data to Google Sheet (preserves visited_dashboard separately)
-    const payload = buildEvaluationPayload();
-    await submitToGoogleSheet(payload);
+    const feedback = (responses['post_feedback_suggestions'] as string) || '';
+    gaEvent('feedback_submitted', { text_length: feedback.length });
+
+    const payload = buildFinalData();
+    await submitFinalData(payload);
 
     navigate('/learned');
   };
