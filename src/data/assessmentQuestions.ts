@@ -94,6 +94,13 @@ export const postAssessmentQuestions: AssessmentQuestion[] = [
     minLength: 3,
   },
   { id: 'post_website_helped_notice_differences', type: 'likert', text: 'This website helped me notice differences across depression journeys.' },
+  {
+    id: 'post_feedback_suggestions',
+    type: 'short-answer',
+    text: 'Any feedback or suggestions for us?',
+    helpText: 'Optional thoughts on what worked, what didn\'t, or what could improve (max 300 characters).',
+    minLength: 0,
+  },
 ];
 
 export const transitionMessages = [
