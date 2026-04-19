@@ -19,6 +19,7 @@ export interface ShortAnswerQuestion {
   type: 'short-answer';
   helpText?: string;
   minLength?: number;
+  maxLength?: number;
 }
 
 export type AssessmentQuestion = LikertQuestion | MultipleChoiceQuestion | ShortAnswerQuestion;
