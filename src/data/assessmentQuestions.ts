@@ -101,6 +101,7 @@ export const postAssessmentQuestions: AssessmentQuestion[] = [
     text: 'Any feedback or suggestions for us?',
     helpText: 'Optional thoughts on what worked, what didn\'t, or what could improve (max 300 characters).',
     minLength: 0,
+    maxLength: 300,
   },
 ];
 
