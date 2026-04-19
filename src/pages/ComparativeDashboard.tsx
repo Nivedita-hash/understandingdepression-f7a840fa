@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Filter, RotateCcw, ExternalLink, ChevronRight } from 'lucide-react';
 import PageWrapper from '@/components/PageWrapper';
 import { usePageTimer } from '@/hooks/usePageTimer';
+import { gaEvent, trackDashboardVisit, trackPageVisit } from '@/lib/analytics';
 import {
   caseStories,
   filterGroups,
