@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageWrapper from '@/components/PageWrapper';
@@ -9,7 +9,8 @@ import {
 } from '@/data/assessmentQuestions';
 import { ArrowRight } from 'lucide-react';
 import { getSessionId, finalizeEvaluationData } from '@/lib/timeTracking';
-import { buildEvaluationPayload, submitToGoogleSheet } from '@/lib/submitEvaluation';
+import { buildFinalData, submitFinalData } from '@/lib/submitEvaluation';
+import { gaEvent, trackPageVisit } from '@/lib/analytics';
 
 const isAnswered = (q: AssessmentQuestion, value: string | number | undefined) => {
   if (value === undefined || value === null) return false;
