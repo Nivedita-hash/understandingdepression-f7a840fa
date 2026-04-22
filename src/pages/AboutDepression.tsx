@@ -3,6 +3,7 @@ import PageWrapper from "@/components/PageWrapper";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { usePageTracking } from "@/hooks/usePageTracking";
 import phaseOnsetImg from "@/assets/onset.png";
 import phaseRecognitionImg from "@/assets/recognition.png";
 import phaseTreatmentImg from "@/assets/treatment.png";
