@@ -7,7 +7,15 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-FGNLN490KM');
+      gtag('config', 'G-FGNLN490KM', { debug_mode: true });
+
+      // Immediate debug test event
+      var sessionId = localStorage.getItem('session_id') || crypto.randomUUID();
+      localStorage.setItem('session_id', sessionId);
+      gtag('event', 'debug_test', {
+        session_id: sessionId,
+        page_name: window.location.pathname
+      });
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
