@@ -99,22 +99,31 @@ const Index = () => {
               startSession();
               navigate("/pre-assessment");
             }}
-            className="nav-button-primary group text-lg px-8 py-3 relative overflow-hidden"
-            whileHover={{ scale: 1.05, boxShadow: "0 0 25px hsl(142 25% 45% / 0.4)" }}
-            whileTap={{ scale: 0.97 }}
+            className="nav-button-primary group text-lg px-10 py-4 relative overflow-hidden"
+            whileHover={{ scale: 1.08, boxShadow: "0 0 40px hsl(142 25% 45% / 0.5)" }}
+            whileTap={{ scale: 0.95 }}
             animate={{
+              scale: [1, 1.04, 1],
               boxShadow: [
-                "0 0 0px hsl(142 25% 45% / 0)",
-                "0 0 20px hsl(142 25% 45% / 0.3)",
-                "0 0 0px hsl(142 25% 45% / 0)",
+                "0 0 0px hsl(142 25% 45% / 0), 0 0 0px hsl(142 25% 45% / 0)",
+                "0 0 30px hsl(142 25% 45% / 0.45), 0 0 60px hsl(142 25% 45% / 0.2)",
+                "0 0 0px hsl(142 25% 45% / 0), 0 0 0px hsl(142 25% 45% / 0)",
               ],
             }}
             transition={{
-              boxShadow: { duration: 2.5, repeat: Infinity, ease: "easeInOut" },
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut",
             }}
           >
             Begin the Experience
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            <motion.span
+              className="inline-block"
+              animate={{ x: [0, 6, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <ArrowRight className="w-5 h-5" />
+            </motion.span>
           </motion.button>
         </motion.div>
       </motion.div>
