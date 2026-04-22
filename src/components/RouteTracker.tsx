@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { type StandardPage, trackPageEnter, trackPageExit } from '@/lib/analytics';
+import { trackPageVisit } from '@/lib/surveyData';
 
 /**
  * Maps pathname → StandardPage. Returns null for unknown routes.
@@ -55,6 +56,9 @@ export default function RouteTracker() {
       startRef.current = Date.now();
       trackPageEnter(currentPage);
     }
+
+    // Track visited page for survey data
+    trackPageVisit(location.pathname);
 
     prevPageRef.current = currentPage;
   }, [location.pathname]);

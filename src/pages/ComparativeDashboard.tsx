@@ -5,6 +5,7 @@ import { ArrowRight } from 'lucide-react';
 import PageWrapper from '@/components/PageWrapper';
 import TableauEmbed from '@/components/TableauEmbed';
 import { trackDashboardOpen } from '@/lib/analytics';
+import { markDashboardVisited } from '@/lib/surveyData';
 
 
 const ComparativeDashboard = () => {
@@ -14,7 +15,7 @@ const ComparativeDashboard = () => {
 
   useEffect(() => {
     trackDashboardOpen();
-    localStorage.setItem('visited_dashboard', 'true');
+    markDashboardVisited();
   }, []);
 
   const handleContinue = () => navigate('/post-assessment');

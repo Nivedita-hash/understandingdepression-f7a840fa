@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import homepageBackground from "@/assets/homepage-background.jpg";
 import { initSession } from "@/lib/timeTracking";
+import { recordStartTime } from "@/lib/surveyData";
 
 
 const Index = () => {
@@ -97,7 +98,10 @@ const Index = () => {
           className="flex flex-col items-center justify-center gap-4"
         >
           <button
-            onClick={() => navigate("/pre-assessment")}
+            onClick={() => {
+              recordStartTime();
+              navigate("/pre-assessment");
+            }}
             className="nav-button-primary group text-lg px-8 py-3"
           >
             Begin the Experience

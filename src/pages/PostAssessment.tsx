@@ -9,7 +9,7 @@ import {
 } from '@/data/assessmentQuestions';
 import { ArrowRight } from 'lucide-react';
 import { getSessionId, finalizeEvaluationData } from '@/lib/timeTracking';
-import { buildFinalData, submitFinalData } from '@/lib/submitEvaluation';
+import { buildSurveyData, submitSurveyData } from '@/lib/surveyData';
 import { trackAssessmentSubmit } from '@/lib/analytics';
 
 
@@ -46,8 +46,8 @@ const PostAssessment = () => {
 
     trackAssessmentSubmit('post');
 
-    const payload = buildFinalData();
-    await submitFinalData(payload);
+    const payload = buildSurveyData();
+    await submitSurveyData(payload);
 
     navigate('/learned');
   };

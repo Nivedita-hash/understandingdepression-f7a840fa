@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import PageWrapper from '@/components/PageWrapper';
 import { ArrowRight } from 'lucide-react';
 import { trackVideoStart, trackVideoComplete } from '@/lib/analytics';
+import { markVideoCompleted } from '@/lib/surveyData';
 
 
 const VIDEO_END_THRESHOLD = 20;
@@ -65,6 +66,7 @@ const VideoPage = () => {
                 if (!completedRef.current) {
                   completedRef.current = true;
                   trackVideoComplete();
+                  markVideoCompleted();
                 }
               }
             }, 1000);
