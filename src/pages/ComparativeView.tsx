@@ -4,7 +4,6 @@ import PageWrapper from '@/components/PageWrapper';
 import { caseStudies } from '@/data/caseStudies';
 import { Filter } from 'lucide-react';
 import homepageBackground from '@/assets/homepage-background.jpg';
-import { usePageTimer } from '@/hooks/usePageTimer';
 
 type FilterType = 'outcome' | 'treatment' | 'duration' | 'trigger';
 
