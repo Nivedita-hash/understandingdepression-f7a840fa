@@ -8,7 +8,7 @@ import {
   type AssessmentQuestion,
 } from '@/data/assessmentQuestions';
 import { ArrowRight } from 'lucide-react';
-import { getSessionId } from '@/lib/timeTracking';
+import { getSessionId } from '@/lib/surveyData';
 import { trackAssessmentSubmit } from '@/lib/analytics';
 
 

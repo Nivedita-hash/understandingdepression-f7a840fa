@@ -3,8 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import homepageBackground from "@/assets/homepage-background.jpg";
-import { initSession } from "@/lib/timeTracking";
-import { recordStartTime } from "@/lib/surveyData";
+import { startSession } from "@/lib/surveyData";
 
 
 const Index = () => {
@@ -12,9 +11,7 @@ const Index = () => {
 
   
 
-  useEffect(() => {
-    initSession();
-  }, []);
+  // Session init removed — timer starts on button click only
 
   // Mouse position tracking
   const mouseX = useMotionValue(0);
@@ -99,7 +96,7 @@ const Index = () => {
         >
           <button
             onClick={() => {
-              recordStartTime();
+              startSession();
               navigate("/pre-assessment");
             }}
             className="nav-button-primary group text-lg px-8 py-3"

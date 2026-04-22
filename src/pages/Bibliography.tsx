@@ -1,15 +1,23 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import PageWrapper from '@/components/PageWrapper';
 import { caseStudies } from '@/data/caseStudies';
 import { ExternalLink, BookOpen, FileText, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import homepageBackground from '@/assets/homepage-background.jpg';
+import { endSessionAndSubmit } from '@/lib/surveyData';
 
 
 const Bibliography = () => {
-  
   const navigate = useNavigate();
+  const submittedRef = useRef(false);
+
+  // End session and submit data exactly once on this final page
+  useEffect(() => {
+    if (submittedRef.current) return;
+    submittedRef.current = true;
+    endSessionAndSubmit();
+  }, []);
   const additionalSources = [
     {
       title: "Diagnostic and Statistical Manual of Mental Disorders (DSM-5)",
