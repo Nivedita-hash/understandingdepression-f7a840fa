@@ -5,7 +5,7 @@ import PageWrapper from '@/components/PageWrapper';
 import { ArrowRight } from 'lucide-react';
 import { usePageTimer } from '@/hooks/usePageTimer';
 import { trackVideoStart, trackVideoComplete } from '@/lib/analytics';
-import { usePageTracking } from '@/hooks/usePageTracking';
+
 
 const VIDEO_END_THRESHOLD = 20;
 
@@ -27,7 +27,7 @@ const VideoPage = () => {
   const startedRef = useRef(false);
   const completedRef = useRef(false);
 
-  usePageTracking('video');
+  
 
   const initPlayer = useCallback(() => {
     const createPlayer = () => {

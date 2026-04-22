@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageWrapper from '@/components/PageWrapper';
 import { ArrowRight, BarChart3, ClipboardCheck } from 'lucide-react';
-import { usePageTracking } from '@/hooks/usePageTracking';
+
 
 const ChoiceScreen = () => {
-  usePageTracking('choice');
+  
   const navigate = useNavigate();
   const [showButtons, setShowButtons] = useState(false);
 

@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageWrapper from '@/components/PageWrapper';
 import { ArrowRight } from 'lucide-react';
-import { usePageTracking } from '@/hooks/usePageTracking';
+
 
 const PostVideoTransition = () => {
-  usePageTracking('transition');
+  
   const navigate = useNavigate();
   const [showButton, setShowButton] = useState(false);
 
