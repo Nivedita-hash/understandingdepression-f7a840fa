@@ -115,7 +115,7 @@ const Index = () => {
           >
             Begin the Experience
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </button>
+          </motion.button>
         </motion.div>
       </motion.div>
 
