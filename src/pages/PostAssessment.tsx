@@ -8,8 +8,7 @@ import {
   type AssessmentQuestion,
 } from '@/data/assessmentQuestions';
 import { ArrowRight } from 'lucide-react';
-import { getSessionId, finalizeEvaluationData } from '@/lib/timeTracking';
-import { buildSurveyData, submitSurveyData } from '@/lib/surveyData';
+import { getSessionId } from '@/lib/surveyData';
 import { trackAssessmentSubmit } from '@/lib/analytics';
 
 
@@ -36,7 +35,6 @@ const PostAssessment = () => {
 
   const handleSubmit = async () => {
     if (!allAnswered) return;
-    finalizeEvaluationData();
     const data = {
       session_id: getSessionId(),
       timestamp: Date.now(),
@@ -46,9 +44,7 @@ const PostAssessment = () => {
 
     trackAssessmentSubmit('post');
 
-    const payload = buildSurveyData();
-    await submitSurveyData(payload);
-
+    // Survey data is submitted on bibliography page (final page)
     navigate('/learned');
   };
 

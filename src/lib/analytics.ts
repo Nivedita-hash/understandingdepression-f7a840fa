@@ -8,9 +8,6 @@ declare global {
   }
 }
 
-const SESSION_KEY = 'session_id';
-const SESSION_START_KEY = 'start_time';
-
 // ── Environment ──────────────────────────────────────────────
 
 export function getEnvironment(): 'preview' | 'production' {
@@ -22,23 +19,16 @@ export function getEnvironment(): 'preview' | 'production' {
     : 'production';
 }
 
-// ── Session ──────────────────────────────────────────────────
+// ── Session (read-only – surveyData.ts owns the session) ─────
 
-export function getSessionId(): string {
+function getSessionId(): string {
   if (typeof window === 'undefined') return '';
-  let id = localStorage.getItem(SESSION_KEY);
+  let id = localStorage.getItem('session_id');
   if (!id) {
     id = crypto.randomUUID();
-    localStorage.setItem(SESSION_KEY, id);
-  }
-  if (!localStorage.getItem(SESSION_START_KEY)) {
-    localStorage.setItem(SESSION_START_KEY, Date.now().toString());
+    localStorage.setItem('session_id', id);
   }
   return id;
-}
-
-export function getStartTime(): number {
-  return parseInt(localStorage.getItem(SESSION_START_KEY) || Date.now().toString(), 10);
 }
 
 export function bindGaUser(): void {
@@ -107,16 +97,4 @@ export function trackAssessmentSubmit(type: 'pre' | 'post', gender?: string): vo
   const params: Record<string, unknown> = { type };
   if (gender) params.gender = gender;
   gaEvent('assessment_submit', params);
-}
-
-// ── Backwards-compatible (kept for timeTracking.ts) ──────────
-
-/** @deprecated Use trackPageEnter */
-export function trackPageVisit(page: string): void {
-  trackPageEnter(page as StandardPage);
-}
-
-/** @deprecated Use trackDashboardOpen */
-export function trackDashboardVisit(): void {
-  trackDashboardOpen();
 }

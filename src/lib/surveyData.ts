@@ -15,7 +15,8 @@ const SUBMITTED_KEY = 'evaluation_submitted';
 const VISITED_PAGES_KEY = 'visited_pages';
 const DASHBOARD_VISITED_KEY = 'dashboard_visited';
 const VIDEO_COMPLETED_KEY = 'video_completed';
-const START_TIME_KEY = 'start_time';
+const SESSION_START_KEY = 'session_start';
+const SESSION_ENDED_KEY = 'session_ended';
 
 // ── Helpers ──────────────────────────────────────────────────
 
@@ -27,7 +28,7 @@ export function getEnvironment(): 'preview' | 'production' {
     : 'production';
 }
 
-function getSessionId(): string {
+export function getSessionId(): string {
   let id = localStorage.getItem('session_id');
   if (!id) {
     id = crypto.randomUUID();
@@ -84,10 +85,20 @@ export function markVideoCompleted(): void {
   localStorage.setItem(VIDEO_COMPLETED_KEY, 'true');
 }
 
-export function recordStartTime(): void {
-  if (!localStorage.getItem(START_TIME_KEY)) {
-    localStorage.setItem(START_TIME_KEY, Date.now().toString());
-  }
+/** Call ONLY when user clicks "Begin the Experience" on home page */
+export function startSession(): void {
+  localStorage.setItem(SESSION_START_KEY, Date.now().toString());
+  localStorage.removeItem(SESSION_ENDED_KEY);
+  localStorage.removeItem(SUBMITTED_KEY);
+}
+
+export function getSessionStart(): number {
+  return parseInt(localStorage.getItem(SESSION_START_KEY) || '0', 10);
+}
+
+function formatHHMMSS(ts: number): string {
+  const d = new Date(ts);
+  return d.toLocaleTimeString('en-GB', { hour12: false }); // HH:MM:SS
 }
 
 // ── Build final payload ──────────────────────────────────────
@@ -98,9 +109,9 @@ export interface SurveyPayload {
 
 export function buildSurveyData(): SurveyPayload {
   const sessionId = getSessionId();
-  const startTime = parseInt(localStorage.getItem(START_TIME_KEY) || '0', 10);
-  const endTime = Date.now();
-  const totalSec = startTime ? Math.round((endTime - startTime) / 1000) : 0;
+  const startMs = getSessionStart();
+  const endMs = Date.now();
+  const totalSec = startMs ? Math.round((endMs - startMs) / 1000) : 0;
 
   const preAnswers = loadResponses('pre_assessment_responses');
   const postAnswers = loadResponses('post_assessment_responses');
@@ -114,8 +125,8 @@ export function buildSurveyData(): SurveyPayload {
   const data: SurveyPayload = {
     session_id: sessionId,
     date: new Date().toISOString(),
-    start_time: startTime ? new Date(startTime).toISOString() : '',
-    end_time: new Date(endTime).toISOString(),
+    start_time: startMs ? formatHHMMSS(startMs) : '',
+    end_time: formatHHMMSS(endMs),
     total_time_seconds: totalSec,
     total_time_readable: formatReadableTime(totalSec),
     environment: getEnvironment(),
@@ -197,8 +208,20 @@ export function buildSurveyData(): SurveyPayload {
 
 // ── Submit once ──────────────────────────────────────────────
 
-export async function submitSurveyData(data: SurveyPayload): Promise<boolean> {
+/**
+ * End the session, build payload, and submit ONCE.
+ * Call this on the bibliography (final) page.
+ */
+export async function endSessionAndSubmit(): Promise<boolean> {
+  // Prevent multiple submissions
+  if (localStorage.getItem(SESSION_ENDED_KEY) === 'true') {
+    console.log('[Survey] Session already ended, skipping.');
+    return true;
+  }
+
+  const data = buildSurveyData();
   const sessionId = data.session_id as string;
+
   if (localStorage.getItem(SUBMITTED_KEY) === sessionId) {
     console.log('[Survey] Already submitted for session', sessionId);
     return true;
@@ -234,6 +257,8 @@ export async function submitSurveyData(data: SurveyPayload): Promise<boolean> {
     });
 
     localStorage.setItem(SUBMITTED_KEY, sessionId);
+    localStorage.setItem(SESSION_ENDED_KEY, 'true');
+    localStorage.removeItem(SESSION_START_KEY);
     return true;
   } catch (err) {
     console.error('[Survey] Failed to submit:', err);
