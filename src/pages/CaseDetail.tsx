@@ -4,8 +4,6 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import PageWrapper from '@/components/PageWrapper';
 import { caseStudies } from '@/data/caseStudies';
 import { ArrowRight } from 'lucide-react';
-import { usePageTimer } from '@/hooks/usePageTimer';
-
 // Minimum engagement time for non-video cases (seconds)
 const MIN_READING_TIME = 45;
 // Seconds before end to show Next button for video
@@ -24,8 +22,6 @@ const CaseDetail = () => {
   const caseId = parseInt(id || '1');
   const caseStudy = caseStudies.find((c) => c.id === caseId);
   const hasVideo = caseId === 1;
-
-  usePageTimer(`case${caseId}` as 'case1' | 'case2' | 'case3' | 'case4');
 
   const [showNext, setShowNext] = useState(false);
   const playerRef = useRef<any>(null);

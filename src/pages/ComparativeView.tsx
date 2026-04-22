@@ -4,7 +4,6 @@ import PageWrapper from '@/components/PageWrapper';
 import { caseStudies } from '@/data/caseStudies';
 import { Filter } from 'lucide-react';
 import homepageBackground from '@/assets/homepage-background.jpg';
-import { usePageTimer } from '@/hooks/usePageTimer';
 
 type FilterType = 'outcome' | 'treatment' | 'duration' | 'trigger';
 
@@ -38,7 +37,6 @@ const getCaseAttributes = (study: typeof caseStudies[0]) => ({
 });
 
 const ComparativeView = () => {
-  usePageTimer('dashboard');
   const [activeFilter, setActiveFilter] = useState<FilterType | null>(null);
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
 

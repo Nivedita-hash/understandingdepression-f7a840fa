@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import PageWrapper from '@/components/PageWrapper';
 import { ArrowRight } from 'lucide-react';
-import { usePageTimer } from '@/hooks/usePageTimer';
 import { trackVideoStart, trackVideoComplete } from '@/lib/analytics';
 
 
@@ -18,8 +17,6 @@ declare global {
 
 const VideoPage = () => {
   const navigate = useNavigate();
-  usePageTimer('case1');
-
   const [showNext, setShowNext] = useState(false);
   const playerRef = useRef<any>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
