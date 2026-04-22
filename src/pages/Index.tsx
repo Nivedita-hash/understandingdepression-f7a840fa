@@ -84,7 +84,7 @@ const Index = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="narrative-text mx-auto mb-8 text-muted-foreground"
         >
-          Depression affects millions, yet each person's experience is unique. Follow four real stories to understand
+          Depression affects millions, yet each person's experience is unique. Follow these real stories to understand
           how this condition unfolds from first symptoms through treatment and beyond.
         </motion.p>
 
@@ -94,12 +94,24 @@ const Index = () => {
           transition={{ duration: 0.6, delay: 0.6 }}
           className="flex flex-col items-center justify-center gap-4"
         >
-          <button
+          <motion.button
             onClick={() => {
               startSession();
               navigate("/pre-assessment");
             }}
-            className="nav-button-primary group text-lg px-8 py-3"
+            className="nav-button-primary group text-lg px-8 py-3 relative overflow-hidden"
+            whileHover={{ scale: 1.05, boxShadow: "0 0 25px hsl(142 25% 45% / 0.4)" }}
+            whileTap={{ scale: 0.97 }}
+            animate={{
+              boxShadow: [
+                "0 0 0px hsl(142 25% 45% / 0)",
+                "0 0 20px hsl(142 25% 45% / 0.3)",
+                "0 0 0px hsl(142 25% 45% / 0)",
+              ],
+            }}
+            transition={{
+              boxShadow: { duration: 2.5, repeat: Infinity, ease: "easeInOut" },
+            }}
           >
             Begin the Experience
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
