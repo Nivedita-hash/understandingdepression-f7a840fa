@@ -15,6 +15,7 @@ import PostAssessment from "./pages/PostAssessment";
 import WhatWeLearned from "./pages/WhatWeLearned";
 import Bibliography from "./pages/Bibliography";
 import NotFound from "./pages/NotFound";
+import RouteTracker from "./components/RouteTracker";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <RouteTracker />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/pre-assessment" element={<PreAssessment />} />
