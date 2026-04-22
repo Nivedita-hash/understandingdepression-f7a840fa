@@ -53,18 +53,21 @@ const TableauEmbed = ({
 
     divElement.appendChild(vizElement);
 
-    // Responsive sizing per Tableau snippet
+    // Responsive sizing tuned for comfortable interaction.
+    // Desktop: keep a near-square ratio but cap to viewport height so
+    // toolbars/filters stay reachable without excess scrolling.
     const sizeViz = () => {
       const w = divElement.offsetWidth;
+      const maxH = Math.max(600, Math.round(window.innerHeight * 0.9));
       if (w > 800) {
         vizElement.style.width = '100%';
-        vizElement.style.height = `${w * 0.75}px`;
+        vizElement.style.height = `${Math.min(Math.round(w * 0.7), maxH)}px`;
       } else if (w > 500) {
         vizElement.style.width = '100%';
-        vizElement.style.height = `${w * 0.75}px`;
+        vizElement.style.height = `${Math.round(w * 0.85)}px`;
       } else {
         vizElement.style.width = '100%';
-        vizElement.style.height = '1177px';
+        vizElement.style.height = '1077px';
       }
     };
     sizeViz();
