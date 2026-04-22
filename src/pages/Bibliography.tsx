@@ -5,8 +5,10 @@ import { caseStudies } from '@/data/caseStudies';
 import { ExternalLink, BookOpen, FileText, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import homepageBackground from '@/assets/homepage-background.jpg';
+import { usePageTracking } from '@/hooks/usePageTracking';
 
 const Bibliography = () => {
+  usePageTracking('bibliography');
   const navigate = useNavigate();
   const additionalSources = [
     {
