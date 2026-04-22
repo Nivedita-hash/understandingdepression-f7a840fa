@@ -6,13 +6,13 @@ import PageWrapper from '@/components/PageWrapper';
 import TableauEmbed from '@/components/TableauEmbed';
 import { usePageTimer } from '@/hooks/usePageTimer';
 import { trackDashboardOpen } from '@/lib/analytics';
-import { usePageTracking } from '@/hooks/usePageTracking';
+
 
 const ComparativeDashboard = () => {
   usePageTimer('dashboard');
   const navigate = useNavigate();
 
-  usePageTracking('dashboard');
+  
 
   useEffect(() => {
     trackDashboardOpen();

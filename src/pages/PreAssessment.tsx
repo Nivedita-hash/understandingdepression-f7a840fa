@@ -10,7 +10,7 @@ import {
 import { ArrowRight } from 'lucide-react';
 import { getSessionId } from '@/lib/timeTracking';
 import { trackAssessmentSubmit } from '@/lib/analytics';
-import { usePageTracking } from '@/hooks/usePageTracking';
+
 
 const isAnswered = (q: AssessmentQuestion, value: string | number | undefined) => {
   if (value === undefined || value === null) return false;
@@ -30,7 +30,7 @@ const PreAssessment = () => {
 
   const allAnswered = preAssessmentQuestions.every((q) => isAnswered(q, responses[q.id]));
 
-  usePageTracking('pre_assessment');
+  
 
   const setAnswer = (id: string, value: string | number) => {
     setResponses((prev) => ({ ...prev, [id]: value }));

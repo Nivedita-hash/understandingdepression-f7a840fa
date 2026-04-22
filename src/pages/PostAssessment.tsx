@@ -11,7 +11,7 @@ import { ArrowRight } from 'lucide-react';
 import { getSessionId, finalizeEvaluationData } from '@/lib/timeTracking';
 import { buildFinalData, submitFinalData } from '@/lib/submitEvaluation';
 import { trackAssessmentSubmit } from '@/lib/analytics';
-import { usePageTracking } from '@/hooks/usePageTracking';
+
 
 const isAnswered = (q: AssessmentQuestion, value: string | number | undefined) => {
   if (value === undefined || value === null) return false;
@@ -28,7 +28,7 @@ const PostAssessment = () => {
 
   const allAnswered = postAssessmentQuestions.every((q) => isAnswered(q, responses[q.id]));
 
-  usePageTracking('post_assessment');
+  
 
   const setAnswer = (id: string, value: string | number) => {
     setResponses((prev) => ({ ...prev, [id]: value }));

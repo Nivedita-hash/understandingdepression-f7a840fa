@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import PageWrapper from '@/components/PageWrapper';
 import { ArrowRight, Heart } from 'lucide-react';
-import { usePageTracking } from '@/hooks/usePageTracking';
+
 import homepageBackground from '@/assets/homepage-background.jpg';
 
 const WhatWeLearned = () => {
-  usePageTracking('learned');
+  
   const navigate = useNavigate();
 
   const mouseX = useMotionValue(0);
