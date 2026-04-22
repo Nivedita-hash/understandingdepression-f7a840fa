@@ -26,15 +26,22 @@ function toStandardPage(pathname: string): StandardPage | null {
  * Centralized SPA route tracker.
  * Place once inside <BrowserRouter>.
  *
- * Fires page_enter on every route change and page_exit (with time_spent)
- * when navigating away OR on beforeunload.
+ * - Fires page_enter exactly once per route change.
+ * - Fires page_exit (with time_spent in seconds) before navigating away.
+ * - Does NOT rely on beforeunload.
+ * - Guards against React Strict Mode double-mount.
  */
 export default function RouteTracker() {
   const location = useLocation();
   const prevPageRef = useRef<StandardPage | null>(null);
   const startRef = useRef<number>(Date.now());
+  const lastFiredPathRef = useRef<string>('');
 
   useEffect(() => {
+    // Guard: skip if we already fired for this exact pathname
+    if (location.pathname === lastFiredPathRef.current) return;
+    lastFiredPathRef.current = location.pathname;
+
     const currentPage = toStandardPage(location.pathname);
 
     // Fire exit for the previous page
@@ -51,18 +58,6 @@ export default function RouteTracker() {
 
     prevPageRef.current = currentPage;
   }, [location.pathname]);
-
-  // Handle tab close / browser navigation
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      if (prevPageRef.current) {
-        const sec = Math.round((Date.now() - startRef.current) / 1000);
-        trackPageExit(prevPageRef.current, sec);
-      }
-    };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, []);
 
   return null;
 }
