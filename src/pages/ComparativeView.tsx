@@ -37,7 +37,6 @@ const getCaseAttributes = (study: typeof caseStudies[0]) => ({
 });
 
 const ComparativeView = () => {
-  usePageTimer('dashboard');
   const [activeFilter, setActiveFilter] = useState<FilterType | null>(null);
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
 
