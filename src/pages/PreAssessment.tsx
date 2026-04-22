@@ -9,7 +9,8 @@ import {
 } from '@/data/assessmentQuestions';
 import { ArrowRight } from 'lucide-react';
 import { getSessionId } from '@/lib/timeTracking';
-import { gaEvent, trackPageVisit } from '@/lib/analytics';
+import { trackAssessmentSubmit } from '@/lib/analytics';
+import { usePageTracking } from '@/hooks/usePageTracking';
 
 const isAnswered = (q: AssessmentQuestion, value: string | number | undefined) => {
   if (value === undefined || value === null) return false;
@@ -29,9 +30,7 @@ const PreAssessment = () => {
 
   const allAnswered = preAssessmentQuestions.every((q) => isAnswered(q, responses[q.id]));
 
-  useEffect(() => {
-    trackPageVisit('pre_assessment');
-  }, []);
+  usePageTracking('pre_assessment');
 
   const setAnswer = (id: string, value: string | number) => {
     setResponses((prev) => ({ ...prev, [id]: value }));
@@ -46,14 +45,11 @@ const PreAssessment = () => {
     };
     localStorage.setItem('pre_assessment_responses', JSON.stringify(data));
 
-    // Fire user_gender event (no PII; just the chosen category)
     const rawGender = responses['pre_gender'] as string | undefined;
-    if (rawGender) {
-      const gender = rawGender.startsWith('Other:')
-        ? rawGender.slice(6).trim() || 'Other'
-        : rawGender;
-      gaEvent('user_gender', { gender });
-    }
+    const gender = rawGender
+      ? rawGender.startsWith('Other:') ? rawGender.slice(6).trim() || 'Other' : rawGender
+      : undefined;
+    trackAssessmentSubmit('pre', gender);
     navigate('/about-depression');
   };
 

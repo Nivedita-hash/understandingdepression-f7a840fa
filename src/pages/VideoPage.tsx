@@ -4,7 +4,8 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import PageWrapper from '@/components/PageWrapper';
 import { ArrowRight } from 'lucide-react';
 import { usePageTimer } from '@/hooks/usePageTimer';
-import { gaEvent, trackPageVisit } from '@/lib/analytics';
+import { trackVideoStart, trackVideoComplete } from '@/lib/analytics';
+import { usePageTracking } from '@/hooks/usePageTracking';
 
 const VIDEO_END_THRESHOLD = 20;
 
@@ -26,9 +27,7 @@ const VideoPage = () => {
   const startedRef = useRef(false);
   const completedRef = useRef(false);
 
-  useEffect(() => {
-    trackPageVisit('video');
-  }, []);
+  usePageTracking('video');
 
   const initPlayer = useCallback(() => {
     const createPlayer = () => {
@@ -53,7 +52,7 @@ const VideoPage = () => {
 
               if (!startedRef.current && currentTime > 0.5) {
                 startedRef.current = true;
-                gaEvent('video_start');
+                trackVideoStart();
               }
 
               // Anti-seek: revert if jumped ahead
@@ -68,7 +67,7 @@ const VideoPage = () => {
                 setShowNext(true);
                 if (!completedRef.current) {
                   completedRef.current = true;
-                  gaEvent('video_complete');
+                  trackVideoComplete();
                 }
               }
             }, 1000);
