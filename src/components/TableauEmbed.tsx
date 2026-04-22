@@ -43,6 +43,7 @@ const TableauEmbed = ({
       display_overlay: 'yes',
       display_count: 'yes',
       language: 'en-US',
+      filter: 'publish=yes',
     };
     Object.entries(params).forEach(([k, v]) => {
       const p = document.createElement('param');
@@ -58,13 +59,13 @@ const TableauEmbed = ({
     // toolbars/filters stay reachable without excess scrolling.
     const sizeViz = () => {
       const w = divElement.offsetWidth;
-      const maxH = Math.max(600, Math.round(window.innerHeight * 0.9));
+      const maxH = Math.max(700, Math.round(window.innerHeight * 0.92));
       if (w > 800) {
         vizElement.style.width = '100%';
-        vizElement.style.height = `${Math.min(Math.round(w * 0.7), maxH)}px`;
+        vizElement.style.height = `${Math.min(Math.round(w * 0.75), maxH)}px`;
       } else if (w > 500) {
         vizElement.style.width = '100%';
-        vizElement.style.height = `${Math.round(w * 0.85)}px`;
+        vizElement.style.height = `${Math.round(w * 0.95)}px`;
       } else {
         vizElement.style.width = '100%';
         vizElement.style.height = '1077px';
