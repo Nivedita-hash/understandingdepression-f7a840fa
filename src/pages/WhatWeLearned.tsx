@@ -7,6 +7,7 @@ import { usePageTracking } from '@/hooks/usePageTracking';
 import homepageBackground from '@/assets/homepage-background.jpg';
 
 const WhatWeLearned = () => {
+  usePageTracking('learned');
   const navigate = useNavigate();
 
   const mouseX = useMotionValue(0);

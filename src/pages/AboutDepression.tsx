@@ -66,6 +66,7 @@ const phases: PhaseData[] = [
 ];
 
 const AboutDepression = () => {
+  usePageTracking('about');
   const navigate = useNavigate();
   const [activePhase, setActivePhase] = useState<string | null>(null);
   const [visitedPhases, setVisitedPhases] = useState<Set<string>>(new Set());

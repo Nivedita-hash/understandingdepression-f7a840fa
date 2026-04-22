@@ -8,6 +8,7 @@ import homepageBackground from '@/assets/homepage-background.jpg';
 import { usePageTracking } from '@/hooks/usePageTracking';
 
 const Bibliography = () => {
+  usePageTracking('bibliography');
   const navigate = useNavigate();
   const additionalSources = [
     {
