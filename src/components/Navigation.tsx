@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Home } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 
@@ -95,15 +95,7 @@ const Navigation = () => {
               <ArrowLeft className="w-4 h-4" />
               <span>Back</span>
             </button>
-          ) : isAboutPage ? null : (
-            <button
-              onClick={() => handleNavigate('/')}
-              className="nav-button-secondary"
-            >
-              <Home className="w-4 h-4" />
-              <span>Home</span>
-            </button>
-          )}
+          ) : null}
         </div>
 
         <div className="flex items-center gap-3">

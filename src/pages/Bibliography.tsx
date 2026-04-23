@@ -269,13 +269,14 @@ const Bibliography = () => {
             </p>
 
             <motion.a
-              href="/comparative-dashboard"
+              href="https://public.tableau.com/views/NarrativeProj_v1_3/Dashboard1?:language=en-US&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link"
+              target="_blank"
+              rel="noopener noreferrer"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.4, delay: 1.1 }}
               whileHover={{ scale: 1.02 }}
               className="block section-card hover:border-primary/30 transition-colors group cursor-pointer"
-              onClick={(e) => { e.preventDefault(); window.open('/comparative-dashboard', '_blank'); }}
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
@@ -284,9 +285,9 @@ const Bibliography = () => {
                     Dashboard
                   </span>
                   <h3 className="font-medium mb-1 group-hover:text-primary transition-colors">
-                    Interactive Dashboard
+                    Interactive Tableau Dashboard
                   </h3>
-                  <p className="text-sm text-muted-foreground">Explore patterns, responses, and trajectories across cases</p>
+                  <p className="text-sm text-muted-foreground">Explore patterns, responses, and trajectories across cases on Tableau Public ↗</p>
                 </div>
                 <ExternalLink className="w-4 h-4 text-muted-foreground flex-shrink-0 group-hover:text-primary transition-colors" />
               </div>

@@ -17,21 +17,18 @@ const ComparativeDashboard = () => {
 
   return (
     <PageWrapper>
-      <div className="page-container max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+      <div className="w-full max-w-[1400px] mx-auto px-3 sm:px-4 lg:px-6 pt-4 relative z-10">
         <motion.section
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-8"
+          className="mb-4"
           aria-label="Tableau dashboard"
         >
-          <div className="text-center mb-6">
-            <h1 className="heading-display mb-3">
-              Understanding Depression Through Real Stories
+          <div className="text-center mb-3">
+            <h1 className="heading-display">
+              Compare Stories
             </h1>
-            <p className="narrative-text mx-auto text-muted-foreground max-w-2xl">
-              Explore how symptoms, treatment response, and recovery patterns differ across real depression case stories.
-            </p>
           </div>
           <TableauEmbed
             name="NarrativeProj_v1_3/Dashboard1"
@@ -40,12 +37,12 @@ const ComparativeDashboard = () => {
           />
         </motion.section>
 
-        <div className="text-center mt-10 mb-4">
+        <div className="text-center mt-6 mb-4">
           <button
             onClick={handleContinue}
             className="btn-primary inline-flex items-center gap-2"
           >
-            Continue to reflection <ArrowRight className="w-4 h-4" />
+            To Post-Assessment <ArrowRight className="w-4 h-4" />
           </button>
         </div>
       </div>
