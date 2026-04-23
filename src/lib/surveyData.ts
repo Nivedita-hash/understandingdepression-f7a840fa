@@ -242,7 +242,7 @@ export async function endSessionAndSubmit(): Promise<boolean> {
   try {
     // Try sendBeacon first (works on page unload)
     if (navigator?.sendBeacon) {
-      const blob = new Blob([body], { type: 'application/json' });
+      const blob = new Blob([body], { type: 'text/plain;charset=utf-8' });
       if (navigator.sendBeacon(GOOGLE_SCRIPT_URL, blob)) {
         localStorage.setItem(SUBMITTED_KEY, sessionId);
         return true;
@@ -254,7 +254,7 @@ export async function endSessionAndSubmit(): Promise<boolean> {
       method: 'POST',
       mode: 'no-cors',
       keepalive: true,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body,
     });
 
