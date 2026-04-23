@@ -115,6 +115,18 @@ const VideoPage = () => {
             </div>
           </div>
 
+          <p className="mt-3 text-center text-xs text-muted-foreground/60">
+            Unable to load video?{' '}
+            <a
+              href="https://www.youtube.com/watch?v=R38FR2y53_w"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-primary transition-colors inline-flex items-center gap-1"
+            >
+              Watch on YouTube <ExternalLink className="w-3 h-3" />
+            </a>
+          </p>
+
           {/* Gated Next Button */}
           <AnimatePresence>
             {showNext && (
