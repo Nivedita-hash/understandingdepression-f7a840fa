@@ -1,48 +1,42 @@
 import { useEffect, useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import PageWrapper from '@/components/PageWrapper';
-import { caseStudies } from '@/data/caseStudies';
-import { ExternalLink, BookOpen, FileText, Home } from 'lucide-react';
+import { ExternalLink, BookOpen, FileText, Play, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import homepageBackground from '@/assets/homepage-background.jpg';
 import { endSessionAndSubmit } from '@/lib/surveyData';
 
+const caseSources = [
+  {
+    id: 1,
+    title: "Rapid Response to Ketamine in Treatment Resistant Depression",
+    source: "Frontiers in Psychiatry",
+    url: "https://www.frontiersin.org/journals/psychiatry/articles/10.3389/fpsyt.2022.1020214/full",
+  },
+  {
+    id: 2,
+    title: "Fluctuating Recovery and the Need for Combined Treatment Approaches",
+    source: "ScienceDirect (Journal Article)",
+    url: "https://www.sciencedirect.com/science/article/pii/S2773021224000245",
+  },
+  {
+    id: 3,
+    title: "Depression Linked to Underlying Physiological Conditions",
+    source: "SCIRP (Scientific Research Publishing)",
+    url: "https://www.scirp.org/journal/paperinformation?paperid=136810",
+  },
+];
 
 const Bibliography = () => {
   const navigate = useNavigate();
   const submittedRef = useRef(false);
 
-  // End session and submit data exactly once on this final page
   useEffect(() => {
     if (submittedRef.current) return;
     submittedRef.current = true;
     endSessionAndSubmit();
   }, []);
-  const additionalSources = [
-    {
-      title: "Diagnostic and Statistical Manual of Mental Disorders (DSM-5)",
-      authors: "American Psychiatric Association",
-      year: "2013",
-      type: "Reference",
-      url: "https://psychiatry.org/psychiatrists/practice/dsm"
-    },
-    {
-      title: "World Health Organization: Depression Fact Sheet",
-      authors: "WHO",
-      year: "2023",
-      type: "Health Information",
-      url: "https://www.who.int/news-room/fact-sheets/detail/depression"
-    },
-    {
-      title: "The lived experience of depression: A narrative review",
-      authors: "Various Authors",
-      year: "2020",
-      type: "Review Article",
-      url: "https://pubmed.ncbi.nlm.nih.gov/"
-    }
-  ];
 
-  // Mouse position tracking for parallax
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const springConfig = { damping: 50, stiffness: 100 };
@@ -54,10 +48,8 @@ const Bibliography = () => {
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      const { clientX, clientY } = e;
-      const { innerWidth, innerHeight } = window;
-      mouseX.set(clientX / innerWidth);
-      mouseY.set(clientY / innerHeight);
+      mouseX.set(e.clientX / window.innerWidth);
+      mouseY.set(e.clientY / window.innerHeight);
     };
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
@@ -65,8 +57,7 @@ const Bibliography = () => {
 
   return (
     <PageWrapper showNav={false}>
-      {/* Animated background image with parallax */}
-      <motion.div 
+      <motion.div
         className="fixed inset-[-20px] pointer-events-none z-0"
         style={{
           backgroundImage: `url(${homepageBackground})`,
@@ -79,8 +70,8 @@ const Bibliography = () => {
         }}
       />
       <div className="fixed inset-0 bg-gradient-to-t from-background/90 via-background/60 to-background/40 pointer-events-none z-0" />
-      
-      <motion.div 
+
+      <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 0.1, scale: 1 }}
         transition={{ duration: 1.5 }}
@@ -88,20 +79,21 @@ const Bibliography = () => {
       />
 
       <div className="page-container max-w-4xl mx-auto relative z-10">
-        <motion.header 
+        {/* Title & Subtitle */}
+        <motion.header
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h1 className="heading-display mb-6">References</h1>
+          <h1 className="heading-display mb-6">Sources Behind the Stories</h1>
           <p className="narrative-text mx-auto text-muted-foreground">
-            All case studies and information presented are based on peer-reviewed research.
+            These real case studies informed the journeys you explored. Each reflects a different path, progression, and underlying cause of depression over time.
           </p>
         </motion.header>
 
         {/* Case Study Sources */}
-        <motion.section 
+        <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
@@ -111,17 +103,18 @@ const Bibliography = () => {
             <BookOpen className="w-5 h-5 text-primary" />
             <h2 className="heading-section">Case Study Sources</h2>
           </div>
-          
+
           <div className="space-y-4">
-            {caseStudies.map((study, index) => (
+            {caseSources.map((study, index) => (
               <motion.a
                 key={study.id}
-                href={study.sourceUrl}
+                href={study.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
+                whileHover={{ scale: 1.02 }}
                 className="block section-card hover:border-primary/30 transition-colors group"
               >
                 <div className="flex items-start justify-between gap-4">
@@ -143,8 +136,8 @@ const Bibliography = () => {
           </div>
         </motion.section>
 
-        {/* Additional Sources */}
-        <motion.section 
+        {/* Additional References */}
+        <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
@@ -154,40 +147,36 @@ const Bibliography = () => {
             <FileText className="w-5 h-5 text-primary" />
             <h2 className="heading-section">Additional References</h2>
           </div>
-          
+
           <div className="space-y-4">
-            {additionalSources.map((source, index) => (
-              <motion.a
-                key={source.title}
-                href={source.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
-                className="block section-card hover:border-primary/30 transition-colors group"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground mb-2 inline-block">
-                      {source.type}
-                    </span>
-                    <h3 className="font-medium mb-1 group-hover:text-primary transition-colors">
-                      {source.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      {source.authors} ({source.year})
-                    </p>
-                  </div>
-                  <ExternalLink className="w-4 h-4 text-muted-foreground flex-shrink-0 group-hover:text-primary transition-colors" />
+            <motion.a
+              href="https://youtu.be/R38FR2y53_w"
+              target="_blank"
+              rel="noopener noreferrer"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: 0.6 }}
+              whileHover={{ scale: 1.02 }}
+              className="block section-card hover:border-primary/30 transition-colors group"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground mb-2 inline-flex items-center gap-1">
+                    <Play className="w-3 h-3" />
+                    Video
+                  </span>
+                  <h3 className="font-medium mb-1 group-hover:text-primary transition-colors">
+                    Narrative Exploration: Depression as Multiple Journeys
+                  </h3>
                 </div>
-              </motion.a>
-            ))}
+                <ExternalLink className="w-4 h-4 text-muted-foreground flex-shrink-0 group-hover:text-primary transition-colors" />
+              </div>
+            </motion.a>
           </div>
         </motion.section>
 
         {/* Note */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.8 }}
@@ -195,10 +184,10 @@ const Bibliography = () => {
         >
           <h3 className="font-medium mb-2">A Note on Case Studies</h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            All case studies presented in this visualization are adapted from real, peer-reviewed 
-            clinical research. Names and identifying details have been changed to protect privacy. 
-            These narratives represent actual experiences documented in clinical literature and 
-            are intended to foster understanding of the diverse ways depression manifests and 
+            All case studies presented in this visualization are adapted from real, peer-reviewed
+            clinical research. Names and identifying details have been changed to protect privacy.
+            These narratives represent actual experiences documented in clinical literature and
+            are intended to foster understanding of the diverse ways depression manifests and
             resolves over time.
           </p>
         </motion.div>
@@ -220,7 +209,7 @@ const Bibliography = () => {
         </motion.div>
 
         {/* Footer */}
-        <motion.footer 
+        <motion.footer
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 1 }}
