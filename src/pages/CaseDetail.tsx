@@ -41,7 +41,7 @@ const CaseDetail = () => {
 
     const createPlayer = () => {
       playerRef.current = new window.YT.Player('yt-player', {
-        videoId: 'MvhCX1K5wpE',
+        videoId: 'R38FR2y53_w',
         playerVars: {
           autoplay: 1,
           mute: 1,
