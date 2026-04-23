@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import PageWrapper from '@/components/PageWrapper';
-import { ExternalLink, BookOpen, FileText, Play, Home } from 'lucide-react';
+import { ExternalLink, BookOpen, FileText, Play, Home, Info } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useNavigate } from 'react-router-dom';
 import homepageBackground from '@/assets/homepage-background.jpg';
 import { endSessionAndSubmit } from '@/lib/surveyData';
@@ -11,18 +12,21 @@ const caseSources = [
     id: 1,
     title: "Rapid Response to Ketamine in Treatment Resistant Depression",
     source: "Frontiers in Psychiatry",
+    citation: "Frontiers in Psychiatry, 2022. \"Rapid response to ketamine in treatment-resistant depression.\" DOI: 10.3389/fpsyt.2022.1020214",
     url: "https://www.frontiersin.org/journals/psychiatry/articles/10.3389/fpsyt.2022.1020214/full",
   },
   {
     id: 2,
     title: "Fluctuating Recovery and the Need for Combined Treatment Approaches",
     source: "ScienceDirect (Journal Article)",
+    citation: "ScienceDirect, 2024. \"Fluctuating recovery and the need for combined treatment approaches in depression.\" PII: S2773021224000245",
     url: "https://www.sciencedirect.com/science/article/pii/S2773021224000245",
   },
   {
     id: 3,
     title: "Depression Linked to Underlying Physiological Conditions",
     source: "SCIRP (Scientific Research Publishing)",
+    citation: "Scientific Research Publishing (SCIRP). \"Depression linked to underlying physiological conditions.\" Paper ID: 136810",
     url: "https://www.scirp.org/journal/paperinformation?paperid=136810",
   },
 ];
@@ -125,8 +129,18 @@ const Bibliography = () => {
                     <h3 className="font-medium mb-2 group-hover:text-primary transition-colors">
                       {study.title}
                     </h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-muted-foreground inline-flex items-center gap-1.5">
                       Source: {study.source}
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="inline-flex cursor-help" onClick={(e) => e.preventDefault()}>
+                            <Info className="w-3.5 h-3.5 text-muted-foreground/60 hover:text-primary transition-colors" />
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="max-w-xs text-xs leading-relaxed">
+                          {study.citation}
+                        </TooltipContent>
+                      </Tooltip>
                     </p>
                   </div>
                   <ExternalLink className="w-4 h-4 text-muted-foreground flex-shrink-0 group-hover:text-primary transition-colors" />
