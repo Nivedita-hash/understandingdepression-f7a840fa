@@ -68,8 +68,8 @@ export const preAssessmentQuestions: AssessmentQuestion[] = [
     id: 'pre_journey_differences',
     type: 'short-answer',
     text: 'What differences do you think might exist between two people\'s depression journeys?',
-    helpText: 'Examples: triggers, how it changes over time, what support helps, how long it lasts.',
-    minLength: 3,
+    helpText: 'Examples: triggers, how it changes over time, what support helps, how long it lasts. (minimum 10 characters)',
+    minLength: 10,
   },
 ];
 
@@ -91,16 +91,16 @@ export const postAssessmentQuestions: AssessmentQuestion[] = [
     id: 'post_two_differences_noticed',
     type: 'short-answer',
     text: 'Name two differences you noticed between the case journeys.',
-    helpText: 'Examples: triggers, phase changes, supports, treatment paths, duration.',
-    minLength: 3,
+    helpText: 'Examples: triggers, phase changes, supports, treatment paths, duration. (minimum 10 characters)',
+    minLength: 10,
   },
   { id: 'post_website_helped_notice_differences', type: 'likert', text: 'This website helped me notice differences across depression journeys.' },
   {
     id: 'post_feedback_suggestions',
     type: 'short-answer',
     text: 'Any feedback or suggestions for us?',
-    helpText: 'Optional thoughts on what worked, what didn\'t, or what could improve (max 300 characters).',
-    minLength: 0,
+    helpText: 'Share what worked, what didn\'t, or what could improve (minimum 10, maximum 300 characters).',
+    minLength: 10,
     maxLength: 300,
   },
 ];
