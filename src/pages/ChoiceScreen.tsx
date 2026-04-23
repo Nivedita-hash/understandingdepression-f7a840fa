@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageWrapper from '@/components/PageWrapper';
 import { ArrowRight, BarChart3, ClipboardCheck } from 'lucide-react';
+import { trackDashboardOpen } from '@/lib/analytics';
+import { markDashboardVisited } from '@/lib/surveyData';
 
 
 const ChoiceScreen = () => {
@@ -18,6 +20,9 @@ const ChoiceScreen = () => {
   const handleDashboard = () => {
     localStorage.setItem('visited_dashboard', 'true');
     localStorage.setItem('user_path', 'dashboard');
+    // Track only on deliberate user click
+    trackDashboardOpen();
+    markDashboardVisited();
     navigate('/compare');
   };
 

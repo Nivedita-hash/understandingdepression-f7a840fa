@@ -4,8 +4,6 @@ import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import PageWrapper from '@/components/PageWrapper';
 import TableauEmbed from '@/components/TableauEmbed';
-import { trackDashboardOpen } from '@/lib/analytics';
-import { markDashboardVisited } from '@/lib/surveyData';
 
 
 const ComparativeDashboard = () => {
@@ -13,10 +11,8 @@ const ComparativeDashboard = () => {
 
   
 
-  useEffect(() => {
-    trackDashboardOpen();
-    markDashboardVisited();
-  }, []);
+  // Dashboard tracking is handled on user click (ChoiceScreen),
+  // NOT on component mount, to avoid false positives from previews/renders.
 
   const handleContinue = () => navigate('/post-assessment');
 
