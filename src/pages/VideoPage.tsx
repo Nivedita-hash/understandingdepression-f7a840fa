@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import PageWrapper from '@/components/PageWrapper';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ExternalLink } from 'lucide-react';
 import { trackVideoStart, trackVideoComplete } from '@/lib/analytics';
 import { markVideoCompleted } from '@/lib/surveyData';
 
@@ -114,6 +114,18 @@ const VideoPage = () => {
               <div id="yt-player" className="absolute inset-0 w-full h-full" />
             </div>
           </div>
+
+          <p className="mt-3 text-center text-xs text-muted-foreground/60">
+            Unable to load video?{' '}
+            <a
+              href="https://www.youtube.com/watch?v=R38FR2y53_w"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-primary transition-colors inline-flex items-center gap-1"
+            >
+              Watch on YouTube <ExternalLink className="w-3 h-3" />
+            </a>
+          </p>
 
           {/* Gated Next Button */}
           <AnimatePresence>
