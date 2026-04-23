@@ -1,60 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
 import PageWrapper from '@/components/PageWrapper';
 import { ArrowRight } from 'lucide-react';
-
-const narrativeLines = [
-  { text: "You've seen how it unfolds.", group: 0 },
-  { text: "", group: -1 },
-  { text: "A climb—slow, difficult, but leading somewhere.", group: 1 },
-  { text: "A pattern of waves—rising, falling, never predictable.", group: 1 },
-  { text: "A plateau—unchanging, until something deeper shifts.", group: 1 },
-  { text: "", group: -1 },
-  { text: "The same diagnosis.", group: 2 },
-  { text: "But not the same story.", group: 2 },
-  { text: "", group: -1 },
-  { text: "Because depression doesn't move in one direction.", group: 3 },
-  { text: "It doesn't respond in one way.", group: 3 },
-  { text: "And it doesn't come from one place.", group: 3 },
-  { text: "", group: -1 },
-  { text: "And that changes the question.", group: 4 },
-  { text: "", group: -1 },
-  { text: "Not 'What works?'", group: 5 },
-  { text: "But 'What works, for whom—and why?'", group: 5 },
-  { text: "", group: -1 },
-  { text: "Because this isn't a single path.", group: 6 },
-  { text: "It's many.", group: 6 },
-  { text: "", group: -1 },
-  { text: "And each one deserves to be seen.", group: 7 },
-];
-
-const NarrativeLine = ({ text, index }: { text: string; index: number }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-40px" });
-
-  if (text === "") {
-    return <div ref={ref} className="h-6 md:h-8" />;
-  }
-
-  const isEmphasis = text.startsWith("But ") || text.startsWith("And each") || text.includes("for whom");
-
-  return (
-    <motion.p
-      ref={ref}
-      initial={{ opacity: 0, y: 18 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className={`text-lg md:text-xl leading-relaxed ${
-        isEmphasis
-          ? 'text-foreground font-medium italic'
-          : 'text-foreground/80'
-      }`}
-    >
-      {text}
-    </motion.p>
-  );
-};
 
 const FlowingPaths = () => (
   <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden">
@@ -94,8 +42,10 @@ const FlowingPaths = () => (
 
 const WhatWeLearned = () => {
   const navigate = useNavigate();
+  const bodyRef = useRef(null);
   const quoteRef = useRef(null);
   const ctaRef = useRef(null);
+  const bodyInView = useInView(bodyRef, { once: true, margin: "-40px" });
   const quoteInView = useInView(quoteRef, { once: true, margin: "-40px" });
   const ctaInView = useInView(ctaRef, { once: true, margin: "-20px" });
 
@@ -116,14 +66,20 @@ const WhatWeLearned = () => {
           </h1>
         </motion.header>
 
-        {/* SECTION 2: Narrative Reveal */}
-        <div className="space-y-1 mb-20 md:mb-28">
-          {narrativeLines.map((line, i) => (
-            <NarrativeLine key={i} text={line.text} index={i} />
-          ))}
-        </div>
+        {/* SECTION 2: Body Paragraph */}
+        <motion.div
+          ref={bodyRef}
+          initial={{ opacity: 0, y: 18 }}
+          animate={bodyInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="mb-20 md:mb-28"
+        >
+          <p className="text-lg md:text-xl leading-relaxed text-foreground/80">
+            By now, you've seen how differently these journeys can unfold—a steady climb toward relief, waves of progress and relapse, and a long plateau that only shifts when something deeper is understood. The same diagnosis, yet entirely different paths. What this reveals is simple, but often overlooked: depression does not follow a single direction, respond in one way, or come from one cause. It unfolds over time—shaped by individual experiences, underlying mechanisms, and the paths people take to recover. And when we begin to see these journeys as they are—not as isolated moments, but as evolving stories—the question itself changes. Not just what works, but what works for whom, under what conditions, and why. Because depression is not one story. It is many. And each one deserves to be seen.
+          </p>
+        </motion.div>
 
-        {/* SECTION 4: Quote */}
+        {/* SECTION 3: Quote */}
         <motion.blockquote
           ref={quoteRef}
           initial={{ opacity: 0 }}
@@ -139,7 +95,7 @@ const WhatWeLearned = () => {
           </cite>
         </motion.blockquote>
 
-        {/* SECTION 5: CTA */}
+        {/* SECTION 4: CTA */}
         <motion.div
           ref={ctaRef}
           initial={{ opacity: 0, scale: 0.95 }}
