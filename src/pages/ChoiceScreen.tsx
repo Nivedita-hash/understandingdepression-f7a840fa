@@ -5,6 +5,7 @@ import PageWrapper from '@/components/PageWrapper';
 import { ArrowRight, BarChart3, ClipboardCheck } from 'lucide-react';
 import { trackDashboardOpen } from '@/lib/analytics';
 import { markDashboardVisited } from '@/lib/surveyData';
+import { trackDashboardClick } from '@/lib/tracking';
 
 
 const ChoiceScreen = () => {
@@ -23,6 +24,7 @@ const ChoiceScreen = () => {
     // Track only on deliberate user click
     trackDashboardOpen();
     markDashboardVisited();
+    trackDashboardClick();
     navigate('/compare');
   };
 
