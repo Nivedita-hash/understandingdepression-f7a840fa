@@ -78,6 +78,8 @@ export function trackPageVisit(pathname: string): void {
 }
 
 export function markDashboardVisited(): void {
+  // Only mark in production with active user focus
+  if (getEnvironment() === 'preview' || !document.hasFocus()) return;
   localStorage.setItem(DASHBOARD_VISITED_KEY, 'true');
 }
 

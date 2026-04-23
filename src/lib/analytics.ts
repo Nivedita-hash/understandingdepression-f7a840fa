@@ -43,6 +43,9 @@ export function bindGaUser(): void {
 
 export function gaEvent(name: string, params: Record<string, unknown> = {}): void {
   if (typeof window === 'undefined' || typeof window.gtag !== 'function') return;
+  // Skip tracking in preview/dev environments and when page is not focused
+  if (getEnvironment() === 'preview') return;
+  if (!document.hasFocus()) return;
   window.gtag('event', name, {
     session_id: getSessionId(),
     environment: getEnvironment(),
