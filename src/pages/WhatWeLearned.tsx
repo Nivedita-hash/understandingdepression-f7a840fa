@@ -58,7 +58,7 @@ const WhatWeLearned = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h1 className="heading-display mb-6">What We Have Learned</h1>
+          <h1 className="heading-display mb-6">What These Journeys Reveal</h1>
         </motion.header>
 
         <motion.div
@@ -72,11 +72,7 @@ const WhatWeLearned = () => {
           </div>
 
           <p className="narrative-text text-muted-foreground leading-relaxed max-w-2xl mx-auto text-lg">
-            Through this experience, we learned that depression is not the same
-            for everyone. It can change over time, unfold in phases, and be
-            shaped by life context, support systems, and treatment paths. Real
-            stories and comparison can help build deeper understanding, empathy,
-            and awareness of these differences.
+            By now, you have seen how differently these journeys unfold. A steady climb toward relief, waves of progress and relapse, and a plateau that only shifts when something deeper is understood. The same diagnosis, yet entirely different paths. What this reveals is simple but often missed. Depression does not follow one direction, respond in one way, or come from a single cause. It evolves over time, shaped by each person's experience and the path they take. And when we begin to see it this way, the question changes. Not just what works, but what works for whom, and why. Because depression is not one story. It is many. And each one deserves to be seen.
           </p>
         </motion.div>
 
