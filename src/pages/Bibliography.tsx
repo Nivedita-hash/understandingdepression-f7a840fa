@@ -108,6 +108,7 @@ const Bibliography = () => {
             <h2 className="heading-section">Case Study Sources</h2>
           </div>
 
+          <TooltipProvider delayDuration={200}>
           <div className="space-y-4">
             {caseSources.map((study, index) => (
               <motion.a
@@ -148,6 +149,7 @@ const Bibliography = () => {
               </motion.a>
             ))}
           </div>
+          </TooltipProvider>
         </motion.section>
 
         {/* Additional References */}
