@@ -22,7 +22,7 @@ const ComparativeDashboard = () => {
 
   return (
     <PageWrapper>
-      <div className="page-container max-w-6xl mx-auto relative z-10">
+      <div className="page-container max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
         <motion.section
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
