@@ -149,11 +149,6 @@ const PostAssessment = () => {
               {trimmedLen}/{minLen} characters minimum
             </span>
           ) : <span />}
-          {question.maxLength && (
-            <span className="text-muted-foreground">
-              {currentValue.length}/{question.maxLength}
-            </span>
-          )}
         </div>
       </motion.div>
     );
