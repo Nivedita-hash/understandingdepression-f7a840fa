@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import PageWrapper from '@/components/PageWrapper';
-import { ExternalLink, BookOpen, FileText, Play, Home, Info } from 'lucide-react';
+import { ExternalLink, BookOpen, FileText, Play, Home, Info, Globe, FlaskConical, BarChart3, Compass } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useNavigate } from 'react-router-dom';
 import homepageBackground from '@/assets/homepage-background.jpg';
