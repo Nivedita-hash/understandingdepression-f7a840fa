@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import PageWrapper from '@/components/PageWrapper';
-import { ExternalLink, BookOpen, FileText, Play, Home, Info } from 'lucide-react';
+import { ExternalLink, BookOpen, FileText, Play, Home, Info, Globe, FlaskConical, BarChart3, Compass } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useNavigate } from 'react-router-dom';
 import homepageBackground from '@/assets/homepage-background.jpg';
@@ -152,26 +152,98 @@ const Bibliography = () => {
           </TooltipProvider>
         </motion.section>
 
-        {/* Additional References */}
+        {/* Research Behind the Stories */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
           className="mb-12"
         >
-          <div className="flex items-center gap-2 mb-6">
+          <div className="flex items-center gap-2 mb-4">
             <FileText className="w-5 h-5 text-primary" />
-            <h2 className="heading-section">Additional References</h2>
+            <h2 className="heading-section">Research Behind the Stories</h2>
+          </div>
+          <p className="text-sm text-muted-foreground mb-6 max-w-2xl">
+            These sources provide the clinical foundation behind the journeys you explored—highlighting how depression varies across individuals, treatments, and underlying causes.
+          </p>
+
+          <div className="space-y-4">
+            {[
+              {
+                title: "Understanding Depression",
+                subtitle: "Global overview of depression, its symptoms, and impact",
+                source: "World Health Organization",
+                url: "https://www.who.int/news-room/fact-sheets/detail/depression",
+                icon: <Globe className="w-3 h-3" />,
+                tag: "Overview",
+              },
+              {
+                title: "What is Treatment-Resistant Depression?",
+                subtitle: "Clinical definition and framework for understanding why standard treatments fail",
+                source: "The Journal of Clinical Psychiatry",
+                url: "https://www.psychiatrist.com/wp-content/uploads/2021/02/18423_treatment-resistant-depression.pdf",
+                icon: <FileText className="w-3 h-3" />,
+                tag: "Clinical",
+              },
+              {
+                title: "Ketamine and Rapid Antidepressant Effects",
+                subtitle: "How ketamine works and why responses vary across patients",
+                source: "National Institutes of Health (NIH)",
+                url: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7225830/",
+                icon: <FlaskConical className="w-3 h-3" />,
+                tag: "Research",
+              },
+            ].map((ref, index) => (
+              <motion.a
+                key={ref.title}
+                href={ref.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
+                whileHover={{ scale: 1.02 }}
+                className="block section-card hover:border-primary/30 transition-colors group"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground mb-2 inline-flex items-center gap-1">
+                      {ref.icon}
+                      {ref.tag}
+                    </span>
+                    <h3 className="font-medium mb-1 group-hover:text-primary transition-colors">
+                      {ref.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">{ref.subtitle}</p>
+                    <p className="text-xs text-muted-foreground/70 mt-1">Source: {ref.source}</p>
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-muted-foreground flex-shrink-0 group-hover:text-primary transition-colors" />
+                </div>
+              </motion.a>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* Explore Further */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.9 }}
+          className="mb-12"
+        >
+          <div className="flex items-center gap-2 mb-6">
+            <Compass className="w-5 h-5 text-primary" />
+            <h2 className="heading-section">Explore Further</h2>
           </div>
 
           <div className="space-y-4">
             <motion.a
-              href="https://youtu.be/R38FR2y53_w"
+              href="https://www.youtube.com/watch?v=R38FR2y53_w"
               target="_blank"
               rel="noopener noreferrer"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, delay: 0.6 }}
+              transition={{ duration: 0.4, delay: 1.0 }}
               whileHover={{ scale: 1.02 }}
               className="block section-card hover:border-primary/30 transition-colors group"
             >
@@ -182,8 +254,33 @@ const Bibliography = () => {
                     Video
                   </span>
                   <h3 className="font-medium mb-1 group-hover:text-primary transition-colors">
-                    Narrative Exploration: Depression as Multiple Journeys
+                    Narrative Video Experience
                   </h3>
+                  <p className="text-sm text-muted-foreground">Watch the full journey of the three cases</p>
+                </div>
+                <ExternalLink className="w-4 h-4 text-muted-foreground flex-shrink-0 group-hover:text-primary transition-colors" />
+              </div>
+            </motion.a>
+
+            <motion.a
+              href="/comparative-dashboard"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: 1.1 }}
+              whileHover={{ scale: 1.02 }}
+              className="block section-card hover:border-primary/30 transition-colors group cursor-pointer"
+              onClick={(e) => { e.preventDefault(); window.open('/comparative-dashboard', '_blank'); }}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground mb-2 inline-flex items-center gap-1">
+                    <BarChart3 className="w-3 h-3" />
+                    Dashboard
+                  </span>
+                  <h3 className="font-medium mb-1 group-hover:text-primary transition-colors">
+                    Interactive Dashboard
+                  </h3>
+                  <p className="text-sm text-muted-foreground">Explore patterns, responses, and trajectories across cases</p>
                 </div>
                 <ExternalLink className="w-4 h-4 text-muted-foreground flex-shrink-0 group-hover:text-primary transition-colors" />
               </div>
