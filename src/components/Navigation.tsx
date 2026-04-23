@@ -116,7 +116,7 @@ const Navigation = () => {
                   onClick={() => handleNavigate(nextPath)}
                   className="nav-button-primary"
                 >
-                  <span>Next</span>
+                  <span>{path === '/compare' ? 'To Post-Assessment' : 'Next'}</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               )}
