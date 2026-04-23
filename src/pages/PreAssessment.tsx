@@ -129,6 +129,10 @@ const PreAssessment = () => {
     }
 
     // short-answer
+    const currentValue = (responses[question.id] as string) || '';
+    const minLen = question.minLength ?? 0;
+    const trimmedLen = currentValue.trim().length;
+    const meetsMin = trimmedLen >= minLen;
     return (
       <>
         {baseHeader}
@@ -136,12 +140,17 @@ const PreAssessment = () => {
           <p className="text-xs text-muted-foreground mb-2">{question.helpText}</p>
         )}
         <textarea
-          value={(responses[question.id] as string) || ''}
+          value={currentValue}
           onChange={(e) => setAnswer(question.id, e.target.value)}
           rows={3}
           className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition"
           placeholder="Share your thoughts..."
         />
+        {minLen > 0 && (
+          <p className={`mt-1 text-xs text-right ${meetsMin ? 'text-muted-foreground' : 'text-destructive'}`}>
+            {trimmedLen}/{minLen} characters minimum
+          </p>
+        )}
       </>
     );
   };
