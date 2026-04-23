@@ -261,6 +261,12 @@ const Bibliography = () => {
                 <ExternalLink className="w-4 h-4 text-muted-foreground flex-shrink-0 group-hover:text-primary transition-colors" />
               </div>
             </motion.a>
+            <p className="text-xs text-muted-foreground/50 mt-1 ml-1">
+              Having trouble?{' '}
+              <a href="https://www.youtube.com/watch?v=R38FR2y53_w" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary transition-colors">
+                Open directly on YouTube
+              </a>
+            </p>
 
             <motion.a
               href="/comparative-dashboard"
