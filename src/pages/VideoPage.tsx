@@ -31,10 +31,18 @@ const VideoPage = () => {
   const completedRef = useRef(false);
   const userInteractedRef = useRef(false);
 
-  // Mark a real user interaction the moment they click anywhere on the
-  // player area. Autoplay (muted) alone does NOT count.
-  const handleUserInteraction = useCallback(() => {
-    userInteractedRef.current = true;
+  // The YouTube iframe captures its own click events, so we cannot listen
+  // on a wrapper div. When the user clicks INSIDE the iframe, the parent
+  // window loses focus — that's our reliable proxy for a real user gesture.
+  useEffect(() => {
+    const onBlur = () => {
+      // Only count blur if the active element is the YT iframe
+      if (document.activeElement?.tagName === 'IFRAME') {
+        userInteractedRef.current = true;
+      }
+    };
+    window.addEventListener('blur', onBlur);
+    return () => window.removeEventListener('blur', onBlur);
   }, []);
 
   const initPlayer = useCallback(() => {
