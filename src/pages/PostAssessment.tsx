@@ -9,7 +9,7 @@ import {
 } from '@/data/assessmentQuestions';
 import { ArrowRight } from 'lucide-react';
 import { getSessionId } from '@/lib/surveyData';
-import { trackAssessmentSubmit } from '@/lib/analytics';
+import { trackAssessmentSubmit, startPageTimer, endPageTimer } from '@/lib/analytics';
 
 
 const isAnswered = (q: AssessmentQuestion, value: string | number | undefined) => {
@@ -27,7 +27,10 @@ const PostAssessment = () => {
 
   const allAnswered = postAssessmentQuestions.every((q) => isAnswered(q, responses[q.id]));
 
-  
+  useEffect(() => {
+    startPageTimer('assessment_page');
+    return () => endPageTimer('assessment_page');
+  }, []);
 
   const setAnswer = (id: string, value: string | number) => {
     setResponses((prev) => ({ ...prev, [id]: value }));
@@ -43,6 +46,7 @@ const PostAssessment = () => {
     localStorage.setItem('post_assessment_responses', JSON.stringify(data));
 
     trackAssessmentSubmit('post');
+    endPageTimer('assessment_page');
 
     // Survey data is submitted on bibliography page (final page)
     navigate('/learned');
