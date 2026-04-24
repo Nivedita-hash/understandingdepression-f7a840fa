@@ -167,7 +167,7 @@ const PreAssessment = () => {
           <div className="text-center mb-10">
             <h1 className="heading-display text-3xl md:text-4xl mb-3">Before We Begin</h1>
             <p className="text-muted-foreground text-base md:text-lg max-w-lg mx-auto">
-              Please share your current thoughts about depression. There are no right or wrong answers.
+              Before you begin, we'd like to understand how you currently think about depression. There are no right or wrong answers—just your perspective.
             </p>
           </div>
 
