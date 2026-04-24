@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import homepageBackground from "@/assets/homepage-background.jpg";
 import { startSession } from "@/lib/surveyData";
+import { trackExperienceStart } from "@/lib/analytics";
 
 
 const Index = () => {
@@ -97,6 +98,7 @@ const Index = () => {
           <motion.button
             onClick={() => {
               startSession();
+              trackExperienceStart();
               navigate("/pre-assessment");
             }}
             className="nav-button-primary group text-lg px-10 py-4 relative overflow-hidden"

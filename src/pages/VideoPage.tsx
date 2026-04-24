@@ -3,7 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import PageWrapper from '@/components/PageWrapper';
 import { ArrowRight, ExternalLink } from 'lucide-react';
-import { trackVideoStart, trackVideoComplete } from '@/lib/analytics';
+import {
+  trackVideoStart,
+  trackVideoComplete,
+  startPageTimer,
+  endPageTimer,
+} from '@/lib/analytics';
 import { markVideoCompleted } from '@/lib/surveyData';
 
 
@@ -24,8 +29,21 @@ const VideoPage = () => {
   const maxReachedRef = useRef(0);
   const startedRef = useRef(false);
   const completedRef = useRef(false);
+  const userInteractedRef = useRef(false);
 
-  
+  // The YouTube iframe captures its own click events, so we cannot listen
+  // on a wrapper div. When the user clicks INSIDE the iframe, the parent
+  // window loses focus — that's our reliable proxy for a real user gesture.
+  useEffect(() => {
+    const onBlur = () => {
+      // Only count blur if the active element is the YT iframe
+      if (document.activeElement?.tagName === 'IFRAME') {
+        userInteractedRef.current = true;
+      }
+    };
+    window.addEventListener('blur', onBlur);
+    return () => window.removeEventListener('blur', onBlur);
+  }, []);
 
   const initPlayer = useCallback(() => {
     const createPlayer = () => {
@@ -40,6 +58,25 @@ const VideoPage = () => {
           controls: 1,
         },
         events: {
+          onStateChange: (e: any) => {
+            const YT = window.YT;
+            // PLAYING after a real user gesture → first true "play"
+            if (
+              e.data === YT?.PlayerState?.PLAYING &&
+              !startedRef.current &&
+              userInteractedRef.current
+            ) {
+              startedRef.current = true;
+              trackVideoStart();
+            }
+            // ENDED → fire video_complete exactly once
+            if (e.data === YT?.PlayerState?.ENDED && !completedRef.current) {
+              completedRef.current = true;
+              trackVideoComplete();
+              markVideoCompleted();
+              setShowNext(true);
+            }
+          },
           onReady: () => {
             intervalRef.current = setInterval(() => {
               const player = playerRef.current;
@@ -48,11 +85,6 @@ const VideoPage = () => {
               const currentTime = player.getCurrentTime();
               const duration = player.getDuration();
 
-              if (!startedRef.current && currentTime > 0.5) {
-                startedRef.current = true;
-                trackVideoStart();
-              }
-
               // Anti-seek: revert if jumped ahead
               if (currentTime > maxReachedRef.current + 2) {
                 player.seekTo(maxReachedRef.current, true);
@@ -60,14 +92,10 @@ const VideoPage = () => {
                 maxReachedRef.current = Math.max(maxReachedRef.current, currentTime);
               }
 
-              // Show Next in last 20 seconds
+              // Reveal Next button in last 20s (UI only — completion event
+              // still fires from the ENDED state above)
               if (duration > 0 && duration - currentTime <= VIDEO_END_THRESHOLD) {
                 setShowNext(true);
-                if (!completedRef.current) {
-                  completedRef.current = true;
-                  trackVideoComplete();
-                  markVideoCompleted();
-                }
               }
             }, 1000);
           },
@@ -91,11 +119,16 @@ const VideoPage = () => {
   }, []);
 
   useEffect(() => {
+    startPageTimer('video_page');
     const cleanup = initPlayer();
-    return () => cleanup?.();
+    return () => {
+      cleanup?.();
+      endPageTimer('video_page');
+    };
   }, [initPlayer]);
 
   const handleNext = () => {
+    endPageTimer('video_page');
     navigate('/video-transition');
   };
 

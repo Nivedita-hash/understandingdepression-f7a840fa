@@ -1,19 +1,24 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import PageWrapper from '@/components/PageWrapper';
 import TableauEmbed from '@/components/TableauEmbed';
+import { startPageTimer, endPageTimer } from '@/lib/analytics';
 
 
 const ComparativeDashboard = () => {
   const navigate = useNavigate();
 
-  
+  useEffect(() => {
+    startPageTimer('dashboard_page');
+    return () => endPageTimer('dashboard_page');
+  }, []);
 
-  // Dashboard tracking is handled on user click (ChoiceScreen),
-  // NOT on component mount, to avoid false positives from previews/renders.
-
-  const handleContinue = () => navigate('/post-assessment');
+  const handleContinue = () => {
+    endPageTimer('dashboard_page');
+    navigate('/post-assessment');
+  };
 
   return (
     <PageWrapper>

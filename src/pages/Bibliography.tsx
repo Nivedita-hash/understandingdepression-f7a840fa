@@ -5,7 +5,8 @@ import { ExternalLink, BookOpen, FileText, Play, Home, Info, Globe, FlaskConical
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useNavigate } from 'react-router-dom';
 import homepageBackground from '@/assets/homepage-background.jpg';
-import { endSessionAndSubmit } from '@/lib/surveyData';
+import { endSessionAndSubmit, getSessionStart } from '@/lib/surveyData';
+import { trackSessionEnd } from '@/lib/analytics';
 
 const caseSources = [
   {
@@ -38,6 +39,14 @@ const Bibliography = () => {
   useEffect(() => {
     if (submittedRef.current) return;
     submittedRef.current = true;
+
+    // Fire GA session_end with total elapsed seconds (one-time)
+    const start = getSessionStart();
+    if (start) {
+      const totalSec = Math.floor((Date.now() - start) / 1000);
+      trackSessionEnd(totalSec);
+    }
+
     endSessionAndSubmit();
   }, []);
 
