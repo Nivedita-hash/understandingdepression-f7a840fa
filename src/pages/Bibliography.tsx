@@ -49,7 +49,21 @@ const Bibliography = () => {
       trackSessionEnd(totalSec);
     }
 
-    endSessionAndSubmit();
+    endSessionAndSubmit().then((result) => {
+      if (result.alreadySubmitted) return;
+      const preview = result.response?.slice(0, 200) || '(empty response)';
+      if (result.ok) {
+        toast.success('Assessment submitted', {
+          description: `Status ${result.status} • ${preview}`,
+          duration: 8000,
+        });
+      } else {
+        toast.error('Submission failed', {
+          description: `Status ${result.status} • ${preview}`,
+          duration: 12000,
+        });
+      }
+    });
   }, []);
 
   const mouseX = useMotionValue(0);
