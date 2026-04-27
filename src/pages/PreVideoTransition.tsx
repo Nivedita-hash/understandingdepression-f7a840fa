@@ -66,7 +66,7 @@ const PreVideoTransition = () => {
                 className="mt-10"
               >
                 <button
-                  onClick={() => navigate('/video')}
+                  onClick={handleContinue}
                   className="nav-button-primary group text-lg px-8 py-3"
                 >
                   Continue
