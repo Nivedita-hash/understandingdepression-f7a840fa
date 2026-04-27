@@ -196,16 +196,14 @@ export function buildSurveyData(): SurveyPayload {
     ? rawGender.slice(6).trim() || 'Other'
     : rawGender;
 
+  // Flat payload — keys MUST match Google Sheets column headers EXACTLY.
   const data: SurveyPayload = {
     session_id: sessionId,
-    date: new Date().toISOString(),
-    start_time: startMs ? formatHHMMSS(startMs) : '',
-    end_time: formatHHMMSS(endMs),
-    total_time_seconds: totalSec,
-    total_time_readable: formatReadableTime(totalSec),
     environment: getEnvironment(),
     gender,
   };
+  // Reference unused locals to avoid TS warnings (kept for potential future use)
+  void startMs; void endMs; void totalSec;
 
   // ── Pre-assessment Q1–Q11 ──
   // Q1: pre_learned_before (multiple-choice, label only)
