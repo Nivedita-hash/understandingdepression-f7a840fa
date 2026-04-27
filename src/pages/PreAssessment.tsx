@@ -8,7 +8,7 @@ import {
   type AssessmentQuestion,
 } from '@/data/assessmentQuestions';
 import { ArrowRight } from 'lucide-react';
-import { getSessionId, startPageTime, sendPageTime } from '@/lib/surveyData';
+import { getSessionId, startPageTime, sendPageTime, submitAssessmentNow } from '@/lib/surveyData';
 import { trackAssessmentSubmit } from '@/lib/analytics';
 
 
@@ -39,7 +39,6 @@ const PreAssessment = () => {
   };
 
   const handleSubmit = () => {
-    if (!allAnswered) return;
     const data = {
       session_id: getSessionId(),
       timestamp: Date.now(),
@@ -52,6 +51,10 @@ const PreAssessment = () => {
       ? rawGender.startsWith('Other:') ? rawGender.slice(6).trim() || 'Other' : rawGender
       : undefined;
     trackAssessmentSubmit('pre', gender);
+
+    // Fire POST to Apps Script immediately on submit click
+    submitAssessmentNow('pre', responses);
+
     sendPageTime('pre-assessment');
     navigate('/about-depression');
   };
