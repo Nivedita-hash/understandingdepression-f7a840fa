@@ -130,7 +130,7 @@ export function startPageTime(pageName: TrackedPageName): void {
   sessionStorage.removeItem(`${PAGE_SENT_PREFIX}${pageName}`);
 }
 
-/** Call on intentional navigation click. Sends ONE entry, then resets. */
+/** Call on intentional navigation click. Sends ONE entry, then resets timer. */
 export function sendPageTime(pageName: TrackedPageName): void {
   if (typeof window === 'undefined') return;
 
@@ -139,45 +139,40 @@ export function sendPageTime(pageName: TrackedPageName): void {
   if (sessionStorage.getItem(sentKey) === 'true') return;
 
   const startRaw = sessionStorage.getItem(PAGE_START_KEY);
-  if (!startRaw) return;
-  const start = parseInt(startRaw, 10);
-  if (!start || Number.isNaN(start)) return;
-
-  const timeSpent = Math.round((Date.now() - start) / 1000);
+  const start = startRaw ? parseInt(startRaw, 10) : 0;
+  const timeSpent = start ? Math.floor((Date.now() - start) / 1000) : 0;
   if (timeSpent < 0) return;
 
+  // Ensure session_id exists in spec format
+  if (!localStorage.getItem('session_id')) {
+    localStorage.setItem('session_id', 'session_' + Date.now());
+  }
+
   const payload = {
-    session_id: getSessionId(),
-    page_name: pageName,
+    session_id: localStorage.getItem('session_id'),
+    page_name: window.location.pathname,
     time_spent_seconds: timeSpent,
     event_type: 'page_time',
     sheet: 'page_tracking',
   };
 
-  const body = JSON.stringify(payload);
-  console.log('[PageTime] →', payload);
+  console.log('Sending to Sheets:', payload);
 
-  try {
-    if (navigator?.sendBeacon) {
-      const blob = new Blob([body], { type: 'text/plain;charset=utf-8' });
-      navigator.sendBeacon(GOOGLE_SCRIPT_URL, blob);
-    } else {
-      fetch(GOOGLE_SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        keepalive: true,
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body,
-      }).catch((err) => console.error('[PageTime] Failed:', err));
-    }
-  } catch (err) {
-    console.error('[PageTime] Failed:', err);
-  }
+  // Use text/plain to avoid CORS preflight; Apps Script parses e.postData.contents as JSON
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    keepalive: true,
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload),
+  })
+    .then(() => console.log('[PageTime] Sent:', pageName, timeSpent + 's'))
+    .catch((err) => console.error('[PageTime] Error:', err));
 
   sessionStorage.setItem(sentKey, 'true');
-  // Reset for next page
-  sessionStorage.removeItem(PAGE_START_KEY);
-  sessionStorage.removeItem(PAGE_NAME_KEY);
+  // Reset timer for the next page
+  sessionStorage.setItem(PAGE_START_KEY, Date.now().toString());
+  sessionStorage.setItem(PAGE_NAME_KEY, pageName);
 }
 
 // ── Build final payload ──────────────────────────────────────
