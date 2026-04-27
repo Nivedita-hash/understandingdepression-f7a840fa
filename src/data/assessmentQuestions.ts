@@ -99,8 +99,7 @@ export const postAssessmentQuestions: AssessmentQuestion[] = [
     id: 'post_feedback_suggestions',
     type: 'short-answer',
     text: 'Do you have any suggestions or feedback that could improve this experience?',
-    helpText: 'Share what worked, what didn\'t, or what could improve (minimum 10 characters).',
-    minLength: 10,
+    helpText: 'Share what worked, what didn\'t, or what could improve.',
   },
 ];
 
