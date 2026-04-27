@@ -103,6 +103,83 @@ function formatHHMMSS(ts: number): string {
   return d.toLocaleTimeString('en-GB', { hour12: false }); // HH:MM:SS
 }
 
+// ── Page-level time tracking → Google Sheets ─────────────────
+// Standalone time tracker that posts ONE entry per page to the
+// Apps Script "page_tracking" sheet. Triggered ONLY on intentional
+// navigation (button click). Does NOT use beforeunload, GA, or auto-fire.
+
+export type TrackedPageName =
+  | 'pre-assessment'
+  | 'pre-video'
+  | 'video'
+  | 'dashboard'
+  | 'post-assessment'
+  | 'learned'
+  | 'bibliography';
+
+const PAGE_START_KEY = 'page_start_time';
+const PAGE_NAME_KEY = 'current_page';
+const PAGE_SENT_PREFIX = 'page_time_sent_';
+
+/** Call on page mount. Stores start time + page name in sessionStorage. */
+export function startPageTime(pageName: TrackedPageName): void {
+  if (typeof window === 'undefined') return;
+  sessionStorage.setItem(PAGE_START_KEY, Date.now().toString());
+  sessionStorage.setItem(PAGE_NAME_KEY, pageName);
+  // Clear any previous "sent" flag for this page so a fresh visit re-tracks
+  sessionStorage.removeItem(`${PAGE_SENT_PREFIX}${pageName}`);
+}
+
+/** Call on intentional navigation click. Sends ONE entry, then resets. */
+export function sendPageTime(pageName: TrackedPageName): void {
+  if (typeof window === 'undefined') return;
+
+  // Guard: only fire once per page visit
+  const sentKey = `${PAGE_SENT_PREFIX}${pageName}`;
+  if (sessionStorage.getItem(sentKey) === 'true') return;
+
+  const startRaw = sessionStorage.getItem(PAGE_START_KEY);
+  if (!startRaw) return;
+  const start = parseInt(startRaw, 10);
+  if (!start || Number.isNaN(start)) return;
+
+  const timeSpent = Math.round((Date.now() - start) / 1000);
+  if (timeSpent < 0) return;
+
+  const payload = {
+    session_id: getSessionId(),
+    page_name: pageName,
+    time_spent_seconds: timeSpent,
+    event_type: 'page_time',
+    sheet: 'page_tracking',
+  };
+
+  const body = JSON.stringify(payload);
+  console.log('[PageTime] →', payload);
+
+  try {
+    if (navigator?.sendBeacon) {
+      const blob = new Blob([body], { type: 'text/plain;charset=utf-8' });
+      navigator.sendBeacon(GOOGLE_SCRIPT_URL, blob);
+    } else {
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        keepalive: true,
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body,
+      }).catch((err) => console.error('[PageTime] Failed:', err));
+    }
+  } catch (err) {
+    console.error('[PageTime] Failed:', err);
+  }
+
+  sessionStorage.setItem(sentKey, 'true');
+  // Reset for next page
+  sessionStorage.removeItem(PAGE_START_KEY);
+  sessionStorage.removeItem(PAGE_NAME_KEY);
+}
+
 // ── Build final payload ──────────────────────────────────────
 
 export interface SurveyPayload {
