@@ -5,7 +5,7 @@ import { ExternalLink, BookOpen, FileText, Play, Home, Info, Globe, FlaskConical
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useNavigate } from 'react-router-dom';
 import homepageBackground from '@/assets/homepage-background.jpg';
-import { endSessionAndSubmit, getSessionStart } from '@/lib/surveyData';
+import { endSessionAndSubmit, getSessionStart, startPageTime, sendPageTime } from '@/lib/surveyData';
 import { trackSessionEnd } from '@/lib/analytics';
 
 const caseSources = [
@@ -37,6 +37,7 @@ const Bibliography = () => {
   const submittedRef = useRef(false);
 
   useEffect(() => {
+    startPageTime('bibliography');
     if (submittedRef.current) return;
     submittedRef.current = true;
 
@@ -329,7 +330,10 @@ const Bibliography = () => {
           className="mt-10 text-center"
         >
           <button
-            onClick={() => navigate('/')}
+            onClick={() => {
+              sendPageTime('bibliography');
+              navigate('/');
+            }}
             className="nav-button-primary group text-lg px-8 py-3 inline-flex items-center gap-2"
           >
             <Home className="w-5 h-5" />

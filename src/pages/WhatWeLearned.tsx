@@ -101,6 +101,7 @@ const WhatWeLearned = () => {
         >
           <button
             onClick={() => {
+              sendPageTime('learned');
               navigate('/bibliography');
               window.scrollTo({ top: 0, behavior: 'auto' });
             }}
