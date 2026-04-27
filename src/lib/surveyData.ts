@@ -278,6 +278,44 @@ export function buildSurveyData(): SurveyPayload {
   return data;
 }
 
+// ── Per-assessment immediate submit ──────────────────────────
+
+/**
+ * Fire a POST to Apps Script with the current assessment payload.
+ * Used by the Pre/Post assessment submit buttons so each click reliably
+ * produces a network request + visible console logs. Does not gate on
+ * prior submissions and does not touch page-tracking logic.
+ */
+export function submitAssessmentNow(
+  which: 'pre' | 'post',
+  responses: Record<string, string | number>,
+): void {
+  // Persist responses so the final aggregate payload (bibliography) still works
+  try {
+    localStorage.setItem(`${which}_assessment_responses`, JSON.stringify({
+      session_id: getSessionId(),
+      timestamp: Date.now(),
+      responses,
+    }));
+  } catch (e) {
+    console.warn('[Assessment] Could not persist responses', e);
+  }
+
+  const payload = buildSurveyData();
+  (payload as Record<string, unknown>).assessment_stage = which;
+
+  console.log('Submitting assessment:', payload);
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+    .then((res) => res.text())
+    .then((res) => console.log('SUCCESS:', res))
+    .catch((err) => console.error('ERROR:', err));
+}
+
 // ── Submit once ──────────────────────────────────────────────
 
 /**
