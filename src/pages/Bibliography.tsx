@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import homepageBackground from '@/assets/homepage-background.jpg';
 import { endSessionAndSubmit, getSessionStart, startPageTime, sendPageTime } from '@/lib/surveyData';
 import { trackSessionEnd } from '@/lib/analytics';
+import { toast } from 'sonner';
 
 const caseSources = [
   {
