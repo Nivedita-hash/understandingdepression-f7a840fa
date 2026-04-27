@@ -303,17 +303,19 @@ export function submitAssessmentNow(
 
   const payload = buildSurveyData();
   (payload as Record<string, unknown>).assessment_stage = which;
+  (payload as Record<string, unknown>).sheet = which === 'pre' ? 'pre_assessment' : 'post_assessment';
 
   console.log('Submitting assessment:', payload);
 
+  // Use text/plain to avoid CORS preflight; Apps Script reads e.postData.contents as JSON
   fetch(GOOGLE_SCRIPT_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify(payload),
   })
     .then((res) => res.text())
-    .then((res) => console.log('SUCCESS:', res))
-    .catch((err) => console.error('ERROR:', err));
+    .then((res) => console.log('SUCCESS [' + which + ']:', res))
+    .catch((err) => console.error('ERROR [' + which + ']:', err));
 }
 
 // ── Submit once ──────────────────────────────────────────────
