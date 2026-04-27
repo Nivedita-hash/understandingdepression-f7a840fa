@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageWrapper from '@/components/PageWrapper';
 import { ArrowRight } from 'lucide-react';
+import { startPageTime, sendPageTime } from '@/lib/surveyData';
 
 
 const PreVideoTransition = () => {
@@ -11,9 +12,15 @@ const PreVideoTransition = () => {
   const [showButton, setShowButton] = useState(false);
 
   useEffect(() => {
+    startPageTime('pre-video');
     const timer = setTimeout(() => setShowButton(true), 2000);
     return () => clearTimeout(timer);
   }, []);
+
+  const handleContinue = () => {
+    sendPageTime('pre-video');
+    navigate('/video');
+  };
 
   return (
     <PageWrapper showNav={false}>

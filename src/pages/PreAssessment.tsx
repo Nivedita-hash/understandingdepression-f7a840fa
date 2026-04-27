@@ -8,7 +8,7 @@ import {
   type AssessmentQuestion,
 } from '@/data/assessmentQuestions';
 import { ArrowRight } from 'lucide-react';
-import { getSessionId } from '@/lib/surveyData';
+import { getSessionId, startPageTime, sendPageTime } from '@/lib/surveyData';
 import { trackAssessmentSubmit } from '@/lib/analytics';
 
 
@@ -30,7 +30,9 @@ const PreAssessment = () => {
 
   const allAnswered = preAssessmentQuestions.every((q) => isAnswered(q, responses[q.id]));
 
-  
+  useEffect(() => {
+    startPageTime('pre-assessment');
+  }, []);
 
   const setAnswer = (id: string, value: string | number) => {
     setResponses((prev) => ({ ...prev, [id]: value }));
@@ -50,6 +52,7 @@ const PreAssessment = () => {
       ? rawGender.startsWith('Other:') ? rawGender.slice(6).trim() || 'Other' : rawGender
       : undefined;
     trackAssessmentSubmit('pre', gender);
+    sendPageTime('pre-assessment');
     navigate('/about-depression');
   };
 
