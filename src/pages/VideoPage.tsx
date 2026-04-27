@@ -9,7 +9,7 @@ import {
   startPageTimer,
   endPageTimer,
 } from '@/lib/analytics';
-import { markVideoCompleted } from '@/lib/surveyData';
+import { markVideoCompleted, startPageTime, sendPageTime } from '@/lib/surveyData';
 
 
 const VIDEO_END_THRESHOLD = 20;
@@ -120,6 +120,7 @@ const VideoPage = () => {
 
   useEffect(() => {
     startPageTimer('video_page');
+    startPageTime('video');
     const cleanup = initPlayer();
     return () => {
       cleanup?.();
@@ -129,6 +130,7 @@ const VideoPage = () => {
 
   const handleNext = () => {
     endPageTimer('video_page');
+    sendPageTime('video');
     navigate('/video-transition');
   };
 

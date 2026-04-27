@@ -8,7 +8,7 @@ import {
   type AssessmentQuestion,
 } from '@/data/assessmentQuestions';
 import { ArrowRight } from 'lucide-react';
-import { getSessionId } from '@/lib/surveyData';
+import { getSessionId, startPageTime, sendPageTime } from '@/lib/surveyData';
 import { trackAssessmentSubmit, startPageTimer, endPageTimer } from '@/lib/analytics';
 
 
@@ -29,6 +29,7 @@ const PostAssessment = () => {
 
   useEffect(() => {
     startPageTimer('assessment_page');
+    startPageTime('post-assessment');
     return () => endPageTimer('assessment_page');
   }, []);
 
@@ -47,6 +48,7 @@ const PostAssessment = () => {
 
     trackAssessmentSubmit('post');
     endPageTimer('assessment_page');
+    sendPageTime('post-assessment');
 
     // Survey data is submitted on bibliography page (final page)
     navigate('/learned');

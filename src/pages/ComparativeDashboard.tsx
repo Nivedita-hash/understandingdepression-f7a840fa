@@ -5,6 +5,7 @@ import { ArrowRight } from 'lucide-react';
 import PageWrapper from '@/components/PageWrapper';
 import TableauEmbed from '@/components/TableauEmbed';
 import { startPageTimer, endPageTimer } from '@/lib/analytics';
+import { startPageTime, sendPageTime } from '@/lib/surveyData';
 
 
 const ComparativeDashboard = () => {
@@ -12,11 +13,13 @@ const ComparativeDashboard = () => {
 
   useEffect(() => {
     startPageTimer('dashboard_page');
+    startPageTime('dashboard');
     return () => endPageTimer('dashboard_page');
   }, []);
 
   const handleContinue = () => {
     endPageTimer('dashboard_page');
+    sendPageTime('dashboard');
     navigate('/post-assessment');
   };
 
