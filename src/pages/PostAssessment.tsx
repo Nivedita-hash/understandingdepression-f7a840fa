@@ -38,7 +38,6 @@ const PostAssessment = () => {
   };
 
   const handleSubmit = async () => {
-    if (!allAnswered) return;
     const data = {
       session_id: getSessionId(),
       timestamp: Date.now(),
@@ -48,9 +47,13 @@ const PostAssessment = () => {
 
     trackAssessmentSubmit('post');
     endPageTimer('assessment_page');
+
+    // Fire POST to Apps Script immediately on submit click
+    submitAssessmentNow('post', responses);
+
     sendPageTime('post-assessment');
 
-    // Survey data is submitted on bibliography page (final page)
+    // Survey data is also submitted on bibliography page (final page)
     navigate('/learned');
   };
 
