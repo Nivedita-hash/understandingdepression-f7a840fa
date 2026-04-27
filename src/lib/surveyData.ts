@@ -283,12 +283,18 @@ export function buildSurveyData(): SurveyPayload {
 /**
  * End the session, build payload, and submit ONCE.
  * Call this on the bibliography (final) page.
+ * Returns { ok, status, response } so the caller can surface a confirmation toast.
  */
-export async function endSessionAndSubmit(): Promise<boolean> {
+export async function endSessionAndSubmit(): Promise<{
+  ok: boolean;
+  status: number;
+  response: string;
+  alreadySubmitted?: boolean;
+}> {
   // Prevent multiple submissions
   if (localStorage.getItem(SESSION_ENDED_KEY) === 'true') {
     console.log('[Survey] Session already ended, skipping.');
-    return true;
+    return { ok: true, status: 200, response: 'Already submitted', alreadySubmitted: true };
   }
 
   const data = buildSurveyData();
@@ -296,7 +302,7 @@ export async function endSessionAndSubmit(): Promise<boolean> {
 
   if (localStorage.getItem(SUBMITTED_KEY) === sessionId) {
     console.log('[Survey] Already submitted for session', sessionId);
-    return true;
+    return { ok: true, status: 200, response: 'Already submitted', alreadySubmitted: true };
   }
 
   // Ensure no undefined values
@@ -310,30 +316,32 @@ export async function endSessionAndSubmit(): Promise<boolean> {
   console.log('[Survey] Submitting:', data);
 
   try {
-    // Try sendBeacon first (works on page unload)
-    if (navigator?.sendBeacon) {
-      const blob = new Blob([body], { type: 'text/plain;charset=utf-8' });
-      if (navigator.sendBeacon(GOOGLE_SCRIPT_URL, blob)) {
-        localStorage.setItem(SUBMITTED_KEY, sessionId);
-        return true;
-      }
-    }
-
-    // Fallback to fetch
-    await fetch(GOOGLE_SCRIPT_URL, {
+    // Use a readable CORS request so we can return the server response.
+    // text/plain avoids a CORS preflight; Apps Script parses e.postData.contents as JSON.
+    const res = await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
-      mode: 'no-cors',
-      keepalive: true,
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body,
+      redirect: 'follow',
     });
 
-    localStorage.setItem(SUBMITTED_KEY, sessionId);
-    localStorage.setItem(SESSION_ENDED_KEY, 'true');
-    localStorage.removeItem(SESSION_START_KEY);
-    return true;
+    const text = await res.text();
+    console.log('[Survey] Response', res.status, text);
+
+    if (res.ok) {
+      localStorage.setItem(SUBMITTED_KEY, sessionId);
+      localStorage.setItem(SESSION_ENDED_KEY, 'true');
+      localStorage.removeItem(SESSION_START_KEY);
+    }
+
+    return { ok: res.ok, status: res.status, response: text };
   } catch (err) {
     console.error('[Survey] Failed to submit:', err);
-    return false;
+    return {
+      ok: false,
+      status: 0,
+      response: err instanceof Error ? err.message : String(err),
+    };
   }
 }
+
