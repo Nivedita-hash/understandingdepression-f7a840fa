@@ -68,8 +68,7 @@ export const preAssessmentQuestions: AssessmentQuestion[] = [
     id: 'pre_journey_differences',
     type: 'short-answer',
     text: 'In your own words, what kinds of differences might exist between people\'s experiences of depression?',
-    helpText: 'For example: what causes it, how it changes over time, how long it lasts, or how people respond to support or treatment. (minimum 10 characters)',
-    minLength: 10,
+    helpText: 'For example: what causes it, how it changes over time, how long it lasts, or how people respond to support or treatment.',
   },
 ];
 
@@ -91,8 +90,7 @@ export const postAssessmentQuestions: AssessmentQuestion[] = [
     id: 'post_two_differences_noticed',
     type: 'short-answer',
     text: 'Describe two key differences you noticed between the case journeys.',
-    helpText: 'For example: differences in patterns over time, causes, or how each person responded to treatment. (minimum 10 characters)',
-    minLength: 10,
+    helpText: 'For example: differences in patterns over time, causes, or how each person responded to treatment.',
   },
   { id: 'post_website_helped_notice_differences', type: 'likert', text: 'This experience helped me better understand how depression can vary across individuals and over time.' },
   {
