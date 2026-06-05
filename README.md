@@ -1,73 +1,60 @@
-# Welcome to your Lovable project
+# Narrative Visual Analytics Dashboard for Depression and Imaging Metadata
 
-## Project info
+## Project Overview
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+This project is a narrative visual analytics dashboard focused on depression journeys, comparative exploration, and research-oriented interaction tracking. It is built as a React and TypeScript single-page application with Vite, Tailwind CSS, and shadcn/ui-style components.
 
-## How can I edit this code?
+The repository includes:
 
-There are several ways of editing your application.
+- Narrative pages and case-study flows
+- Interactive comparative dashboard views
+- Google Analytics event tracking
+- Google Apps Script based research logging
 
-**Use Lovable**
+## Installation
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+### Prerequisites
 
-Changes made via Lovable will be committed automatically to this repo.
+- Node.js 18 or newer
+- npm 9 or newer
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+### Install dependencies
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+npm install
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## Local Development
 
-# Step 3: Install the necessary dependencies.
-npm i
+Start the Vite development server:
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```sh
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+By default, the application runs locally on port `8080`.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Build
 
-**Use GitHub Codespaces**
+Create a production build:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```sh
+npm run build
+```
 
-## What technologies are used for this project?
+To preview the built output locally:
 
-This project is built with:
+```sh
+npm run preview
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Deployment
 
-## How can I deploy this project?
+This project produces a static frontend build via Vite. Deploy the generated contents of `dist/` using any static hosting provider or web server that supports client-side routing.
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Typical deployment flow:
 
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+1. Install dependencies with `npm install`
+2. Build the project with `npm run build`
+3. Upload the `dist/` directory to your hosting environment
+4. Configure route fallback to `index.html` for SPA navigation if required by your host

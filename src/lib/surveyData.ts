@@ -23,7 +23,7 @@ const SESSION_ENDED_KEY = 'session_ended';
 export function getEnvironment(): 'preview' | 'production' {
   if (typeof window === 'undefined') return 'production';
   const h = window.location.hostname;
-  return h.includes('lovable') || h.includes('preview') || h === 'localhost'
+  return h === 'localhost' || h.includes('preview')
     ? 'preview'
     : 'production';
 }
@@ -384,4 +384,3 @@ export async function endSessionAndSubmit(): Promise<{
     };
   }
 }
-

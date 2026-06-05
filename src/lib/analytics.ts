@@ -12,9 +12,8 @@ declare global {
 
 export function getEnvironment(): 'preview' | 'production' {
   if (typeof window === 'undefined') return 'production';
-  return window.location.hostname.includes('lovable') ||
-    window.location.hostname.includes('preview') ||
-    window.location.hostname === 'localhost'
+  return window.location.hostname === 'localhost' ||
+    window.location.hostname.includes('preview')
     ? 'preview'
     : 'production';
 }
