@@ -363,9 +363,6 @@ const Bibliography = () => {
           transition={{ duration: 0.6, delay: 1 }}
           className="mt-16 pt-8 border-t border-border text-center"
         >
-          <p className="text-muted-foreground mb-2">
-            Project by <strong>Dhruvi Swadia</strong> and <strong>Nivedita Kowlagi</strong>
-          </p>
           <p className="text-sm text-muted-foreground">
             A narrative visualization exploring depression journeys over time.
           </p>
