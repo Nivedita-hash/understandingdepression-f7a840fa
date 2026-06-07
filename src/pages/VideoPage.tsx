@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import PageWrapper from '@/components/PageWrapper';
 import { ArrowRight, Play, Pause, Volume2, VolumeX, Maximize } from 'lucide-react';
 import {
@@ -11,10 +11,15 @@ import {
 } from '@/lib/analytics';
 import { markVideoCompleted, startPageTime, sendPageTime } from '@/lib/surveyData';
 
-// Replace this with your uploaded MP4 asset URL (e.g. a CDN /__l5e/assets-v1/... path)
-const VIDEO_SRC = '/narrative-video.mp4';
-
+const YT_VIDEO_ID = 'R38FR2y53_w';
 const VIDEO_END_THRESHOLD = 20;
+
+declare global {
+  interface Window {
+    YT: any;
+    onYouTubeIframeAPIReady: () => void;
+  }
+}
 
 const formatTime = (s: number) => {
   if (!isFinite(s) || s < 0) s = 0;
@@ -25,107 +30,161 @@ const formatTime = (s: number) => {
 
 const VideoPage = () => {
   const navigate = useNavigate();
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const playerRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const [showNext, setShowNext] = useState(false);
+  const [ready, setReady] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [volume, setVolume] = useState(1);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [showNext, setShowNext] = useState(false);
   const [showControls, setShowControls] = useState(true);
 
+  const maxReachedRef = useRef(0);
   const startedRef = useRef(false);
   const completedRef = useRef(false);
-  const maxReachedRef = useRef(0);
-  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const initPlayer = useCallback(() => {
+    const create = () => {
+      playerRef.current = new window.YT.Player('yt-player', {
+        videoId: YT_VIDEO_ID,
+        playerVars: {
+          autoplay: 0,
+          mute: 1,
+          rel: 0,
+          modestbranding: 1,
+          disablekb: 1,
+          controls: 0,
+          showinfo: 0,
+          iv_load_policy: 3,
+          fs: 0,
+          playsinline: 1,
+          origin: window.location.origin,
+        },
+        events: {
+          onReady: (e: any) => {
+            setReady(true);
+            setDuration(e.target.getDuration?.() || 0);
+            intervalRef.current = setInterval(() => {
+              const p = playerRef.current;
+              if (!p?.getCurrentTime || !p?.getDuration) return;
+              const t = p.getCurrentTime();
+              const d = p.getDuration();
+              if (t > maxReachedRef.current + 2) {
+                p.seekTo(maxReachedRef.current, true);
+              } else {
+                maxReachedRef.current = Math.max(maxReachedRef.current, t);
+              }
+              setCurrentTime(t);
+              if (d > 0) setDuration(d);
+              if (d > 0 && d - t <= VIDEO_END_THRESHOLD) setShowNext(true);
+            }, 500);
+          },
+          onStateChange: (e: any) => {
+            const YT = window.YT;
+            if (e.data === YT?.PlayerState?.PLAYING) {
+              setIsPlaying(true);
+              if (!startedRef.current) {
+                startedRef.current = true;
+                trackVideoStart();
+              }
+            } else if (e.data === YT?.PlayerState?.PAUSED) {
+              setIsPlaying(false);
+            } else if (e.data === YT?.PlayerState?.ENDED) {
+              setIsPlaying(false);
+              if (!completedRef.current) {
+                completedRef.current = true;
+                trackVideoComplete();
+                markVideoCompleted();
+                setShowNext(true);
+              }
+            }
+          },
+        },
+      });
+    };
+
+    if (window.YT?.Player) {
+      create();
+    } else {
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(tag);
+      window.onYouTubeIframeAPIReady = create;
+    }
+  }, []);
 
   useEffect(() => {
     startPageTimer('video_page');
     startPageTime('video');
-    return () => endPageTimer('video_page');
-  }, []);
+    initPlayer();
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (playerRef.current?.destroy) playerRef.current.destroy();
+      endPageTimer('video_page');
+    };
+  }, [initPlayer]);
 
   const togglePlay = () => {
-    const v = videoRef.current;
-    if (!v) return;
-    if (v.paused) v.play();
-    else v.pause();
+    const p = playerRef.current;
+    if (!p) return;
+    if (isMuted) {
+      // First interaction: unmute on play
+      p.unMute?.();
+      setIsMuted(false);
+    }
+    if (isPlaying) p.pauseVideo();
+    else p.playVideo();
   };
 
   const toggleMute = () => {
-    const v = videoRef.current;
-    if (!v) return;
-    v.muted = !v.muted;
-    setIsMuted(v.muted);
+    const p = playerRef.current;
+    if (!p) return;
+    if (isMuted) {
+      p.unMute();
+      setIsMuted(false);
+    } else {
+      p.mute();
+      setIsMuted(true);
+    }
   };
 
   const handleVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const v = videoRef.current;
-    if (!v) return;
+    const p = playerRef.current;
+    if (!p) return;
     const val = parseFloat(e.target.value);
-    v.volume = val;
-    v.muted = val === 0;
+    p.setVolume(val * 100);
     setVolume(val);
-    setIsMuted(val === 0);
+    if (val === 0) {
+      p.mute();
+      setIsMuted(true);
+    } else if (isMuted) {
+      p.unMute();
+      setIsMuted(false);
+    }
   };
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const v = videoRef.current;
-    if (!v) return;
+    const p = playerRef.current;
+    if (!p) return;
     const target = parseFloat(e.target.value);
-    // Prevent seeking forward beyond max watched point
     if (target > maxReachedRef.current + 1) {
-      v.currentTime = maxReachedRef.current;
+      p.seekTo(maxReachedRef.current, true);
     } else {
-      v.currentTime = target;
-    }
-  };
-
-  const handleTimeUpdate = () => {
-    const v = videoRef.current;
-    if (!v) return;
-    const t = v.currentTime;
-    // Anti-seek forward
-    if (t > maxReachedRef.current + 2) {
-      v.currentTime = maxReachedRef.current;
-      return;
-    }
-    maxReachedRef.current = Math.max(maxReachedRef.current, t);
-    setCurrentTime(t);
-
-    if (v.duration > 0 && v.duration - t <= VIDEO_END_THRESHOLD) {
-      setShowNext(true);
-    }
-  };
-
-  const handlePlay = () => {
-    setIsPlaying(true);
-    if (!startedRef.current) {
-      startedRef.current = true;
-      trackVideoStart();
-    }
-  };
-
-  const handleEnded = () => {
-    setIsPlaying(false);
-    if (!completedRef.current) {
-      completedRef.current = true;
-      trackVideoComplete();
-      markVideoCompleted();
-      setShowNext(true);
+      p.seekTo(target, true);
+      setCurrentTime(target);
     }
   };
 
   const enterFullscreen = () => {
     const el = containerRef.current;
     if (!el) return;
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
-    } else {
-      el.requestFullscreen?.();
-    }
+    if (document.fullscreenElement) document.exitFullscreen();
+    else el.requestFullscreen?.();
   };
 
   const revealControls = () => {
@@ -155,31 +214,21 @@ const VideoPage = () => {
             ref={containerRef}
             onMouseMove={revealControls}
             onMouseLeave={() => isPlaying && setShowControls(false)}
-            className="relative rounded-2xl overflow-hidden shadow-2xl bg-black group"
+            className="relative rounded-2xl overflow-hidden shadow-2xl bg-black"
           >
             <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-              <video
-                ref={videoRef}
-                src={VIDEO_SRC}
-                className="absolute inset-0 w-full h-full object-contain bg-black"
-                playsInline
-                preload="metadata"
+              {/* YouTube iframe (no chrome) */}
+              <div id="yt-player" className="absolute inset-0 w-full h-full pointer-events-none" />
+
+              {/* Click-blocker overlay — intercepts all iframe clicks so YouTube
+                  branding, title, and links are never reachable */}
+              <div
+                className="absolute inset-0"
                 onClick={togglePlay}
-                onPlay={handlePlay}
-                onPause={() => setIsPlaying(false)}
-                onEnded={handleEnded}
-                onTimeUpdate={handleTimeUpdate}
-                onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
-                onVolumeChange={(e) => {
-                  setVolume(e.currentTarget.volume);
-                  setIsMuted(e.currentTarget.muted);
-                }}
-                controlsList="nodownload noremoteplayback noplaybackrate"
-                disablePictureInPicture
               />
 
-              {/* Center play overlay when paused */}
-              {!isPlaying && (
+              {/* Center play button when paused */}
+              {!isPlaying && ready && (
                 <button
                   onClick={togglePlay}
                   aria-label="Play"
@@ -197,7 +246,6 @@ const VideoPage = () => {
                   showControls || !isPlaying ? 'opacity-100' : 'opacity-0'
                 }`}
               >
-                {/* Progress */}
                 <input
                   type="range"
                   min={0}
@@ -244,7 +292,6 @@ const VideoPage = () => {
             </div>
           </div>
 
-          {/* Gated Next Button */}
           <AnimatePresence>
             {showNext && (
               <motion.div
